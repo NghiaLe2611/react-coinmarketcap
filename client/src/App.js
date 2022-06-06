@@ -6,7 +6,7 @@ import axios from 'axios';
 function App() {
 	const [status, setStatus] = useState(false);
 	useEffect(() => {
-		axios.get(`${process.env.REACT_APP_API_URL}/api/status`)
+		axios.get(`/api/status`)
 			.then(function (response) {
 				if (response.data.status) {
 					setStatus(true);

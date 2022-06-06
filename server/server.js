@@ -1,14 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
+const port = process.env.PORT || 5000;
 
 require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+}
 
 app.get('/api/status', function(req, res) {
     return res.status(200).json({
@@ -24,4 +30,6 @@ app.use((error, req, res, next) => {
 	});
 });
 
-module.exports = app;
+
+
+app.listen(port, () => console.log(`Server started at port ${port}`));
