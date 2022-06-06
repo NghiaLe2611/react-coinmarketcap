@@ -12,13 +12,16 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
-    app.get('*', function(req, res) {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    })
+	// Serve any static files
+	app.use(express.static(path.join(__dirname, 'client/build')));
+	// Handle React routing, return all requests to React app
+	app.get('*', function (req, res) {
+		res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+	});
 }
 
 app.get('/api/status', function(req, res) {
+    console.log(path.join(__dirname, '../client/build', 'index.html'));
     return res.status(200).json({
         status: true
     })
