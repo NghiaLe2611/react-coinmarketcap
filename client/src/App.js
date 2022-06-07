@@ -20,6 +20,7 @@ function App() {
 	return (
 		<div className='App'>
 			<header className='App-header'>
+                <img src='images/cmc.svg' width='200' alt='cmc-log' />
 				<img src={logo} className='App-logo' alt='logo' />
 				{status && <p><strong>OK</strong></p>}
 				<p>
