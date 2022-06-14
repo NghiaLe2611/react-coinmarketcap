@@ -2,6 +2,19 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+# Folder structure
+-client
+    -src
+        -api
+        -app (store, saga...)
+        -components
+        -layout
+        -pages
+        -routes
+        -utils
+-package.json
+-server.js
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -1,11 +1,12 @@
 {
-  "name": "cmc-backend",
+  "name": "react-coinmarketcap-app",
   "version": "1.0.0",
-  "description": "react coinmarketcap backend",
+  "description": "react coinmarketcap app",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "startServer": "nodemon server.js",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
     "client": "cd client && npm start",
@@ -16,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.27.2",
     "body-parser": "^1.20.0",
     "concurrently": "^7.2.1",
     "cookie-parser": "^1.4.6",
