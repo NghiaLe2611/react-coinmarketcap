@@ -112,27 +112,6 @@ export const LogoImage = styled(Link)(({theme}) => ({
 }));
 
 const classes = {
-	header: {
-		'@media (max-width: 1280px)': {
-			flexDirection: 'column-reverse',
-		},
-	},
-	navbar: {
-		borderBottom: '1px solid #eff2f5',
-	},
-	navbarDark: {
-		borderBottom: '1px solid #222531',
-	},
-	listTop: {
-		display: 'flex',
-		'@media (max-width: 1280px)': {
-			overflow: 'auto hidden',
-			whiteSpace: 'nowrap',
-			'&::-webkit-scrollbar': {
-				display: 'none',
-			},
-		},
-	},
 	listItem: {
 		width: 'inherit',
 		marginRight: '20px',

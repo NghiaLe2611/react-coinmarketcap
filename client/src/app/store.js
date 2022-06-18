@@ -1,10 +1,12 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import createSagaMiddleware from 'redux-saga';
 import generalReducer from "../features/general/generalSlice";
+import themeSlice from "../features/theme/themeSlice";
 import rootSaga from "./rootSaga";
 
 const rootReducer = combineReducers({
-    generalCoinStats: generalReducer
+    theme: themeSlice,
+    generalCoinStats: generalReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

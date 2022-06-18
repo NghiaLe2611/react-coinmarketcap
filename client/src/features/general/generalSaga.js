@@ -7,13 +7,24 @@ function* fetchGeneralStats() {
 	console.log('fetchGeneralStats', response);
     const {data} = response.data ;
 
+    // CMC
+    // const generalStats = {
+    //     cryptos: data.total_cryptocurrencies,
+	// 	exchanges: data.active_exchanges,
+	// 	marketCap: data.quote['USD'].total_market_cap,
+	// 	vol24h: data.quote['USD'].total_volume_24h,
+	// 	btcDom: data.btc_dominance,
+	// 	ethDom: data.eth_dominance
+    // }
+
+    // Coingecko
     const generalStats = {
-        cryptos: data.total_cryptocurrencies,
-		exchanges: data.active_exchanges,
-		marketCap: data.quote['USD'].total_market_cap,
-		vol24h: data.quote['USD'].total_volume_24h,
-		btcDom: data.btc_dominance,
-		ethDom: data.eth_dominance
+        cryptos: data.active_cryptocurrencies,
+		exchanges: data.markets,
+		marketCap: data.total_market_cap.usd,
+		vol24h: data.total_volume.usd,
+		btcDom: data.market_cap_percentage.btc,
+		ethDom: data.market_cap_percentage.eth
     }
 
     yield put(

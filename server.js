@@ -21,7 +21,23 @@ app.get('/api/global_metrics', async function(req, res) {
     try {
         // https://sandbox-api.coinmarketcap.com/v2/cryptocurrency/ohlcv/historical
         // https://pro-api.coinmarketcap.com/v2/cryptocurrency/ohlcv/historical
-        const response = await axios.get('https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest', {
+        // https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest
+        
+        // headers: {
+        //     'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
+        // },
+        
+        const response = await axios.get('https://api.coingecko.com/api/v3/global');
+        return res.status(200).json(response.data);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+});
+
+app.get('/api/trending', async function(req, res) {
+    try {  
+        // https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/trending/most-visited  // does not support endpoint
+        const response = await axios.get('https://api.coingecko.com/api/v3/search/trending', {
             headers: {
                 'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
             },

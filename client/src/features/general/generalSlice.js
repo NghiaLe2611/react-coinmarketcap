@@ -13,7 +13,7 @@ const initialState = {
 };
 
 const generalSlice = createSlice({
-	name: 'general',
+	name: 'generalCoinStats',
 	initialState,
 	reducers: {
 		fetchData(state) {
@@ -35,8 +35,8 @@ const generalSlice = createSlice({
 export const generalActions = generalSlice.actions;
 
 // Selectors
-export const _isLoading = (state) => state.general.isLoading;
-export const _generalStats = (state) => state.general.generalStats;
+export const _isLoading = (state) => state.generalCoinStats.isLoading;
+export const _generalStats = (state) => state.generalCoinStats.generalStats;
 
 // Reducer
 const generalReducer = generalSlice.reducer;
