@@ -1,15 +1,15 @@
-import {all, call, put, takeLatest} from 'redux-saga/effects';
+import {all, call, put, select, takeLatest} from 'redux-saga/effects';
 import coinApi from '../../api/coinApi';
 import { generalActions } from './generalSlice';
 
 function* fetchGeneralStats() {
 	const response = yield call(coinApi.getGlobalMetricsStats);
-	console.log('fetchGeneralStats', response);
     const {data} = response.data ;
+	console.log('fetchGeneralStats', data);
 
     // CMC
     // const generalStats = {
-    //     cryptos: data.total_cryptocurrencies,
+    //  cryptos: data.total_cryptocurrencies,
 	// 	exchanges: data.active_exchanges,
 	// 	marketCap: data.quote['USD'].total_market_cap,
 	// 	vol24h: data.quote['USD'].total_volume_24h,
@@ -17,6 +17,9 @@ function* fetchGeneralStats() {
 	// 	ethDom: data.eth_dominance
     // }
 
+    const state = yield select();
+    const prevStats = state.generalCoinStats.generalStats;
+    
     // Coingecko
     const generalStats = {
         cryptos: data.active_cryptocurrencies,
@@ -28,14 +31,23 @@ function* fetchGeneralStats() {
     }
 
     yield put(
-		generalActions.setGeneralStats(generalStats)
+		generalActions.setGeneralStats({...prevStats, ...generalStats})
 	);
+}
 
-    // const [maleCount, femaleCount, highMarkCount, lowMarkCount] = stats;
+// https://http-api.livecoinwatch.com/coins/recently-added
+// https://http-api.livecoinwatch.com/coins/movers?currency=USD&range=delta.day&volume=500000
+function* fetchTrendingCoins() {
+    const response = yield call(coinApi.getTrending);
+    const {data} = response.data ;
+	console.log('fetchTrendingCoins', data.cryptoTopSearchRanks);
+    
+    const state = yield select();
+    const prevStats = state.generalCoinStats.generalStats;
 
-	// yield put(
-	// 	dashboardActions.setStatistics({ maleCount, femaleCount, highMarkCount, lowMarkCount })
-	// );
+    yield put(
+		generalActions.setGeneralStats({...prevStats, trendingSearches: data.cryptoTopSearchRanks.slice(0, 5)}) // get only first 5 coins
+	);
 }
 
 function* fetchGeneralData() {
@@ -43,10 +55,11 @@ function* fetchGeneralData() {
 		yield all([
 			// run together, first come first serve
 			call(fetchGeneralStats),
+            call(fetchTrendingCoins)
 		]);
 		yield put(generalActions.fetchDataSuccess());
 	} catch (err) {
-		console.log('Failed to fetch dashboard data', err);
+		console.log('Failed to fetch general data', err);
     	yield put(generalActions.fetchDataFailed());
 	}
 }

@@ -7,11 +7,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     -src
         -api
         -app (store, saga...)
-        -components
+        -components (common)
         -layout
         -pages
         -routes
         -utils
+        App.js
+        ...
 -package.json
 -server.js
 

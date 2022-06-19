@@ -9,6 +9,8 @@ const initialState = {
 		vol24h: 0,
 		btcDom: 0,
 		ethDom: 0,
+        trendingSearches: [],
+        recentSearches: []
 	},
 };
 

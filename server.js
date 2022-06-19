@@ -34,19 +34,48 @@ app.get('/api/global_metrics', async function(req, res) {
     }
 });
 
+// Trending coins
+/*
+    https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/trending/most-visited  // does not support endpoint
+    https://api.coingecko.com/api/v3/search/trending
+    https://http-api.livecoinwatch.com/coins/trending?currency=USD
+    https://api.coinmarketcap.com/data-api/v3/topsearch/rank
+    https://crypto.com/price/_next/data/yDTlO68jm0m0-gJLPyc0X/en/showroom/trending.json?subLink=trending
+*/
+
 app.get('/api/trending', async function(req, res) {
+    // const time = new Date().getTime();
     try {  
-        // https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/trending/most-visited  // does not support endpoint
-        const response = await axios.get('https://api.coingecko.com/api/v3/search/trending', {
-            headers: {
-                'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
-            },
-        });
+        const response = await axios.get('https://api.coinmarketcap.com/data-api/v3/topsearch/rank');
         return res.status(200).json(response.data);
     } catch (err) {
         return res.status(500).json(err);
     }
 });
+
+app.get('/api/news', async function(req, res) {
+    const numPage = req.query.page ? req.query.page : 1;
+    try {  
+        const response = await axios.get(`https://newsapi.org/v2/everything?q=crypto+bitcoin&pageSize=12&page=${numPage}&apiKey=${process.env.NEWS_API_KEY}`);
+        return res.status(200).json(response.data);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
+})
+
+// Gainers/Losers
+// https://api.cryptorank.io/v0/coins?specialFilter=topLosersFor24h&limit=50
+// https://api.cryptorank.io/v0/coins?specialFilter=topGainersFor24h&limit=50
+// https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=3
+// https://price-api.crypto.com/price/v1/top-movers?direction=-1&depth=3
+// https://www.coinex.com/res/quotes/rank/assets?sort_type=change_rate_asc&offset=0&limit=10
+// https://www.coinex.com/res/quotes/rank/assets?sort_type=change_rate_desc&offset=0&limit=10
+
+// https://nomics.com/docs/#operation/getGlobalTicker
+
+
+// Tags
+// https://price-api.crypto.com/price/v1/tokens?page=1&limit=50&tags=defi
 
 app.use((error, req, res, next) => {
 	res.status(error.status || 500).json({

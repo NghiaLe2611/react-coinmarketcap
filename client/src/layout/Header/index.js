@@ -1,8 +1,8 @@
 import AppBar from '@mui/material/AppBar';
 import { makeStyles } from '@mui/styles';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { _generalStats } from '../../features/general/generalSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { generalActions, _generalStats } from '../../features/general/generalSlice';
 import { _isDarkMode } from '../../features/theme/themeSlice';
 import MainNav from './MainNav';
 import TopNav from './TopNav';
@@ -70,6 +70,7 @@ const menu = [
 ];
 
 const Header = () => {
+    const dispatch = useDispatch();
     const isDarkMode = useSelector(_isDarkMode);
     const [language, setLanguage] = useState('English');
     const generalStats = useSelector(_generalStats);
@@ -87,6 +88,7 @@ const Header = () => {
 			flexDirection: 'column-reverse',
 		}
 	});
+    //#0B1426
 
 	return (
 		<AppBar position='static' color='transparent' elevation={0} sx={headerStyle}>

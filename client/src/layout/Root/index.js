@@ -3,13 +3,11 @@ import Footer from '../Footer';
 import { styled } from '@mui/styles';
 import { _isDarkMode } from '../../features/theme/themeSlice';
 import { useSelector } from 'react-redux';
+import { Container } from '@mui/material';
 // import useStyles from './styles';
 
 const Main = styled('main')(({theme}) => ({
-    height: 500,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    padding: '20px 0'
 }));
 
 const Root = ({children}) => {
@@ -25,8 +23,9 @@ const Root = ({children}) => {
     return (
         <>
             <Header/>
-            <Main style={bg}>{children}</Main>
-            {/* <Main className={isDarkMode ? classes.dark : classes.light}>{children}</Main> */}
+            <Main style={bg}>
+                <Container>{children}</Container>
+            </Main>
             <Footer/>
         </>
     )

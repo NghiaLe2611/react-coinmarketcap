@@ -1,21 +1,25 @@
-import { Box, IconButton, List, ListItem, Popover, Typography } from "@mui/material";
-import { useState } from "react";
-
-import classes, { SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase } from './styles';
+import {Box, IconButton, List, ListItem, Popover, Typography} from '@mui/material';
+import {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
+import classes, {SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase} from './styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import { Link } from "react-router-dom";
+import { _generalStats } from '../../../features/general/generalSlice';
+import { useSelector } from 'react-redux';
+
 
 const Search = () => {
-    const [showSearchBox, setShowSearchBox] = useState(null);
-    const handleShowSearchBox = (e) => {
-        setShowSearchBox(e.currentTarget);
-    };
+	const [showSearchBox, setShowSearchBox] = useState(null);
+    const {trendingSearches, recentSearches} = useSelector(_generalStats);
 
-    const handleCloseSearchBox = () => {
-        setShowSearchBox(null);
-    };
+	const handleShowSearchBox = (e) => {
+		setShowSearchBox(e.currentTarget);
+	};
+
+	const handleCloseSearchBox = () => {
+		setShowSearchBox(null);
+	};
 
 	return (
 		<>
@@ -61,21 +65,31 @@ const Search = () => {
 							Trending <LocalFireDepartmentIcon />
 						</Typography>
 						<List sx={classes.listTrending}>
-							<ListItem>
-								<Typography component={Link} to='/btc'>
-									Bitcoin
-								</Typography>
-							</ListItem>
-							<ListItem>
-								<Typography component={Link} to='/eth'>
-									Ethereum
-								</Typography>
-							</ListItem>
+                            {
+                                trendingSearches.length > 0 && (
+                                    trendingSearches.map(item => (
+                                        <ListItem key={item.id}>
+                                            <Typography component={Link} to={`/currencies/${item.slug}`} sx={classes.itemTrending}>
+                                                <Box sx={classes.wrapName}>
+                                                    <img width='20' src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`} alt={item.name} />
+                                                    <Typography className='name'>{item.name}</Typography>
+                                                    <Typography sx={classes.txt}>{item.symbol}</Typography>
+                                                </Box>
+                                                <Typography sx={{...classes.txt, marginLeft: 'auto'}}>#{item.rank}</Typography>
+                                            </Typography>      
+                                        </ListItem>
+                                    ))
+                                )
+                            }
 						</List>
 					</Box>
-					<Box>
-						<Typography sx={classes.searchLbl}>Recent searches</Typography>
-					</Box>
+                    {
+                        recentSearches.length > 0 && (
+                            <Box>
+                                <Typography sx={classes.searchLbl}>Recent searches</Typography>
+                            </Box>
+                        )
+                    }
 				</Box>
 			</Popover>
 		</>
