@@ -1,6 +1,5 @@
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
+import { useState } from 'react';
+
 import { ListItemText } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,12 +12,8 @@ import ListItem from '@mui/material/ListItem';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import LightModeIcon from '@mui/icons-material/LightMode';
 import Drawer from '@mui/material/Drawer';
 import FormControl from '@mui/material/FormControl';
 import { useDispatch } from 'react-redux';
@@ -27,9 +22,16 @@ import { toggleTheme } from '../../../features/theme/themeSlice';
 import classes, { CustomBtn, LogoImage, StyledSelect } from './styles';
 import Search from '../Search';
 
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import CloseIcon from '@mui/icons-material/Close';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+
 const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
     const dispatch = useDispatch();
-    
+    console.log(111);
     const [showSubMenu, setShowSubMenu] = useState(null);
     const [pos, setPos] = useState({
         left: false

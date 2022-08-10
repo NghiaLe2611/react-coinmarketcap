@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { StyledEngineProvider } from '@mui/material';
 import {Provider} from 'react-redux';
 import { store } from './app/store';
+import 'assets/styles/styles.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

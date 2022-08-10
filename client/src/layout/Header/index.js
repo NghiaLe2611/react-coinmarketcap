@@ -72,16 +72,13 @@ const menu = [
 const Header = () => {
     const dispatch = useDispatch();
     const isDarkMode = useSelector(_isDarkMode);
-    const [language, setLanguage] = useState('English');
+    const [language, setLanguage] = useState('en');
     const generalStats = useSelector(_generalStats);
    
     useEffect(() => {
         // dispatch(generalActions.fetchData());
     }, []);
 
-    const handleChangeLanguage = (e) => {
-        setLanguage(e.target.value);
-    };
 
     const headerStyle = makeStyles({
 		'@media (max-width: 1280px)': {
@@ -89,6 +86,10 @@ const Header = () => {
 		}
 	});
     //#0B1426
+
+    const handleChangeLanguage = (e) => {
+        setLanguage(e.target.value);
+    };
 
 	return (
 		<AppBar position='static' color='transparent' elevation={0} sx={headerStyle}>

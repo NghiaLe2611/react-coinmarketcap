@@ -8,12 +8,12 @@ import classes from './styles';
 
 const NavTop = ({generalStats, isDarkMode, language, onHandleChangeLanguage}) => {
 	const dispatch = useDispatch();
-
+	
     const navbarStyle = {borderBottom: isDarkMode ? '1px solid #222531' : '1px solid #eff2f5'};
 	return (
 		<Box sx={navbarStyle}>
 			<Container>
-				<Box sx={{display: 'flex', alignItems: 'center'}}>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					<List sx={classes.listTop}>
 						<ListItem disablePadding sx={classes.listItem}>
 							<ListItemText primary={<ItemGeneral>Cryptos:&nbsp;</ItemGeneral>} />
@@ -63,7 +63,7 @@ const NavTop = ({generalStats, isDarkMode, language, onHandleChangeLanguage}) =>
 							/>
 						</ListItem>
 					</List>
-					<Box sx={{marginLeft: 'auto', alignItems: {lg: 'center'}, display: {xs: 'none', lg: 'flex'}}}>
+					<Box sx={{ marginLeft: 'auto', alignItems: { lg: 'center' }, display: { xs: 'none', lg: 'flex' } }}>
 						<FormControl size='small' variant='standard'>
 							<StyledSelect
 								disableUnderline
@@ -71,16 +71,20 @@ const NavTop = ({generalStats, isDarkMode, language, onHandleChangeLanguage}) =>
 								id='select-language'
 								value={language}
 								onChange={onHandleChangeLanguage}>
-								<MenuItem value='English' sx={{fontSize: 13}}>
+								<MenuItem value='en' sx={{ fontSize: 13 }}>
 									English
 								</MenuItem>
-								<MenuItem value='Tiếng Việt' sx={{fontSize: 13}}>
+								<MenuItem value='vi' sx={{ fontSize: 13 }}>
 									Tiếng Việt
 								</MenuItem>
 							</StyledSelect>
 						</FormControl>
 						<Button sx={classes.btnMode} onClick={() => dispatch(toggleTheme())}>
-							{isDarkMode ? <LightModeIcon fontSize='small' /> : <DarkModeIcon fontSize='small' />}
+							{isDarkMode ? (
+								<LightModeIcon fontSize='small' sx={{ color: 'var(--color-common-txt)' }} />
+							) : (
+								<DarkModeIcon fontSize='small' sx={{ color: 'var(--color-common-txt)' }} />
+							)}
 						</Button>
 					</Box>
 				</Box>

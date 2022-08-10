@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
-import News from './components/News';
-import Widget from './components/Widget';
+import News from './News';
+import Widget from './Widget';
 
 const HomePage = () => {
 	return (
