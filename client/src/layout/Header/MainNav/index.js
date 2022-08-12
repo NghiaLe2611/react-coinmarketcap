@@ -31,7 +31,6 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
     const dispatch = useDispatch();
-    console.log(111);
     const [showSubMenu, setShowSubMenu] = useState(null);
     const [pos, setPos] = useState({
         left: false

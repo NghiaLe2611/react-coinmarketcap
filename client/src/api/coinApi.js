@@ -10,6 +10,9 @@ const coinApi = {
 	getNews() {
 		return axiosClient.get('/api/news');
 	},
+	getCoins() {
+		return axiosClient.get('/api/coin_list');
+	},
 };
 
 export default coinApi;

@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import CoinList from './CoinList';
 import News from './News';
 import Widget from './Widget';
 
@@ -11,6 +12,7 @@ const HomePage = () => {
                 <Grid item lg={4}><Widget/></Grid>
                 <Grid item lg={4}><Widget/></Grid>
             </Grid>
+            <CoinList />
 		</>
 	);
 };

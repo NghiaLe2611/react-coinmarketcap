@@ -17,6 +17,18 @@ app.get('/api/status', function(req, res) {
     })
 });
 
+// https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true
+app.get('/api/coin_list', async function(req, res) {
+    const page = req.query.page ? req.query.page : 1;
+
+    try {
+        const response = await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=${page}&sparkline=true&price_change_percentage=1h%2C24h%2C7d`)
+        return res.status(200).json(response.data);
+    } catch(err) {
+        return res.status(500).json(err);
+    }
+});
+
 app.get('/api/global_metrics', async function(req, res) {
     try {
         // https://sandbox-api.coinmarketcap.com/v2/cryptocurrency/ohlcv/historical
@@ -61,7 +73,7 @@ app.get('/api/news', async function(req, res) {
     } catch (err) {
         return res.status(500).json(err);
     }
-})
+});
 
 // Gainers/Losers
 // https://api.cryptorank.io/v0/coins?specialFilter=topLosersFor24h&limit=50

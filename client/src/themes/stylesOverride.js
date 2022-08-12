@@ -1,5 +1,4 @@
 export default function componentStyleOverrides(theme) {
-    console.log(theme);
     const colorCommonTxt = 'var(--color-common-txt)';
 
 	return {

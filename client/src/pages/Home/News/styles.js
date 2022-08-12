@@ -7,13 +7,23 @@ const classes = {
         }
     },
     innerItem: {
+        '@media (max-width: 768px)': {
+            display: 'flex',
+            '& img': {
+                marginRight: 1
+            }
+        },
         '& img': {
             marginBottom: '5px',
             height: '80px',
-            width: '100%',
-            objectFit: 'contain',
+            maxWidth: '120px',
+            // width: '100%',
+            // objectFit: 'contain',
             '@media (min-width: 1280px)': {
-                height: '140px'
+                maxWidth: 'inherit',
+                objectFit: 'contain',
+                width: '280px',
+                height: '140px',
             }
         }
     },

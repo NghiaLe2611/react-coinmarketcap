@@ -5,13 +5,15 @@ import { useSelector } from 'react-redux';
 import { _isDarkMode } from './features/theme/themeSlice';
 import AppRoutes from './routes';
 import themes from './themes';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, QueryCache, ReactQueryCacheProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
+const queryCache = new QueryCache();
 
 function App() {
 	const isDarkMode = useSelector(_isDarkMode);
-	const appTheme = useMemo(() => {
+	
+	const appTheme = useMemo(() => {	
 		return isDarkMode ? themes('dark') : themes('light');
 	}, [isDarkMode]);
 
@@ -21,6 +23,8 @@ function App() {
 		} else {
 			document.body.classList.add('light-theme');
 		}
+
+		localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 
 		return () => {
 			document.body.removeAttribute('class');
