@@ -35,5 +35,15 @@ export default function componentStyleOverrides(theme) {
                 },
             },
         },
+        MuiTable: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'var(--bg-body)',
+                    '& .MuiTableCell-root': {
+                        borderColor: 'var(--border-table)'
+                    }
+                }
+            }
+        },
     };
 }

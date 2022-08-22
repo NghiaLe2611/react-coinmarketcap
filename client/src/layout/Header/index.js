@@ -75,10 +75,19 @@ const Header = () => {
     const [language, setLanguage] = useState('en');
     const generalStats = useSelector(_generalStats);
    
-    useEffect(() => {
-        // dispatch(generalActions.fetchData());
-    }, []);
+    const storage = localStorage.getItem('generalStats');
 
+    useEffect(() => {
+        if (!storage) {
+            dispatch(generalActions.fetchData());
+        }
+    }, [dispatch]);
+
+    // useEffect(() => {
+    //     if (!storage) {
+    //         localStorage.setItem('generalStats', JSON.stringify(generalStats));
+    //     }
+    // }, [generalStats]);
 
     const headerStyle = makeStyles({
 		'@media (max-width: 1280px)': {

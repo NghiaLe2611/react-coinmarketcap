@@ -1,17 +1,21 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+const initialGeneralStats = {
+	cryptos: 0,
+	exchanges: 0,
+	marketCap: 0,
+	vol24h: 0,
+	btcDom: 0,
+	ethDom: 0,
+	trendingSearches: [],
+	recentSearches: []
+};
+
+const generalStatsStorage = localStorage.getItem('generalStats');
+
 const initialState = {
 	isLoading: false,
-	generalStats: {
-		cryptos: 0,
-		exchanges: 0,
-		marketCap: 0,
-		vol24h: 0,
-		btcDom: 0,
-		ethDom: 0,
-        trendingSearches: [],
-        recentSearches: []
-	},
+	generalStats: generalStatsStorage ? JSON.parse(generalStatsStorage) : initialGeneralStats,
 };
 
 const generalSlice = createSlice({
@@ -19,6 +23,7 @@ const generalSlice = createSlice({
 	initialState,
 	reducers: {
 		fetchData(state) {
+			// console.log('fetchData');
 			state.isLoading = true;
 		},
 		fetchDataSuccess(state) {

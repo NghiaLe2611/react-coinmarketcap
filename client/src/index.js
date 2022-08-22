@@ -13,9 +13,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Provider store={store}>
         <BrowserRouter>
-            <StyledEngineProvider injectFirst>
-                <App />
-            </StyledEngineProvider>
+            {/* <StyledEngineProvider injectFirst> */}
+            <App />
+            {/* </StyledEngineProvider> */}
         </BrowserRouter>    
     </Provider>
 );

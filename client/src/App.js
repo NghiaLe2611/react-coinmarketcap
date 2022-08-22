@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { _isDarkMode } from './features/theme/themeSlice';
 import AppRoutes from './routes';
 import themes from './themes';
-import { QueryClient, QueryClientProvider, QueryCache, ReactQueryCacheProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 const queryCache = new QueryCache();
@@ -33,14 +33,20 @@ function App() {
 
 	return (
 		<ThemeProvider theme={appTheme}>
-			<CssBaseline enableColorScheme />
+			<StyledEngineProvider injectFirst>
+				<CssBaseline enableColorScheme />
+				<QueryClientProvider client={queryClient}>
+					<AppRoutes />
+				</QueryClientProvider>
+			</StyledEngineProvider>
+			{/* <CssBaseline enableColorScheme />
 			<QueryClientProvider client={queryClient}>
 				<AppRoutes />
-			</QueryClientProvider>
+			</QueryClientProvider> */}
 		</ThemeProvider>
 
 		// <QueryClientProvider client={queryClient}>
-			
+
 		// </QueryClientProvider>
 	);
 }

@@ -2,8 +2,20 @@
     --color-common-txt: #000;
     --color-price-up: #16c784;
     --color-price-down: #ea3943;
+
+    --bg-box: #fff;
+    --bg-body: linear-gradient(rgb(248, 250, 253) 0%, rgba(248, 250, 253, 0) 413px);
+    --bg-hover: #f2f2f4;
+
+    --border-table: #eff2f5;
 }
 
 .dark-theme{
     --color-common-txt: #fff;
+
+    --bg-box: #323546;
+    --bg-body: linear-gradient(rgb(34, 37, 49) 0%, rgba(34, 37, 49, 0) 413px);
+    --bg-hover: #000;
+
+    --border-table: #222531;
 }

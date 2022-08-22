@@ -10,8 +10,11 @@ const coinApi = {
 	getNews() {
 		return axiosClient.get('/api/news');
 	},
-	getCoins() {
-		return axiosClient.get('/api/coin_list');
+	getCoins(page) {
+		if (!page || page === 1) {
+			return axiosClient.get('/api/coin_list');
+		}
+		return axiosClient.get(`/api/coin_list?page=${page}`);
 	},
 };
 
