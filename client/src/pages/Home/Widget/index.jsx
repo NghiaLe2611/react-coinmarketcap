@@ -17,28 +17,46 @@ const StyledBox = styled(Box)(({ theme }) => ({
 const Widget = ({ type, title, icon, source }) => {
 	const [data, setData] = useState([]);
 	const trendingSearches = useSelector((state) => state.generalCoinStats.generalStats.trendingSearches);
-
+	
 	useEffect(() => {
+		const gainers = localStorage.getItem('top_gainers') ? JSON.parse(localStorage.getItem('top_gainers')) : [];
+		const losers = localStorage.getItem('top_losers') ? JSON.parse(localStorage.getItem('top_losers')) : [];
+
 		async function fetchGainers() {
-			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=-1&depth=5');
+			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=-1&depth=3');
 			setData(res.data);
+			localStorage.setItem('top_gainers', JSON.stringify(res.data));
 		}
 
 		async function fetchLosers() {
-			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=5');
+			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=3');
 			setData(res.data);
+			localStorage.setItem('top_losers', JSON.stringify(res.data));
 		}
 
 		if (type === 'trending') {
-			setData(trendingSearches);
+			setData(trendingSearches.slice(0, 3));
 		}
 
 		if (type === 'gainers') {
-			fetchGainers();
+			if (!gainers.length) {
+				fetchGainers();
+			} else {
+				setData(gainers);
+			}
 		}
 
 		if (type === 'losers') {
-			fetchLosers();
+			if (!gainers.length) {
+				fetchLosers();
+			} else {
+				setData(losers);
+			}
+		}
+
+		return () => {
+			localStorage.removeItem('top_gainers');
+			localStorage.removeItem('top_losers');
 		}
 	}, [type, trendingSearches]);
 

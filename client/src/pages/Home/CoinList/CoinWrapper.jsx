@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 
 export const StyledText = styled(Typography, {

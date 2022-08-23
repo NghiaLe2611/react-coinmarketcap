@@ -1,7 +1,7 @@
 import { Table, TableContainer, TableBody, TableHead, TableRow, TableCell, Typography } from '@mui/material';
 import coinApi from 'api/coinApi';
 import { useQuery } from '@tanstack/react-query';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import CoinWrapper from 'pages/Home/CoinList/CoinWrapper';
@@ -131,9 +131,10 @@ const CoinList = () => {
 	const handleChangePage = (e, newPage) => {
 		setPage(prev => newPage);
 
-		const element = document.getElementById('coin-table')
-		element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		// window.scrollTo(0, 0);
+		// const element = document.getElementById('coin-table')
+		// element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		
+		window.scroll({ top: 0, behavior: 'smooth' });
 	};
 
 	const count = Math.ceil(totalCoins / ITEMS_PER_PAGE);

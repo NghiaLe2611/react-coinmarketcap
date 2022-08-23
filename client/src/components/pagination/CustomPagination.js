@@ -1,6 +1,6 @@
 import { Box, Button, List, ListItem } from '@mui/material';
 import usePagination from '@mui/material/usePagination';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 
 const StyledList = styled(List)(({ theme }) => ({
     display: 'flex',
@@ -61,7 +61,7 @@ export default function CustomPagination({ count, page, onPageChange }) {
                         children = '…';
                     } else if (type === 'page') {
                         children = (
-							<StyledButton {...item} className={page === currentPage ? 'selected' : ''}>
+							<StyledButton {...item} className={selected ? 'selected' : ''}>
 								{page}
 							</StyledButton>
 						);

@@ -4,6 +4,7 @@ const initialGeneralStats = {
 	cryptos: 0,
 	exchanges: 0,
 	marketCap: 0,
+	marketCapChange: 0,
 	vol24h: 0,
 	btcDom: 0,
 	ethDom: 0,

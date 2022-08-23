@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export const ItemGeneral = styled(Typography)(({theme}) => ({
 	fontSize: 11,
 	fontWeight: 500,
-	color: theme.palette.mode === 'dark' ? '#d1d1d4' : '#58667e',
+	color: theme.palette.mode === 'dark' ? '#d1d1d4' : 'var(--color-sub-txt)',
 	'@media (min-width: 1280px)': {
 		fontSize: 12,
 	},

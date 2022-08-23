@@ -25,6 +25,7 @@ function* fetchGeneralStats() {
 		cryptos: data.active_cryptocurrencies,
 		exchanges: data.markets,
 		marketCap: data.total_market_cap.usd,
+		marketCapChange: data.market_cap_change_percentage_24h_usd,
 		vol24h: data.total_volume.usd,
 		btcDom: data.market_cap_percentage.btc,
 		ethDom: data.market_cap_percentage.eth,

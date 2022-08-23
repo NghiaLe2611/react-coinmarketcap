@@ -52,6 +52,21 @@ app.get('/api/global_metrics', async function(req, res) {
     }
 });
 
+// https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
+// https://sandbox-api.coinmarketcap.com/v1/global-metrics/quotes/latest
+app.get('/test', async function (req, res) {
+	try {
+		const response = await axios.get('https://sandbox-api.coinmarketcap.com/v1/global-metrics/quotes/latest', {
+			headers: {
+				'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+			},
+		});
+        res.status(200).json(response.data);
+	} catch (err) {
+		return res.status(500).json(err);
+	}
+});
+
 // Top gainers/losers
 // https://api.cryptorank.io/v0/coins?specialFilter=topLosersFor24h&limit=50
 // https://api.cryptorank.io/v0/coins?specialFilter=topGainersFor24h&limit=50

@@ -27,7 +27,7 @@
 // 	itemText: {
 // 		fontSize: 11,
 // 		fontWeight: 500,
-// 		color: '#58667e',
+// 		color: 'var(--color-sub-txt)',
 // 		'@media (min-width: 1280px)': {
 // 			fontSize: 12,
 // 		},

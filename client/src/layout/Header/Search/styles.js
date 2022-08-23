@@ -120,7 +120,7 @@ const classes = {
     txt: {
         fontSize: 11,
         fontWeight: 700,
-        color: '#58667e',
+        color: 'var(--color-sub-txt)',
     }
 };
 

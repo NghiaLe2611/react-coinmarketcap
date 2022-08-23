@@ -95,7 +95,7 @@ export const StyledInputBase = styled(Box)(({theme}) => ({
 export const ItemGeneral = styled(Typography)(({theme}) => ({
 	fontSize: 11,
 	fontWeight: 500,
-	color: theme.palette.mode === 'dark' ? '#d1d1d4' : '#58667e',
+	color: theme.palette.mode === 'dark' ? '#d1d1d4' : 'var(--color-sub-txt)',
 	'@media (min-width: 1280px)': {
 		fontSize: 12,
 	},
@@ -119,7 +119,7 @@ const classes = {
 	itemText: {
 		fontSize: 11,
 		fontWeight: 500,
-		color: '#58667e',
+		color: 'var(--color-sub-txt)',
 		'@media (min-width: 1280px)': {
 			fontSize: 12,
 		},

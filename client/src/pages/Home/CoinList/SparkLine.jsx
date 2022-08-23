@@ -39,7 +39,10 @@ const SparkLine = ({ data, color }) => {
 		},
         tooltip: {
             enabled: false,
-        }
+        },
+		accessibility: {
+			enabled: false
+		}
 	};
 
 	return (

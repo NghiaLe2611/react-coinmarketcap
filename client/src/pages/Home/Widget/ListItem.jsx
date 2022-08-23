@@ -47,7 +47,11 @@ const ListItemWidget = ({ type, title, data, icon, source }) => {
 							))}
 					</List>
 					<Typography sx={{ textAlign: 'right', fontSize: 11 }}>
-						(Source: <Link href={source} target='_blank' rel='noopener noreferrer'>{source}</Link>)
+						(Source:{' '}
+						<Link href={source} target='_blank' rel='noopener noreferrer' sx={{ color: '#3861fb' }}>
+							{source}
+						</Link>
+						)
 					</Typography>
 				</>
 			)}

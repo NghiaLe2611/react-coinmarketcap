@@ -11,7 +11,7 @@ const FooterItem = styled(ListItem)(({theme}) => ({
     lineHeight: '35px',
     padding: theme.spacing(0),
 	'& a': {
-        color: theme.palette.mode === 'dark' ? '#a0a0a0' : '#58667e',
+        color: theme.palette.mode === 'dark' ? '#a0a0a0' : 'var(--color-sub-txt)',
         '&:hover': {
             color: '#3862fa'
         }
@@ -32,7 +32,7 @@ const Copyright = styled(Box)(({theme}) => ({
     padding: '16px',
     textAlign: 'center',
     '& p': {
-        color: '#58667e',
+        color: 'var(--color-sub-txt)',
         fontSize: 13,
         fontWeight: 500
     }
