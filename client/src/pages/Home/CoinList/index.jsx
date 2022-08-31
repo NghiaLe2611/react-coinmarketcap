@@ -2,14 +2,18 @@ import { Table, TableContainer, TableBody, TableHead, TableRow, TableCell, Typog
 import coinApi from 'api/coinApi';
 import { useQuery } from '@tanstack/react-query';
 import { styled } from '@mui/material/styles';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import CoinWrapper from 'pages/Home/CoinList/CoinWrapper';
+import CoinWrapper from 'components/common/CoinWrapper';
 import SparkLine from './SparkLine';
 import CustomPagination from 'components/pagination/CustomPagination';
 import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useSortableData } from 'hooks/useSortableData';
+import { formatPrice, formatNumber, formatPercent } from 'utils/helpers';
+import SortTableHead from 'components/table/SortTableHead';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import CoinChange from 'components/common/CoinChange';
 
 const ITEMS_PER_PAGE = 100;
 
@@ -27,61 +31,54 @@ const headCells = [
     {
         id: 'name',
         label: 'Name',
-        align: 'left'
+        align: 'left',
+		width: 210
     },
     {
-        id: 'price',
+        id: 'current_price',
         label: 'Price',
         align: 'right'
     },
     {
-        id: '1h%',
+        id: 'price_change_percentage_1h_in_currency',
         label: '1h%',
         align: 'center'
     },
     {
-        id: '24h%',
+        id: 'price_change_percentage_24h_in_currency',
         label: '24h%',
         align: 'center'
     },
     {
-        id: '7d%',
+        id: 'price_change_percentage_7d_in_currency',
         label: '7d%',
         align: 'center'
     },
     {
-        id: 'cap',
+        id: 'market_cap',
         label: 'Market Cap',
         align: 'right'
     },
     {
-        id: 'volume',
+        id: 'total_volume',
         label: 'Volume(24h)',
         align: 'right'
     },
     {
-        id: 'supply',
+        id: 'circulating_supply',
         label: 'Circulating Supply',
         align: 'right'
     },
     {
-        id: 'last',
+        id: 'chart_last_7_day',
         label: 'Last 7 Days',
         align: 'right'
     },
 ];
 
-const getCoinList = async ({page}) => {
+const getCoinList = async ({ page }) => {
 	const data = await coinApi.getCoins(page);
 	return data.data;
-};
-
-function formatPercent(percent) {
-    return Number(percent).toFixed(2);
-};
-
-export function formatNumber(number) {
-    return Intl.NumberFormat('en-US').format(number);
 };
 
 const StyledTable = styled(Table)(({ theme }) => ({
@@ -100,17 +97,15 @@ const CoinList = () => {
 	const totalCoins = useSelector((state) => state.generalCoinStats.generalStats.cryptos);
 	const firstLoadingRef = useRef(true);
 
-    const {
-		data: coins,
-		isLoading,
-		error,
-	} = useQuery(
+	const { data, isLoading, error } = useQuery(
 		['list-coin', page],
-		() => getCoinList({page}),
+		() => getCoinList({ page }),
 		{
 			// Take care to not remove the cached data for each page for a super fast response time in case of a page change
 			keepPreviousData: true,
 			refetchOnWindowFocus: false,
+			staleTime: 10 * 60 * 1000,
+			cacheTime: Infinity,
 		},
 		{
 			onSuccess: (res) => {
@@ -119,14 +114,11 @@ const CoinList = () => {
 		}
 	);
 
-	useEffect(() => {
-		if (coins?.length) firstLoadingRef.current = false;
-	}, [coins]);
+	const { items, requestSort, sortConfig } = useSortableData(data ? data : []);
 
-    const getColorPrice = (val) => {
-        if (val > 0) return 'var(--color-price-up)';
-        if (val < 0) return 'var(--color-price-down)';
-    };
+	useEffect(() => {
+		if (data?.length) firstLoadingRef.current = false;
+	}, [data]);
 
 	const handleChangePage = (e, newPage) => {
 		setPage(prev => newPage);
@@ -146,20 +138,30 @@ const CoinList = () => {
 
 	return (
 		<>
+			<CustomPagination count={count} page={page} onPageChange={handleChangePage} />
 			<TableContainer>
-				<StyledTable id="coin-table">
+				<StyledTable id='coin-table'>
 					<TableHead>
 						<TableRow>
 							{headCells.map((item) => (
-								<TableCell key={item.id} align={item.align}>
-									{item.label}
-								</TableCell>
+								// <TableCell key={item.id} align={item.align} onClick={() => requestSort(item.id)}>
+								// 	{item.label}
+								// </TableCell>
+								<SortTableHead
+									key={item.id}
+									name={item.id}
+									label={item.label}
+									align={item.align}
+									requestSort={requestSort}
+									sortConfig={sortConfig}
+									style={{ width: item.width }}
+								/>
 							))}
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{coins &&
-							coins.map((item) => (
+						{items &&
+							items.map((item) => (
 								<TableRow
 									key={`${item.id}-${item.symbol}`}
 									sx={{ '& .MuiTableCell-body': { padding: '10px' } }}>
@@ -168,28 +170,15 @@ const CoinList = () => {
 									<TableCell align='left'>
 										<CoinWrapper item={item} />
 									</TableCell>
-									<TableCell align='right'>{formatNumber(item.current_price)}</TableCell>
-									<TableCell
-										align='center'
-										sx={{ color: getColorPrice(item.price_change_percentage_1h_in_currency) }}>
-										<span style={{ display: 'flex', alignItems: 'center' }}>
-											{item.price_change_percentage_1h_in_currency > 0 ? (
-												<ArrowDropUpIcon />
-											) : (
-												<ArrowDropDownIcon />
-											)}
-											{formatPercent(item.price_change_percentage_1h_in_currency)}%
-										</span>
+									<TableCell align='right'>{formatPrice(item.current_price)}</TableCell>
+									<TableCell align='center'>
+										<CoinChange value={item.price_change_percentage_1h_in_currency} format={formatPercent} />
 									</TableCell>
-									<TableCell
-										align='center'
-										sx={{ color: getColorPrice(item.price_change_percentage_24h_in_currency) }}>
-										{formatPercent(item.price_change_percentage_24h_in_currency)}%
+									<TableCell align='center'>
+										<CoinChange value={item.price_change_percentage_24h_in_currency} format={formatPercent} />
 									</TableCell>
-									<TableCell
-										align='center'
-										sx={{ color: getColorPrice(item.price_change_percentage_7d_in_currency) }}>
-										{formatPercent(item.price_change_percentage_7d_in_currency)}%
+									<TableCell align='center'>
+										<CoinChange value={item.price_change_percentage_7d_in_currency} format={formatPercent} />
 									</TableCell>
 									<TableCell align='right'>{formatNumber(item.market_cap)}</TableCell>
 									<TableCell align='right'>{formatNumber(item.total_volume)}</TableCell>
@@ -215,3 +204,5 @@ const CoinList = () => {
 };
 
 export default CoinList;
+
+//https://blog.devgenius.io/server-side-sorting-and-pagination-using-react-query-and-react-bootstrap-table-next-best-practice-ce0041f67ed8

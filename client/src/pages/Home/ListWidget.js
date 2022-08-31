@@ -5,21 +5,48 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { CustomSwitch } from 'components/CustomSwitch';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { styled } from '@mui/material/styles';
+import { formatNumberByChar, formatPercent } from 'utils/helpers';
+import CoinChange from 'components/common/CoinChange';
+
+const IntroText = styled(Typography)(({ theme }) => ({
+	display: 'flex',
+	fontSize: '1rem',
+	fontWeight: 500,
+	color: 'var(--color-sub-txt)',
+	marginBottom: 30
+}));
 
 const ListWidget = () => {
 	const [showHighlights, setShowHighlights] = useState(true);
+	const stats = useSelector((state => state.generalCoinStats.generalStats));
+
+	const globalStats =
+		stats.marketCapChange > 0 ? (
+			<IntroText>
+				The global crypto market cap is  ${formatNumberByChar(stats.marketCap)}, a <CoinChange style={{marginRight: '4px'}} value={stats.marketCapChange} format={formatPercent} /> increase over the last
+				day.
+			</IntroText>
+		) : (
+			<IntroText>
+				The global crypto market cap is ${formatNumberByChar(stats.marketCap)}, a <CoinChange style={{marginRight: '4px'}} value={stats.marketCapChange} format={formatPercent} /> decrease over the last
+				day.
+			</IntroText>
+		);
 
 	return (
 		<>
-			<Box display='flex' alignItems='center' justifyContent='space-between' marginBottom={5}>
+			<Box display='flex' alignItems='center' justifyContent='space-between' marginBottom={1}>
 				<Typography variant='h2' sx={{ fontSize: '1.5rem', fontWeight: 700 }}>
 					Today's Cryptocurrency Prices by Market Cap
 				</Typography>
 				<Box display='flex' alignItems='center'>
-					<Typography sx={{ fontSize: 13, color: 'var(--color-sub-txt)', mr: 2 }}>Highlights</Typography>
+					<Typography sx={{ fontSize: 14, color: 'var(--color-sub-txt)', mr: 2 }}>Highlights</Typography>
 					<CustomSwitch checked={showHighlights} onChange={() => setShowHighlights((val) => !val)} />
 				</Box>
 			</Box>
+			{globalStats}
 			{showHighlights ? (
 				<Grid container spacing={2} marginBottom={5}>
 					<Grid item lg={4}>

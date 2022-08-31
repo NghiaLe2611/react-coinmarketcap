@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import ListItemWidget from './ListItem';
-
+import { API_COIN_GAINER_URL, API_COIN_LOSER_URL } from 'utils/constants';
 // import classes from './styles';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -21,15 +21,15 @@ const Widget = ({ type, title, icon, source }) => {
 	useEffect(() => {
 		const gainers = localStorage.getItem('top_gainers') ? JSON.parse(localStorage.getItem('top_gainers')) : [];
 		const losers = localStorage.getItem('top_losers') ? JSON.parse(localStorage.getItem('top_losers')) : [];
-
+		
 		async function fetchGainers() {
-			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=-1&depth=3');
+			const res = await axios.get(API_COIN_GAINER_URL);
 			setData(res.data);
 			localStorage.setItem('top_gainers', JSON.stringify(res.data));
 		}
 
 		async function fetchLosers() {
-			const res = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=3');
+			const res = await axios.get(API_COIN_LOSER_URL);
 			setData(res.data);
 			localStorage.setItem('top_losers', JSON.stringify(res.data));
 		}
@@ -53,16 +53,11 @@ const Widget = ({ type, title, icon, source }) => {
 				setData(losers);
 			}
 		}
-
-		return () => {
-			localStorage.removeItem('top_gainers');
-			localStorage.removeItem('top_losers');
-		}
 	}, [type, trendingSearches]);
 
 	return (
 		<StyledBox>
-			<ListItemWidget title={title} data={data} source={source} icon={icon} />
+			<ListItemWidget type={type} title={title} data={data} source={source} icon={icon} />
 		</StyledBox>
 	);
 };

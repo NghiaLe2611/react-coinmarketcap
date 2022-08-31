@@ -1,7 +1,8 @@
+import { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import { makeStyles } from '@mui/styles';
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { generalActions, _generalStats } from '../../features/general/generalSlice';
 import { _isDarkMode } from '../../features/theme/themeSlice';
 import MainNav from './MainNav';
@@ -74,14 +75,22 @@ const Header = () => {
     const isDarkMode = useSelector(_isDarkMode);
     const [language, setLanguage] = useState('en');
     const generalStats = useSelector(_generalStats);
-   
+    const location = useLocation();
     const storage = localStorage.getItem('generalStats');
+
 
     useEffect(() => {
         if (!storage) {
             dispatch(generalActions.fetchData());
         }
     }, [dispatch]);
+
+    useEffect(() => {
+		if (location.pathname !== '/') {
+			localStorage.removeItem('top_gainers');
+			localStorage.removeItem('top_losers');
+		}
+	}, [location]);
 
     // useEffect(() => {
     //     if (!storage) {

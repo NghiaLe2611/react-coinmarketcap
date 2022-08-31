@@ -17,6 +17,15 @@ const AppRoutes = () => {
 						</Root>
 					}
 				/>
+				<Route
+					exact
+					path='/watchlist'
+					element={
+						<Root>
+							<div>Watchlist</div>
+						</Root>
+					}
+				/>
 			</Routes>
 		</Suspense>
 	);

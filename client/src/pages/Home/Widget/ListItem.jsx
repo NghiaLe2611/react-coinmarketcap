@@ -1,8 +1,9 @@
 import { List, ListItem, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import CoinWrapper from '../CoinList/CoinWrapper';
-import { formatNumber, getColorPrice } from 'utils/helpers';
+import CoinWrapper from '../../../components/common/CoinWrapper';
+import { formatNumber, formatPercent, getColorPrice } from 'utils/helpers';
 import Link from '@mui/material/Link';
+import CoinChange from 'components/common/CoinChange';
 
 const StyledItem = styled(ListItem)(({ theme }) => ({
 	display: 'flex',
@@ -24,37 +25,41 @@ const ListItemWidget = ({ type, title, data, icon, source }) => {
 					{data.length > 0 &&
 						data.map((item, index) => (
 							<StyledItem key={item.name}>
-								<Span>{index + 1}</Span>
-								<Span>{item.name}</Span>
+								<Span sx={{ mr: 2, color: '#808a9d' }}>{index + 1}</Span>
+								<CoinWrapper item={item} size='small' />
+								<CoinChange
+									style={{ marginLeft: 'auto', fontSize: 13 }}
+									value={item.priceChange.priceChange24h}
+									format={formatPercent}
+								/>
 							</StyledItem>
 						))}
 				</List>
 			) : (
-				<>
-					<List>
-						{data.length > 0 &&
-							data.map((item, index) => (
-								<StyledItem key={item.name}>
-									<Span sx={{ mr: 2, color: '#808a9d' }}>{index + 1}</Span>
-									{/* <Span>{item.name}</Span> */}
-									<CoinWrapper item={item} size='small' />
-									{item.usd_price_change_24h && (
-										<Span sx={{ ml: 'auto', color: getColorPrice(item.usd_price_change_24h) }}>
-											{formatNumber((item.usd_price_change_24h * 100).toFixed(2))}%
-										</Span>
-									)}
-								</StyledItem>
-							))}
-					</List>
-					<Typography sx={{ textAlign: 'right', fontSize: 11 }}>
-						(Source:{' '}
-						<Link href={source} target='_blank' rel='noopener noreferrer' sx={{ color: '#3861fb' }}>
-							{source}
-						</Link>
-						)
-					</Typography>
-				</>
+				<List>
+					{data.length > 0 &&
+						data.map((item, index) => (
+							<StyledItem key={item.name}>
+								<Span sx={{ mr: 2, color: '#808a9d' }}>{index + 1}</Span>
+								<CoinWrapper item={item} size='small' />
+								{item.usd_price_change_24h && (
+									<CoinChange
+										style={{ marginLeft: 'auto', fontSize: 13 }}
+										value={item.usd_price_change_24h * 100}
+										format={formatNumber}
+									/>
+								)}
+							</StyledItem>
+						))}
+				</List>
 			)}
+			<Typography sx={{ textAlign: 'right', fontSize: 11 }}>
+				(Source:{' '}
+				<Link href={source} target='_blank' rel='noopener noreferrer' sx={{ color: '#3861fb' }}>
+					{source}
+				</Link>
+				)
+			</Typography>
 		</>
 	);
 };

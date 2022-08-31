@@ -46,7 +46,7 @@ const SparkLine = ({ data, color }) => {
 	};
 
 	return (
-		<Box>
+		<Box display='flex' justifyContent='flex-end'>
 			<HighchartsReact highcharts={Highcharts} options={options} />
 		</Box>
 	);

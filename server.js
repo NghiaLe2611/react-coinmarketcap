@@ -74,17 +74,6 @@ app.get('/test', async function (req, res) {
 // https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=5
 // https://www.coinex.com/res/quotes/rank/assets?sort_type=change_rate_asc&offset=0&limit=10
 // https://www.coinex.com/res/quotes/rank/assets?sort_type=change_rate_desc&offset=0&limit=10
-app.get('/api/gainers_losers', async function(req, res) {
-    try {
-        const res1 = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=-1&depth=5');
-        // const res2 = await axios.get('https://price-api.crypto.com/price/v1/top-movers?direction=1&depth=5');
-        // const data = await res1.json();
-        console.log(res1);
-        res.status(200).json("OK");
-    } catch (err) {
-        return res.status(500).json(err);
-    }
-});
 
 // Trending coins
 /*
@@ -117,9 +106,13 @@ app.get('/api/news', async function(req, res) {
 
 // https://nomics.com/docs/#operation/getGlobalTicker
 
-
-// Tags
+// Tags/Categories
 // https://price-api.crypto.com/price/v1/tokens?page=1&limit=50&tags=defi
+// https://api.coingecko.com/api/v3/coins/categories
+// https://api.coingecko.com/api/v3/coins/categories/list
+
+
+
 
 app.use((error, req, res, next) => {
 	res.status(error.status || 500).json({
