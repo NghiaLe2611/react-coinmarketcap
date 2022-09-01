@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const port = process.env.PORT || 5000;
 const axios = require('axios');
+const redis = require('redis')
 const app = express();
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
@@ -19,13 +20,33 @@ app.get('/api/status', function(req, res) {
     })
 });
 
+// create and connect redis client to local instance.
+const client = redis.createClient()
+const runRedis = async () => {  
+    client.on('error', (err) => console.log('Redis Client Error', err))
+    await client.connect()
+    console.log('Redis connected!')
+}
+runRedis()
+
 // Coin list
 // https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true
 app.get('/api/coin_list', async function(req, res) {
     const page = req.query.page ? req.query.page : 1;
 
     try {
+        // check if the request is already stored in the cache, if so, return the response
+        const cachedResponse = await client.get('coinList' + page)
+        if (cachedResponse) {
+            return res.json(JSON.parse(cachedResponse))
+        }
+
         const response = await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&sparkline=true&price_change_percentage=1h%2C24h%2C7d&page=${page}`)
+
+        // save the response in the cache
+        await client.set('coinList' + page, JSON.stringify(response.data))
+        await client.expire('coinList' + page, 3600)
+
         return res.status(200).json(response.data);
     } catch(err) {
         return res.status(500).json(err);
@@ -45,7 +66,18 @@ app.get('/api/global_metrics', async function(req, res) {
         //     'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
         // },
         
+        // check if the request is already stored in the cache, if so, return the response
+        const cachedResponse = await client.get('globalMetrics')
+        if (cachedResponse) {
+            return res.json(JSON.parse(cachedResponse))
+        }
+
         const response = await axios.get('https://api.coingecko.com/api/v3/global');
+
+        // save the response in the cache
+        await client.set('globalMetrics', JSON.stringify(response.data))
+        await client.expire('globalMetrics', 3600)
+
         return res.status(200).json(response.data);
     } catch (err) {
         return res.status(500).json(err);
@@ -86,8 +118,20 @@ app.get('/test', async function (req, res) {
 
 app.get('/api/trending', async function(req, res) {
     // const time = new Date().getTime();
-    try {  
+    try {
+
+        // check if the request is already stored in the cache, if so, return the response
+        const cachedResponse = await client.get('trending')
+        if (cachedResponse) {
+            return res.json(JSON.parse(cachedResponse))
+        }
+
         const response = await axios.get('https://api.coinmarketcap.com/data-api/v3/topsearch/rank');
+
+        // save the response in the cache
+        await client.set('trending', JSON.stringify(response.data))
+        await client.expire('trending', 3600)
+
         return res.status(200).json(response.data);
     } catch (err) {
         return res.status(500).json(err);
