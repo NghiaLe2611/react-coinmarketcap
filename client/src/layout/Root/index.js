@@ -1,5 +1,5 @@
-import Header from 'layout/Header';
-import Footer from 'layout/Footer';
+import Header from 'layout/header';
+import Footer from 'layout/footer';
 import { styled } from '@mui/styles';
 import { _isDarkMode } from 'features/theme/themeSlice';
 import { useSelector } from 'react-redux';
