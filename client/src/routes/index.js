@@ -1,10 +1,10 @@
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
-const Root = React.lazy(() => import('../layout/root'));
-const HomePage = React.lazy(() => import('../pages/home'));
-const CategoryPage = React.lazy(() => import('../pages/category'));
-const CategoriesPage = React.lazy(() => import('../pages/categories'));
+const Root = React.lazy(() => import('../layout/Root'));
+const HomePage = React.lazy(() => import('../pages/Home'));
+const CategoryPage = React.lazy(() => import('../pages/Category'));
+const CategoriesPage = React.lazy(() => import('../pages/Categories'));
 
 const AppRoutes = () => {
 	return (
