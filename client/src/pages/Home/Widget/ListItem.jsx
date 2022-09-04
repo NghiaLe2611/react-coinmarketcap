@@ -42,10 +42,11 @@ const ListItemWidget = ({ type, title, data, icon, source }) => {
 							<StyledItem key={item.name}>
 								<Span sx={{ mr: 2, color: '#808a9d' }}>{index + 1}</Span>
 								<CoinWrapper item={item} size='small' />
-								{item.usd_price_change_24h && (
+                                {/*  item.usd_price_change_24h * 100 */}
+								{item.price_change_1D_percent && (
 									<CoinChange
 										style={{ marginLeft: 'auto', fontSize: 13 }}
-										value={item.usd_price_change_24h * 100}
+										value={item.price_change_1D_percent}
 										format={formatNumber}
 									/>
 								)}
@@ -55,7 +56,7 @@ const ListItemWidget = ({ type, title, data, icon, source }) => {
 			)}
 			<Typography sx={{ textAlign: 'right', fontSize: 11 }}>
 				(Source:{' '}
-				<Link href={source} target='_blank' rel='noopener noreferrer' sx={{ color: '#3861fb' }}>
+				<Link href={source} target='_blank' rel='noopener noreferrer' sx={{ color: 'var(--color-primary)' }}>
 					{source}
 				</Link>
 				)

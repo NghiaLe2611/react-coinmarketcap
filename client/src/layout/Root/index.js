@@ -1,7 +1,7 @@
-import Header from '../Header';
-import Footer from '../Footer';
+import Header from 'layout/header';
+import Footer from 'layout/footer';
 import { styled } from '@mui/styles';
-import { _isDarkMode } from '../../features/theme/themeSlice';
+import { _isDarkMode } from 'features/theme/themeSlice';
 import { useSelector } from 'react-redux';
 import { Container } from '@mui/material';
 // import useStyles from './styles';

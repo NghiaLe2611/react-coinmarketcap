@@ -65,9 +65,9 @@ const menu = [
             },
         ]
     },
-    {
-        name: 'Earn'
-    }
+    // {
+    //     name: 'Earn'
+    // }
 ];
 
 const Header = () => {
@@ -77,7 +77,6 @@ const Header = () => {
     const generalStats = useSelector(_generalStats);
     const location = useLocation();
     const storage = localStorage.getItem('generalStats');
-
 
     useEffect(() => {
         if (!storage) {

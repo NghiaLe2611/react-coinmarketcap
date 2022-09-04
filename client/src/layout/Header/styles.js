@@ -108,7 +108,7 @@ export const LogoImage = styled(Link)(({theme}) => ({
 	width: 130,
 	height: 30,
 	backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000',
-	mask: 'url(images/cmc.svg) no-repeat center',
+	mask: 'url(../images/cmc.svg) no-repeat center',
 }));
 
 const classes = {
@@ -146,9 +146,9 @@ const classes = {
 		},
 	},
 	txtBlue: {
-        color: '#3861fb',
+        color: 'var(--color-primary)',
         '& a, & p': {
-            color: '#3861fb',
+            color: 'var(--color-primary)',
         }
 	},
 	menuItem: {
@@ -183,9 +183,9 @@ const classes = {
 				animation: '0.3s ease 0s 1 normal forwards running',
 			},
             '&:hover': {
-                color: '#3861fb',
+                color: 'var(--color-primary)',
                 '& a, & p': {
-                    color: '#3861fb',
+                    color: 'var(--color-primary)',
                 }
             }
 		},

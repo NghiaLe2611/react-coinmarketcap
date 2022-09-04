@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import ListItemWidget from './ListItem';
 import { API_COIN_GAINER_URL, API_COIN_LOSER_URL } from 'utils/constants';
+import coinApi from 'api/coinApi';
 // import classes from './styles';
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -19,19 +20,23 @@ const Widget = ({ type, title, icon, source }) => {
 	const trendingSearches = useSelector((state) => state.generalCoinStats.generalStats.trendingSearches);
 	
 	useEffect(() => {
-		const gainers = localStorage.getItem('top_gainers') ? JSON.parse(localStorage.getItem('top_gainers')) : [];
-		const losers = localStorage.getItem('top_losers') ? JSON.parse(localStorage.getItem('top_losers')) : [];
+		// const gainers = localStorage.getItem('top_gainers') ? JSON.parse(localStorage.getItem('top_gainers')) : [];
+		// const losers = localStorage.getItem('top_losers') ? JSON.parse(localStorage.getItem('top_losers')) : [];
 		
 		async function fetchGainers() {
-			const res = await axios.get(API_COIN_GAINER_URL);
-			setData(res.data);
-			localStorage.setItem('top_gainers', JSON.stringify(res.data));
+			// const res = await axios.get(API_COIN_GAINER_URL);
+			// setData(res.data);
+			// localStorage.setItem('top_gainers', JSON.stringify(res.data));
+            const res = await coinApi.getGainersLosers();
+            setData(res.data['top_gainers'].slice(0, 3));
 		}
 
 		async function fetchLosers() {
-			const res = await axios.get(API_COIN_LOSER_URL);
-			setData(res.data);
-			localStorage.setItem('top_losers', JSON.stringify(res.data));
+			// const res = await axios.get(API_COIN_LOSER_URL);
+			// setData(res.data);
+			// localStorage.setItem('top_losers', JSON.stringify(res.data));
+            const res = await coinApi.getGainersLosers();
+            setData(res.data['top_losers'].slice(0, 3));
 		}
 
 		if (type === 'trending') {
@@ -39,19 +44,21 @@ const Widget = ({ type, title, icon, source }) => {
 		}
 
 		if (type === 'gainers') {
-			if (!gainers.length) {
-				fetchGainers();
-			} else {
-				setData(gainers);
-			}
+            fetchGainers();
+			// if (!gainers.length) {
+			// 	fetchGainers();
+			// } else {
+			// 	setData(gainers);
+			// }
 		}
 
 		if (type === 'losers') {
-			if (!gainers.length) {
-				fetchLosers();
-			} else {
-				setData(losers);
-			}
+            fetchLosers();
+			// if (!gainers.length) {
+			// 	fetchLosers();
+			// } else {
+			// 	setData(losers);
+			// }
 		}
 	}, [type, trendingSearches]);
 

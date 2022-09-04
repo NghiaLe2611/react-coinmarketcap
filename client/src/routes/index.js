@@ -1,8 +1,10 @@
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
-const Root = React.lazy(() => import('../layout/Root'));
-const HomePage = React.lazy(() => import('../pages/Home'));
+const Root = React.lazy(() => import('../layout/root'));
+const HomePage = React.lazy(() => import('../pages/home'));
+const CategoryPage = React.lazy(() => import('../pages/category'));
+const CategoriesPage = React.lazy(() => import('../pages/categories'));
 
 const AppRoutes = () => {
 	return (
@@ -23,6 +25,23 @@ const AppRoutes = () => {
 					element={
 						<Root>
 							<div>Watchlist</div>
+						</Root>
+					}
+				/>
+                <Route
+					exact
+					path='/categories'
+					element={
+						<Root>
+							<CategoriesPage />
+						</Root>
+					}
+				/>
+                <Route
+					path='/category/:slug'
+					element={
+						<Root>
+							<CategoryPage />
 						</Root>
 					}
 				/>

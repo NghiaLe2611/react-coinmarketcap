@@ -24,7 +24,7 @@ const LogoImage = styled(Link)(({theme}) => ({
     width: 130,
     height: 30,
     backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000',
-    mask: 'url(images/cmc.svg) no-repeat center',
+    mask: 'url(../images/cmc.svg) no-repeat center',
 }));
 
 const Copyright = styled(Box)(({theme}) => ({

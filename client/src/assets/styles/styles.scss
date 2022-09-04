@@ -1,4 +1,5 @@
 :root {
+    --color-primary: #3861fb;
     --color-common-txt: #000;
     --color-sub-txt: #58667e;
     --color-price-up: #16c784;
@@ -7,7 +8,10 @@
     --bg-box: #fff;
     --bg-body: linear-gradient(rgb(248, 250, 253) 0%, rgba(248, 250, 253, 0) 413px);
     --bg-hover: #f2f2f4;
+    --bg-common: #fff;
     --bg-scrollbar: #eee;
+    --bg-hover-item: #f8fafd;
+    --bg-select: #eff2f5;
 
     --border-table: #eff2f5;
 }
@@ -19,7 +23,10 @@
     --bg-box: #323546;
     --bg-body: linear-gradient(rgb(34, 37, 49) 0%, rgba(34, 37, 49, 0) 413px);
     --bg-hover: #000;
+    --bg-common: #17171a;
     --bg-scrollbar: #464646;
+    --bg-hover-item: #222;
+    --bg-select: #323546;
 
     --border-table: #222531;
 }
@@ -38,13 +45,13 @@
             right: -13px;
             transform: translateY(-50%);
             width: 8px;
-            height: 12px;
+            height: 10px;
             background-color: var(--color-common-txt);
             -webkit-mask-repeat: no-repeat;
             mask-repeat: no-repeat;
             -webkit-mask-image: url("../images/icons/arrows-sort.svg");
             mask-image: url("../images/icons/arrows-sort.svg");
-            mask-size: 8px;
+            mask-size: 6px;
                 // background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='icon icon-tabler icon-tabler-arrows-sort' width='24' height='24' viewBox='0 0 24 24' stroke-width='2' stroke='currentColor' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath stroke='none' d='M0 0h24v24H0z' fill='none'%3E%3C/path%3E%3Cpath d='M3 9l4 -4l4 4m-4 -4v14'%3E%3C/path%3E%3Cpath d='M21 15l-4 4l-4 -4m4 4v-14'%3E%3C/path%3E%3C/svg%3E");
             // background-repeat: no-repeat;
             // background-size: 12px

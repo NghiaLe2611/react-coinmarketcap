@@ -42,9 +42,9 @@ const classes = {
 		marginRight: '20px',
 	},
 	txtBlue: {
-        color: '#3861fb',
+        color: 'var(--color-primary)',
         '& a, & p': {
-            color: '#3861fb',
+            color: 'var(--color-primary)',
         }
 	}
 };

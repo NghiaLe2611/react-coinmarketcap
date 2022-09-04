@@ -201,7 +201,7 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								<CustomBtn variant='contained' sx={{backgroundColor: '#eef0f2'}}>
 									Log in
 								</CustomBtn>
-								<CustomBtn variant='contained' bgColor='#3861fb' sx={{color: '#fff'}}>
+								<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{color: '#fff'}}>
 									Sign up
 								</CustomBtn>
 							</Box>
@@ -322,7 +322,7 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 						}}>
 						<ButtonGroup aria-label='outlined primary button group'>
 							<CustomBtn variant='text'>Log in</CustomBtn>
-							<CustomBtn variant='contained' bgColor='#3861fb' sx={{color: '#fff'}}>
+							<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{color: '#fff'}}>
 								Sign up
 							</CustomBtn>
 						</ButtonGroup>

@@ -45,15 +45,15 @@
 // 		borderBottom: '1px solid #eff2f5',
 // 		// color: '#000',
 // 		'&$itemActive': {
-// 			color: '#3861fb',
+// 			color: 'var(--color-primary)',
 // 			'& a, & p': {
-// 				color: '#3861fb',
+// 				color: 'var(--color-primary)',
 // 			},
 // 		},
 // 		'&:hover': {
-// 			color: '#3861fb',
+// 			color: 'var(--color-primary)',
 // 			'& a, & p': {
-// 				color: '#3861fb',
+// 				color: 'var(--color-primary)',
 // 			},
 // 		},
 // 		'& span': {
