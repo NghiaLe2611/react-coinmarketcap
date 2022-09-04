@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get('/', function (req, res) {
+app.get('/api/status', function (req, res) {
 	return res.status(200).json({
 		success: true,
 	});
