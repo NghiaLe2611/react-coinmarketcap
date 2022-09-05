@@ -1,5 +1,32 @@
 import { useState, useMemo } from 'react';
 
+function getNestedKeyObj(o, s) {
+	s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+	s = s.replace(/^\./, ''); // strip a leading dot
+	var a = s.split('.');
+	for (var i = 0, n = a.length; i < n; ++i) {
+		var k = a[i];
+		if (k in o) {
+			o = o[k];
+		} else {
+			return;
+		}
+	}
+	return o;
+}
+
+// function getNestedKeyObj (obj, key) {
+// 	const keys = key.split('.');
+// 	let value = obj;
+// 	for (let i = 0; i < keys.length; i++) {
+// 		value = value[keys[i]];
+// 		if (!value) {
+// 			break;
+// 		}
+// 	}
+// 	return value;
+// };
+
 export const useSortableData = (items, config = null) => {
 	const [sortConfig, setSortConfig] = useState(config);
 
@@ -7,6 +34,15 @@ export const useSortableData = (items, config = null) => {
 		let sortableItems = [...items];
 		if (sortConfig !== null) {
 			sortableItems.sort((a, b) => {
+				// Nested key
+				if (sortConfig.key.includes('.')) {
+					if (getNestedKeyObj(a, sortConfig.key) < getNestedKeyObj(b, sortConfig.key)) {
+						return sortConfig.direction === 'ascending' ? -1 : 1;
+					}
+					if (getNestedKeyObj(a, sortConfig.key) > getNestedKeyObj(b, sortConfig.key)) {
+						return sortConfig.direction === 'ascending' ? 1 : -1;
+					}
+				}
 				if (a[sortConfig.key] < b[sortConfig.key]) {
 					return sortConfig.direction === 'ascending' ? -1 : 1;
 				}
@@ -73,4 +109,27 @@ export const useSortableData = (items, config = null) => {
 //     }
 
 //     setSortConfig({ key, direction });
+// };
+
+
+// var sort = function (prop, arr) {
+//     prop = prop.split('.');
+//     var len = prop.length;
+    
+//     arr.sort(function (a, b) {
+//         var i = 0;
+//         while( i < len ) {
+//             a = a[prop[i]];
+//             b = b[prop[i]];
+//             i++;
+//         }
+//         if (a < b) {
+//             return -1;
+//         } else if (a > b) {
+//             return 1;
+//         } else {
+//             return 0;
+//         }
+//     });
+//     return arr;
 // };

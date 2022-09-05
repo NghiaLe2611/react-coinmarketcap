@@ -51,9 +51,9 @@ app.get('/api/global_metrics', async function (req, res) {
         try {
             // https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest
             const response = await axios.get('https://api.coinmarketcap.com/data-api/v3/global-metrics/quotes/latest', {
-				headers: {
-					'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
-				},
+				// headers: {
+				// 	'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
+				// },
 			});
             globalMetrics = response.data;
             myCache.set('global_metrics', globalMetrics, CACHE_TIME_1D);

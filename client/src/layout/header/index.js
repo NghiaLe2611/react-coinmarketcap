@@ -10,8 +10,8 @@ import TopNav from './TopNav';
 
 const menu = [
     {
-        name: 'Cryoptocurrencies',
-        url: '/crypto',
+        name: 'Cryptocurrencies',
+        url: '/',
         submenu: [
             {
                 name: 'Ranking',

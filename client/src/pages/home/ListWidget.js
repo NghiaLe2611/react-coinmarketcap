@@ -9,15 +9,8 @@ import {useSelector} from 'react-redux';
 import {styled} from '@mui/material/styles';
 import {formatNumberByChar, formatPercent} from 'utils/helpers';
 import CoinChange from 'components/common/CoinChange';
+import { Heading, IntroText } from 'components/common';
 
-const IntroText = styled(Typography)(({theme}) => ({
-	display: 'flex',
-    alignItems: 'center',
-	fontSize: '0.9rem',
-	fontWeight: 500,
-	color: 'var(--color-sub-txt)',
-	marginBottom: 30,
-}));
 
 const ListWidget = () => {
 	const [showHighlights, setShowHighlights] = useState(true);
@@ -39,9 +32,9 @@ const ListWidget = () => {
 	return (
 		<>
 			<Box display='flex' alignItems='center' justifyContent='space-between' marginBottom={1}>
-				<Typography variant='h2' sx={{fontSize: '1.5rem', fontWeight: 700}}>
+				<Heading>
 					Today's Cryptocurrency Prices by Market Cap
-				</Typography>
+				</Heading>
 				<Box display='flex' alignItems='center'>
 					<Typography sx={{fontSize: 14, color: 'var(--color-sub-txt)', mr: 2}}>Highlights</Typography>
 					<CustomSwitch checked={showHighlights} onChange={() => setShowHighlights((val) => !val)} />

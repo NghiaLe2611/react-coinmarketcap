@@ -16,7 +16,7 @@ const CoinWrapper = ({ item, size }) => {
 		<Box display='flex' alignItems='center' component={Link} to={`/currencies/${link}`}>
 			{item.image ? (
 				<img
-					style={{ verticalAlign: 'middle', marginRight: '8px' }}
+					style={{ verticalAlign: 'middle', marginRight: '8px', maxWidth: 25 }}
 					src={item.image.replace('large', 'thumb')}
 					alt={`logo-${item.name}`}
 				/>

@@ -30,8 +30,8 @@ const coinApi = {
     getCategories() {
 		return axiosClient.get('/api/categories');
 	},
-	getCoinsByTag(tag) {
-		return axiosClient.get(`/api/category?tag=${tag}`);
+	getCoinsByCategory(categoryId) {
+		return axiosClient.get(`/api/category?id=${categoryId}`);
 	},
 };
 

@@ -20,15 +20,15 @@
     --color-common-txt: #fff;
     --color-sub-txt: #a1a7bb;
 
-    --bg-box: #323546;
+    --bg-box: #292d3f; // #323546
     --bg-body: linear-gradient(rgb(34, 37, 49) 0%, rgba(34, 37, 49, 0) 413px);
     --bg-hover: #000;
     --bg-common: #17171a;
     --bg-scrollbar: #464646;
     --bg-hover-item: #222;
-    --bg-select: #323546;
+    --bg-select: #292d3f;
 
-    --border-table: #222531;
+    --border-table: #2b2f3c;
 }
 
 .sortable-cell{
@@ -75,6 +75,15 @@
         opacity: 1;
         -webkit-mask-image: url("../images/icons/sort-descending.svg");
         mask-image: url("../images/icons/sort-descending.svg");
+    }
+}
+
+.sparkline{
+    &.down{
+        filter: hue-rotate(300deg) saturate(210%) brightness(0.7) contrast(170%);
+    }
+    &.up{
+        filter: hue-rotate(85deg) saturate(80%) brightness(0.85);
     }
 }
 

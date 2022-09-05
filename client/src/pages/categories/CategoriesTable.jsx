@@ -64,7 +64,6 @@ const StyledTable = styled(Table)(({theme}) => ({
 
 const CategoriesTable = ({data}) => {
 	const {items, requestSort, sortConfig} = useSortableData(data);
-
 	return (
 		<TableContainer>
 			<StyledTable>

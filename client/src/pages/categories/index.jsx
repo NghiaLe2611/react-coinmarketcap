@@ -29,41 +29,46 @@ const useCategoriesQuery = () => {
 };
 
 const CategoriesPage = () => {
-    // const {data, isLoading} = useCategoriesQuery();
-    const {data, isLoading, error} = useQuery(
-		['list-category'], getListCategory,
+	// const {data, isLoading} = useCategoriesQuery();
+	const { data, isLoading, error } = useQuery(
+		['list-category'],
+		getListCategory,
 		{
 			keepPreviousData: true,
 			refetchOnWindowFocus: false,
 			staleTime: 5 * 60 * 1000,
 			cacheTime: Infinity,
-            refetchInterval: 10 * 60 * 1000,
-            select: (res) => {
-                // Sort by market cap
-                const transformedData = res.data.sort((a, b) => {
+			refetchInterval: 10 * 60 * 1000,
+			select: (res) => {
+				// Sort by market cap
+				const transformedData = res.data.sort((a, b) => {
 					return b.market_cap - a.market_cap;
 				});
-                
-                return transformedData;
-            },
+
+				return transformedData;
+			},
 		},
 		{
 			onSuccess: (res) => {
 				console.log('onSuccess', res);
-			}
-		},
+			},
+		}
 	);
 
 	if (isLoading) {
-		return <p>Loading...</p>;
+		return <Box py={10}>Loading...</Box>;
 	}
 
-    return (
+	if (error) {
+		return <Box py={10}>{error.message}</Box>;
+	}
+
+	return (
 		<>
 			<CategoriesTable data={data} />
 			<Box py={4} textAlign='right' fontSize={13}>
 				(Source: &nbsp;
-				<Link href='https://coinmarketcap.com/' target="_blank" sx={{color: 'var(--color-primary)'}}>
+				<Link href='https://coinmarketcap.com/' target='_blank' sx={{ color: 'var(--color-primary)' }}>
 					coinmarketcap
 				</Link>
 				)

@@ -1,12 +1,11 @@
-import {memo} from 'react';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from '@mui/material';
-import {styled} from '@mui/material/styles';
+import { Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import CoinChange from 'components/common/CoinChange';
 import CoinWrapper from 'components/common/CoinWrapper';
 import SortTableHead from 'components/table/SortTableHead';
-import {formatNumber, formatPercent, formatPrice} from 'utils/helpers';
-import SparkLine from 'components/common/SparkLine';
-import {useSortableData} from 'hooks/useSortableData';
+import { useSortableData } from 'hooks/useSortableData';
+import { memo } from 'react';
+import { formatNumber, formatPercent, formatPrice } from 'utils/helpers';
 
 const headCells = [
 	{
@@ -26,32 +25,32 @@ const headCells = [
 		width: 210,
 	},
 	{
-		id: 'price',
+		id: 'quote.USD.price',
 		label: 'Price',
 		align: 'right',
 	},
 	{
-		id: 'price_change_percentage_1h_in_currency',
+		id: 'quote.USD.percent_change_1h',
 		label: '1h%',
 		align: 'center',
 	},
 	{
-		id: 'price_change_percentage_24h_in_currency',
+		id: 'quote.USD.percent_change_24h',
 		label: '24h%',
 		align: 'center',
 	},
 	{
-		id: 'price_change_percentage_7d_in_currency',
+		id: 'quote.USD.percent_change_7d',
 		label: '7d%',
 		align: 'center',
 	},
 	{
-		id: 'marketCap',
+		id: 'quote.USD.market_cap',
 		label: 'Market Cap',
 		align: 'right',
 	},
 	{
-		id: '24hVolume',
+		id: 'quote.USD.volume_24h',
 		label: 'Volume(24h)',
 		align: 'right',
 	},
@@ -67,7 +66,7 @@ const headCells = [
 	},
 ];
 
-const StyledTable = styled(Table)(({theme}) => ({
+const StyledTable = styled(Table)(({ theme }) => ({
 	backgroundColor: 'transparent',
 	'& .MuiTableCell-root': {
 		fontSize: 13,
@@ -78,8 +77,8 @@ const StyledTable = styled(Table)(({theme}) => ({
 	},
 }));
 
-const CategoryTable = ({data}) => {
-	const {items, requestSort, sortConfig} = useSortableData(data);
+const CategoryTable = ({ data }) => {
+	const { items, requestSort, sortConfig } = useSortableData(data);
 
 	return (
 		<TableContainer>
@@ -87,41 +86,64 @@ const CategoryTable = ({data}) => {
 				<TableHead>
 					<TableRow>
 						{headCells.map((item) => (
-							// <TableCell key={item.id} align={item.align} onClick={() => requestSort(item.id)}>
-							// 	{item.label}
-							// </TableCell>
-							<SortTableHead key={item.id} name={item.id} label={item.label} align={item.align} requestSort={requestSort} sortConfig={sortConfig} style={{width: item.width}} />
+							<SortTableHead
+								key={item.id}
+								name={item.id}
+								label={item.label}
+								align={item.align}
+								requestSort={requestSort}
+								sortConfig={sortConfig}
+								style={{ width: item.width }}
+							/>
 						))}
 					</TableRow>
 				</TableHead>
 				<TableBody>
 					{items &&
 						items.map((item) => (
-							<TableRow key={item.uuid} sx={{'& .MuiTableCell-body': {padding: '10px'}}}>
+							<TableRow key={item.id} sx={{ '& .MuiTableCell-body': { padding: '10px' } }}>
 								<TableCell align='center'></TableCell>
-								<TableCell align='left'>{item.rank}</TableCell>
+								<TableCell align='left'>{item.cmc_rank}</TableCell>
 								<TableCell align='left'>
-                                    <img src={item.iconUrl} alt={item.name} width={25} />
-                                    {item.name} {item.symbol}
-									{/* <CoinWrapper item={item} /> */}
+									{/* <img
+										src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`}
+										alt={item.name}
+										width={25}
+									/>
+									{item.name} {item.symbol} */}
+									<CoinWrapper
+										item={{
+											image: `https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`,
+											name: item.name,
+											symbol: item.symbol,
+										}}
+									/>
 								</TableCell>
-								<TableCell align='right'>{formatPrice(item.price)}</TableCell>
+								<TableCell align='right'>{formatPrice(item.quote['USD'].price)}</TableCell>
 								<TableCell align='center'>
-									{/* <CoinChange value={item.price_change_percentage_1h_in_currency} format={formatPercent} /> */}
+									<CoinChange value={item.quote['USD'].percent_change_1h} format={formatPercent} />
 								</TableCell>
 								<TableCell align='center'>
-									{/* <CoinChange value={item.price_change_percentage_24h_in_currency} format={formatPercent} /> */}
+									<CoinChange value={item.quote['USD'].percent_change_24h} format={formatPercent} />
 								</TableCell>
 								<TableCell align='center'>
-									{/* <CoinChange value={item.price_change_percentage_7d_in_currency} format={formatPercent} /> */}
+									<CoinChange value={item.quote['USD'].percent_change_7d} format={formatPercent} />
 								</TableCell>
-								<TableCell align='right'>{formatNumber(item.marketCap)}</TableCell>
-								<TableCell align='right'>{formatNumber(item['24hVolume'])}</TableCell>
+								<TableCell align='right'>${formatNumber(item.quote['USD'].market_cap)}</TableCell>
+								<TableCell align='right'>${formatNumber(item.quote['USD'].volume_24h)}</TableCell>
+								<TableCell align='right'>{formatNumber(item.circulating_supply)}</TableCell>
 								<TableCell align='right'>
-                                    
-                                </TableCell>
-								<TableCell align='right'>
-									<SparkLine data={item.sparkline} color={item.change >= 0 ? '#16c784' : '#ea3943'} />
+									<Link href={`https://coinmarketcap.com/currencies/${item.slug}/?period=7d`} target="_blank" rel="noopener noreferrer">
+										<img
+											src={`https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/${item.id}.svg`}
+											alt={`${item.slug}-7d-graph`}
+											className={
+												item.quote['USD'].percent_change_7d >= 0
+													? 'sparkline up'
+													: 'sparkline down'
+											}
+										/>
+									</Link>
 								</TableCell>
 							</TableRow>
 						))}

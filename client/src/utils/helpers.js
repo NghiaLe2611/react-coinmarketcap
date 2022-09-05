@@ -1,45 +1,3 @@
-export function formatPrice(number) {
-	if (number.toString().includes('e')) {
-		return scientificToDecimal(number);
-	} else {
-		if (Number(number) >= 1) {
-			return Number(number)
-				.toFixed(2)
-				.replace(/\d(?=(\d{3})+\.)/g, '$&,');
-		}
-		return parseFloat(Number(number).toFixed(10));
-	}
-};
-
-export function formatNumber(number) {
-	return Intl.NumberFormat('en-US').format(number);
-};
-
-export function formatPercent(percent) {
-	return Number(percent).toFixed(2);
-};
-
-export function formatNumberByChar(number) {
-	let parseNumber = Number(number);
-
-	if (parseNumber >= 1000000000) {
-        return (parseNumber/1000000000).toFixed(2) + 'B';
-    }
-
-	if (parseNumber >= 1000000) {
-        return (parseNumber/1000000).toFixed(2) + 'M';
-    }
-
-    if (parseNumber >= 1000) {
-        return (parseNumber/1000).toFixed(2) + 'K';
-    }
-
-	// 1035640054497
-	// 1000000000
-
-    return parseNumber;
-};
-
 export function scientificToDecimal(num) {
 	var nsign = Math.sign(num);
 	//remove the sign
@@ -75,6 +33,45 @@ export function scientificToDecimal(num) {
 	}
 
 	return nsign < 0 ? '-' + num : num;
+};
+
+export function formatPrice(number) {
+	if (Number(number) >= 1) {
+		return Number(number)
+			.toFixed(2)
+			.replace(/\d(?=(\d{3})+\.)/g, '$&,');
+	}
+
+	return new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 4 }).format(number);
+};
+
+export function formatNumber(number) {
+	return Intl.NumberFormat('en-US').format(number);
+};
+
+export function formatPercent(percent) {
+	return Number(percent).toFixed(2);
+};
+
+export function formatNumberByChar(number) {
+	let parseNumber = Number(number);
+
+	if (parseNumber >= 1000000000) {
+        return (parseNumber/1000000000).toFixed(2) + 'B';
+    }
+
+	if (parseNumber >= 1000000) {
+        return (parseNumber/1000000).toFixed(2) + 'M';
+    }
+
+    if (parseNumber >= 1000) {
+        return (parseNumber/1000).toFixed(2) + 'K';
+    }
+
+	// 1035640054497
+	// 1000000000
+
+    return parseNumber;
 };
 
 export function getColorPrice(val) {
