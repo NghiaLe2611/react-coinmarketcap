@@ -1,7 +1,8 @@
-
+import { memo } from 'react';
 import { Box, Link } from '@mui/material';
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
+import { Heading, IntroText } from 'components/common';
 import CategoriesTable from './CategoriesTable';
 
 const getListCategory = async () => {
@@ -15,16 +16,16 @@ const useCategoriesQuery = () => {
 		refetchOnWindowFocus: false,
 		staleTime: 5 * 60 * 1000,
 		cacheTime: Infinity,
-		refetchInterval: 10 * 60 * 1000
+		refetchInterval: 10 * 60 * 1000,
 	});
 
-    // Sort by market cap
-    const transformedData = response.data?.data.sort((a, b) => {
-        return b.market_cap - a.market_cap;
-    });
+	// Sort by market cap
+	const transformedData = response.data?.data.sort((a, b) => {
+		return b.market_cap - a.market_cap;
+	});
 
 	return {
-		data: transformedData
+		data: transformedData,
 	};
 };
 
@@ -65,6 +66,12 @@ const CategoriesPage = () => {
 
 	return (
 		<>
+			<Heading>Cryptocurrency Sectors by 24h Price Change</Heading>
+			<IntroText>
+				We have created an index for each cryptocurrency category. Categories are ranked by 24h price change.
+				Click on a crypto category name to see the constituent parts of the index and their recent price
+				performance.
+			</IntroText>
 			<CategoriesTable data={data} />
 			<Box py={4} textAlign='right' fontSize={13}>
 				(Source: &nbsp;
@@ -77,4 +84,4 @@ const CategoriesPage = () => {
 	);
 };
 
-export default CategoriesPage;
+export default memo(CategoriesPage);

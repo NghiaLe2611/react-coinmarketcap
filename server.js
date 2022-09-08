@@ -8,6 +8,7 @@ const app = express();
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const CACHE_TIME_1H = 60*60;
+const CACHE_TIME_8H = 60*60*8;
 const CACHE_TIME_1D = 60*60*24;
 
 // Cache data
@@ -56,7 +57,7 @@ app.get('/api/global_metrics', async function (req, res) {
 				// },
 			});
             globalMetrics = response.data;
-            myCache.set('global_metrics', globalMetrics, CACHE_TIME_1D);
+            myCache.set('global_metrics', globalMetrics, CACHE_TIME_8H);
             return res.status(200).json(globalMetrics);
         } catch (err) {
             return res.status(500).json(err);
@@ -181,7 +182,7 @@ app.get('/api/categories', async function (req, res) {
         console.log('Chua co categories');
         try {
             categories = await getCategories();
-			myCache.set('crypto_categories', categories, CACHE_TIME_1H);
+			myCache.set('crypto_categories', categories, CACHE_TIME_1D);
             return res.status(200).json(categories);
         } catch(err) {
             return res.status(500).json(err);

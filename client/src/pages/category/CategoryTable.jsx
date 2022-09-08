@@ -9,11 +9,6 @@ import { formatNumber, formatPercent, formatPrice } from 'utils/helpers';
 
 const headCells = [
 	{
-		id: '0',
-		label: '',
-		align: 'left',
-	},
-	{
 		id: 'rank',
 		label: '#',
 		align: 'left',
@@ -22,7 +17,7 @@ const headCells = [
 		id: 'name',
 		label: 'Name',
 		align: 'left',
-		width: 210,
+		width: 180,
 	},
 	{
 		id: 'quote.USD.price',
@@ -102,7 +97,6 @@ const CategoryTable = ({ data }) => {
 					{items &&
 						items.map((item) => (
 							<TableRow key={item.id} sx={{ '& .MuiTableCell-body': { padding: '10px' } }}>
-								<TableCell align='center'></TableCell>
 								<TableCell align='left'>{item.cmc_rank}</TableCell>
 								<TableCell align='left'>
 									{/* <img
@@ -133,9 +127,10 @@ const CategoryTable = ({ data }) => {
 								<TableCell align='right'>${formatNumber(item.quote['USD'].volume_24h)}</TableCell>
 								<TableCell align='right'>{formatNumber(item.circulating_supply)}</TableCell>
 								<TableCell align='right'>
-									<Link href={`https://coinmarketcap.com/currencies/${item.slug}/?period=7d`} target="_blank" rel="noopener noreferrer">
+									<Link href={`https://coinmarketcap.com/currencies/${item.slug}/?period=7d`} target="_blank" rel="noopener noreferrer" sx={{width: '100%'}}>
 										<img
 											src={`https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/${item.id}.svg`}
+											onError={(e)=>{e.target.onError = null; e.target.src=`https://dummyimage.com/164x48/4a4a4a/ffffff&text=No+Image`}}
 											alt={`${item.slug}-7d-graph`}
 											className={
 												item.quote['USD'].percent_change_7d >= 0

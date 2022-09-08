@@ -5,7 +5,6 @@ import coinApi from 'api/coinApi';
 import CoinChange from 'components/common/CoinChange';
 import CoinWrapper from 'components/common/CoinWrapper';
 import CustomPagination from 'components/pagination/CustomPagination';
-import Pagination from '@mui/material/Pagination';
 import SortTableHead from 'components/table/SortTableHead';
 import { useSortableData } from 'hooks/useSortableData';
 import { useEffect, useRef, useState, useMemo } from 'react';
@@ -15,6 +14,7 @@ import SparkLine from 'components/common/SparkLine';
 import CategoryList from 'components/CategoryList';
 import Loader from 'components/Loader';
 import MuiPagination from 'components/pagination/MuiPagination';
+import { WrapFilterBox } from 'components/common';
 
 const headCells = [
     {
@@ -105,12 +105,6 @@ const StyledSelect = styled(TextField)(({
 
 const StyledOption = styled(MenuItem)(({
     fontSize: 12
-}));
-
-const WrapFilterBox = styled(Box)(({ theme }) => ({
-    display: 'flex',
-	alignItems: 'center',
-    flexWrap: 'wrap',
 }));
 
 const CoinList = () => {
