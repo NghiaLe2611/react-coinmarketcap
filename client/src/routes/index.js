@@ -1,3 +1,4 @@
+import { LinearProgress } from '@mui/material';
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
@@ -8,7 +9,7 @@ const CategoriesPage = React.lazy(() => import('pages/categories'));
 
 const AppRoutes = () => {
 	return (
-		<Suspense fallback={'Loading...'}>
+		<Suspense fallback={<LinearProgress />}>
 			<Routes>
 				<Route
 					exact
