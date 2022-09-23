@@ -1,6 +1,6 @@
-import { LinearProgress } from '@mui/material';
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
+import { LinearProgress } from '@mui/material';
 
 const Root = React.lazy(() => import('layout/root'));
 const HomePage = React.lazy(() => import('pages/home'));
