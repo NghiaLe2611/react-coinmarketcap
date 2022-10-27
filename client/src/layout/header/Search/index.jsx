@@ -1,17 +1,18 @@
-import {Box, IconButton, List, ListItem, Popover, Typography} from '@mui/material';
-import {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom';
-import classes, {SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase} from './styles';
+import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, IconButton, List, ListItem, Popover, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { _generalStats } from '../../../features/general/generalSlice';
+import classes, { SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase } from './styles';
 import CloseIcon from '@mui/icons-material/Close';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import { _generalStats } from '../../../features/general/generalSlice';
-import { useSelector } from 'react-redux';
-
 
 const Search = () => {
 	const [showSearchBox, setShowSearchBox] = useState(null);
     const {trendingSearches, recentSearches} = useSelector(_generalStats);
+
+	const searchRef = useRef("");
 
 	const handleShowSearchBox = (e) => {
 		setShowSearchBox(e.currentTarget);
@@ -19,6 +20,12 @@ const Search = () => {
 
 	const handleCloseSearchBox = () => {
 		setShowSearchBox(null);
+	};
+
+	const clearInput = () => {
+		if (searchRef.current) {
+			searchRef.current.value = "";
+		}
 	};
 
 	return (
@@ -54,8 +61,8 @@ const Search = () => {
 					<SearchIconWrapper sx={{padding: '0 5px'}}>
 						<SearchIcon fontSize='small' />
 					</SearchIconWrapper>
-					<SearchInput placeholder='What are you looking for ?' inputProps={{'aria-label': 'search'}} />
-					<IconButton sx={classes.clearSearch} size='small'>
+					<SearchInput placeholder='What are you looking for ?' inputProps={{'aria-label': 'search'}} inputRef={searchRef} />
+					<IconButton sx={classes.clearSearch} size='small' onClick={clearInput}>
 						<CloseIcon sx={{fontSize: '12px'}}></CloseIcon>
 					</IconButton>
 				</SearchInputWrapper>

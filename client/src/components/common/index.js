@@ -1,6 +1,12 @@
 import { Box, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+// Common
+export const BoxFlex = styled((Box))(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center'
+}));
+
 // Text
 export const Heading = styled((Typography))(({ theme }) => ({
     fontSize: '1.5rem',

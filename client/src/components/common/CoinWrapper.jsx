@@ -12,6 +12,7 @@ export const StyledText = styled(Typography, {
 
 const CoinWrapper = ({ item, size }) => {
 	const link = item.id ? item.id : item.name.replace(/\s+/g, '-').toLowerCase();
+	// const link = item.name.replace(/\s+/g, '-').toLowerCase();
 	return (
 		<Box display='flex' alignItems='center' component={Link} to={`/currencies/${link}`}>
 			{item.image ? (

@@ -27,7 +27,7 @@ const CategoryPage = () => {
 	const [limit, setLimit] = useState(100);
 	const categoryId = categories.find((item) => item.slug === slug).id;
 
-	const { data, isLoading, isFetching, error } = useQuery(
+	const { data, isLoading, isFetching } = useQuery(
 		[`list-coin-by-category-${categoryId}`, categoryId],
 		() => getCategory({ categoryId }),
 		{

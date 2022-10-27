@@ -1,14 +1,34 @@
 import { memo } from 'react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { makeStyles } from '@mui/styles';
 
-function getColorByPrice (val) {
-    if (val > 0) return 'var(--color-price-up)';
-    if (val < 0) return 'var(--color-price-down)';
-};
+const useStyles = makeStyles((theme) => ({
+	wrapper: {
+		display: 'inline-flex', 
+		alignItems: 'center',
+		color: '#fff',
+		borderRadius: 8,
+		fontSize: 14,
+		padding: '6px 6px 6px 0',
+		lineHeight: 1
+	},
+}));
 
-const CoinChange = ({ value, format, style }) => {
-	return (
+function getColorByPrice(val) {
+	if (val > 0) return 'var(--color-price-up)';
+	if (val < 0) return 'var(--color-price-down)';
+}
+
+const CoinChange = ({ value, format, style, hasBg }) => {
+	const classes = useStyles();
+
+	return hasBg ? (
+		<span style={{ backgroundColor: getColorByPrice(value), ...style}} className={classes.wrapper}>
+			{value > 0 ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+			{format(value)}%
+		</span>
+	) : (
 		<span style={{ display: 'inline-flex', alignItems: 'center', color: getColorByPrice(value), ...style }}>
 			{value > 0 ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
 			{format(value)}%

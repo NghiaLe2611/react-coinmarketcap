@@ -34,14 +34,14 @@ const menu = [
         name: 'Exchanges',
         url: 'https://coinmarketcap.com/exchanges'
     },
-    {
-        name: 'NFT',
-        url: 'https://coinmarketcap.com/nft'
-    },
-    {
-        name: 'Gravity',
-        url: 'https://coinmarketcap.com/gravity'
-    },
+    // {
+    //     name: 'NFT',
+    //     url: 'https://coinmarketcap.com/nft'
+    // },
+    // {
+    //     name: 'Gravity',
+    //     url: 'https://coinmarketcap.com/gravity'
+    // },
     {
         name: 'Portfolio',
         url: '/portfolio-tracker'

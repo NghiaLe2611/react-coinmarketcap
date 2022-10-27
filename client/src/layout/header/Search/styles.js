@@ -62,7 +62,7 @@ export const StyledInputBase = styled(Box)(({theme}) => ({
 	cursor: 'pointer',
 	width: '100%',
 	[theme.breakpoints.up('sm')]: {
-		width: '20ch',
+		width: '26ch',
 	},
 }));
 

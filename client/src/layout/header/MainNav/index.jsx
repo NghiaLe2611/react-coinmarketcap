@@ -52,10 +52,10 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 	return (
 		<Box sx={navbarStyle}>
 			<Container>
-				<Toolbar disableGutters sx={{alignItems: {lg: 'stretch'}}}>
+				<Toolbar disableGutters sx={{ alignItems: { lg: 'stretch' } }}>
 					<Drawer
 						PaperProps={{
-							sx: {width: '100%', display: {xs: 'flex', lg: 'none'}},
+							sx: { width: '100%', display: { xs: 'flex', lg: 'none' } },
 						}}
 						anchor={'left'}
 						open={pos['left']}
@@ -66,10 +66,10 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								<CloseIcon></CloseIcon>
 							</IconButton>
 						</Box>
-						<Box sx={{padding: '0 20px', height: 'calc(100% - 60px)', overflow: 'auto'}}>
+						<Box sx={{ padding: '0 20px', height: 'calc(100% - 60px)', overflow: 'auto' }}>
 							<List>
 								{menu.map((item) => (
-									<ListItem key={item.name} sx={{display: 'block'}} disablePadding>
+									<ListItem key={item.name} sx={{ display: 'block' }} disablePadding>
 										<ListItemText
 											sx={
 												showSubMenu === item.name
@@ -135,7 +135,7 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 														<IconButton
 															color='inherit'
 															onClick={() => handleShowSubMenu(item.name)}
-															sx={{...classes.iconToggle, marginLeft: 'auto'}}>
+															sx={{ ...classes.iconToggle, marginLeft: 'auto' }}>
 															<KeyboardArrowDownIcon
 																style={{
 																	transform:
@@ -198,10 +198,10 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								))}
 							</List>
 							<Box mt={4}>
-								<CustomBtn variant='contained' sx={{backgroundColor: '#eef0f2'}}>
+								<CustomBtn variant='contained' sx={{ backgroundColor: '#eef0f2' }}>
 									Log in
 								</CustomBtn>
-								<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{color: '#fff'}}>
+								<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{ color: '#fff' }}>
 									Sign up
 								</CustomBtn>
 							</Box>
@@ -216,10 +216,10 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 										value={language}
 										// label='Language'
 										onChange={onHandleChangeLanguage}>
-										<MenuItem value='English' sx={{fontSize: 13}}>
+										<MenuItem value='English' sx={{ fontSize: 13 }}>
 											English
 										</MenuItem>
-										<MenuItem value='Tiếng Việt' sx={{fontSize: 13}}>
+										<MenuItem value='Tiếng Việt' sx={{ fontSize: 13 }}>
 											Tiếng Việt
 										</MenuItem>
 									</StyledSelect>
@@ -237,12 +237,12 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 
 					<LogoImage to='/' />
 
-					<Box sx={{flexGrow: 1, display: {xs: 'none', lg: 'flex'}}}>
-						<List sx={{display: 'flex'}}>
+					<Box sx={{ flexGrow: 1, display: { xs: 'none', lg: 'flex' } }}>
+						<List sx={{ display: 'flex' }}>
 							{menu.map((item) => (
 								<ListItem
 									key={item.name}
-									sx={{display: 'block', marginRight: {lg: '30px'}}}
+									sx={{ display: 'block', marginRight: { lg: '30px' } }}
 									disablePadding
 									onMouseOver={() => handleShowSubMenu(item.name)}
 									onMouseOut={() => handleShowSubMenu(null)}>
@@ -315,23 +315,25 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 
 					<Box
 						sx={{
-							display: {xs: 'none', lg: 'flex'},
+							display: { xs: 'none', lg: 'flex' },
 							alignSelf: 'center',
 							flexGrow: 0,
 							marginLeft: 'auto',
 						}}>
 						<ButtonGroup aria-label='outlined primary button group'>
-							<CustomBtn variant='text'>Log in</CustomBtn>
-							<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{color: '#fff'}}>
+							<CustomBtn variant='text' sx={{ px: 2 }}>
+								Log in
+							</CustomBtn>
+							<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{ color: '#fff' }}>
 								Sign up
 							</CustomBtn>
 						</ButtonGroup>
 
-                        {/* Search component */}
-						<Search/>
+						{/* Search component */}
+						<Search />
 					</Box>
 
-					<Box sx={{display: {xs: 'block', lg: 'none', marginLeft: 'auto'}}}>
+					<Box sx={{ display: { xs: 'block', lg: 'none', marginLeft: 'auto' } }}>
 						<IconButton color='inherit'>
 							<SearchIcon />
 						</IconButton>

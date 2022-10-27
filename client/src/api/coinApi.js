@@ -27,6 +27,9 @@ const coinApi = {
         console.log(`api/coin_list?${params}`);
         return axiosClient.get(`api/coin_list?${params}`);
 	},
+	getDetail(id) {
+		return axiosClient.get(`/api/coins/${id}`);
+	},
     getCategories() {
 		return axiosClient.get('/api/categories');
 	},

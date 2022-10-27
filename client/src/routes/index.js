@@ -6,6 +6,7 @@ const Root = React.lazy(() => import('layout/root'));
 const HomePage = React.lazy(() => import('pages/home'));
 const CategoryPage = React.lazy(() => import('pages/category'));
 const CategoriesPage = React.lazy(() => import('pages/categories'));
+const DetailPage = React.lazy(() => import('pages/detail'));
 
 const AppRoutes = () => {
 	return (
@@ -43,6 +44,15 @@ const AppRoutes = () => {
 					element={
 						<Root>
 							<CategoryPage />
+						</Root>
+					}
+				/>
+				<Route
+					exact
+					path='/currencies/:id'
+					element={
+						<Root>
+							<DetailPage />
 						</Root>
 					}
 				/>
