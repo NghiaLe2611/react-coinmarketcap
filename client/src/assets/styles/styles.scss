@@ -1,26 +1,36 @@
 :root {
+    // Color
     --color-primary: #3861fb;
     --color-common-txt: #000;
     --color-sub-txt: #58667e;
     --color-price-up: #16c784;
     --color-price-down: #ea3943;
 
+    // Background
     --bg-box: #fff;
-    --bg-body: linear-gradient(rgb(248, 250, 253) 0%, rgba(248, 250, 253, 0) 413px);
+    --bg-body: linear-gradient(rgb(34, 37, 49) 0%, rgba(34, 37, 49, 0) 413px);
+    // linear-gradient(rgb(248, 250, 253) 0%, rgba(248, 250, 253, 0) 413px);
     --bg-hover: #f2f2f4;
     --bg-common: #fff;
     --bg-scrollbar: #eee;
     --bg-hover-item: #f8fafd;
     --bg-select: #eff2f5;
     --bg-neutral: #eff2f5;
+    --bg-neutral-1: #808a9d;
+    --bg-dropdown: #fff;
 
+    //Border
     --border-table: #eff2f5;
+
+    --shadow-normal: 0px 1px 2px rgba(128,138,157,0.12),0px 8px 32px rgba(128,138,157,0.24);
 }
 
 .dark-theme{
+    // Color
     --color-common-txt: #fff;
     --color-sub-txt: #a1a7bb;
 
+    // Background
     --bg-box: #292d3f; // #323546
     --bg-body: linear-gradient(rgb(34, 37, 49) 0%, rgba(34, 37, 49, 0) 413px);
     --bg-hover: #000;
@@ -29,8 +39,13 @@
     --bg-hover-item: #222;
     --bg-select: #292d3f;
     --bg-neutral: #323546;
+    --bg-neutral-1: #858ca2;
+    --bg-dropdown: #222531;
 
+    //Border
     --border-table: #2b2f3c;
+
+    --shadow-normal: 0px 4px 24px #171924,0px 1px 2px #171924;
 }
 
 .sortable-cell{

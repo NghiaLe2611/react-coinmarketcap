@@ -9,8 +9,8 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		color: '#fff',
 		borderRadius: 8,
-		fontSize: 14,
-		padding: '6px 6px 6px 0',
+		fontSize: 13,
+		padding: '4px 6px 4px 0',
 		lineHeight: 1
 	},
 }));

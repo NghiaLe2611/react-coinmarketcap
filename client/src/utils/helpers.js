@@ -74,6 +74,10 @@ export function formatNumberByChar(number) {
     return parseNumber;
 };
 
+export function convertLink(link) {
+	return link.toString().replace('https://', '');
+};
+
 export function getColorPrice(val) {
 	if (val > 0) return 'var(--color-price-up)';
 	if (val < 0) return 'var(--color-price-down)';
