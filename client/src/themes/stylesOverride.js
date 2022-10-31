@@ -45,5 +45,12 @@ export default function componentStyleOverrides(theme) {
                 }
             }
         },
+        MuiDialog: {
+            styleOverrides: {
+                root: {
+                    zIndex: 1303
+                }
+            }
+        }
     };
 }

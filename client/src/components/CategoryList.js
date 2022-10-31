@@ -81,17 +81,14 @@ const StyledList = styled(List)(({ theme }) => ({
 
 const CategoryList = () => {
     const location = useLocation();
-    console.log(111,location.pathname);
 
     function getActiveClass(item) {
         if (item.slug === '/') {
             return location.pathname === item.slug;
         }
 
-        return location.pathname.substring(1) === item.slug;
-        
+        return location.pathname.substring(1) === item.slug;  
     };
-
 
 	return (
 		<StyledList>

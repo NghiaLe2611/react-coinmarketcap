@@ -10,8 +10,9 @@ import { Box, Button, Link, List, ListItem, Menu, MenuItem, Popover } from '@mui
 import useStyles from './styles';
 import { useEffect } from 'react';
 import { convertLink } from 'utils/helpers';
+import { dataFromCmcArr } from 'utils/constants';
 
-const ListLink = ({ data }) => {
+const ListLink = ({ data, dataFromCmc }) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [dropdownId, setDropdownId] = useState(null);
@@ -37,11 +38,11 @@ const ListLink = ({ data }) => {
 		setDropdownId(id);
 	};
 
-	return (
+	return dataFromCmc ? (
 		<List className={classes.list}>
 			<ListItem>
 				<Link href='' className={classes.link}>
-					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.urls.website)}{' '}
+					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.urls.website)}
 					<LaunchIcon />
 				</Link>
 			</ListItem>
@@ -103,12 +104,12 @@ const ListLink = ({ data }) => {
 					<List>
 						{data.urls.message_board && (
 							<MenuItem className={classes.menuItem}>
-								{data.urls.message_board} <LaunchIcon />
+								{convertLink(data.urls.message_board)} <LaunchIcon />
 							</MenuItem>
 						)}
 						{data.urls.reddit && (
 							<MenuItem className={classes.menuItem}>
-								{data.urls.reddit} <LaunchIcon />
+								{convertLink(data.urls.reddit)} <LaunchIcon />
 							</MenuItem>
 						)}
 					</List>
@@ -124,6 +125,102 @@ const ListLink = ({ data }) => {
 					<ArticleIcon /> Whitepaper <LaunchIcon />
 				</Link>
 			</ListItem>
+		</List>
+	) : (
+		<List className={classes.list}>
+			<ListItem>
+				<Link href='' className={classes.link}>
+					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.links.homepage[0])}
+					<LaunchIcon />
+				</Link>
+			</ListItem>
+			<ListItem>
+				<Button
+					sx={{ zIndex: 1302, position: 'relative' }}
+					className={classes.link}
+					onMouseOver={(e) => handlePopoverOpen(e, 'explorer')}
+					data-menu='explorer'>
+					<SearchIcon /> Explorers <KeyboardArrowDownIcon />
+				</Button>
+				<Popover
+					id='explorer'
+					// keepMounted
+					className={classes.popover}
+					open={dropdownId === 'explorer'}
+					anchorEl={anchorEl}
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'center',
+					}}
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'center',
+					}}>
+					<List>
+						{data.links.blockchain_site.length > 0 &&
+							data.links.blockchain_site.map(
+								(item) =>
+									item !== '' && (
+										<MenuItem key={item} className={classes.menuItem}>
+											<Link href={item} target='_blank'>
+												{convertLink(item)} <LaunchIcon />
+											</Link>
+										</MenuItem>
+									)
+							)}
+					</List>
+				</Popover>
+			</ListItem>
+
+			<ListItem>
+				<Button
+					sx={{ zIndex: 1302, position: 'relative' }}
+					className={classes.link}
+					onMouseOver={(e) => handlePopoverOpen(e, 'community')}
+					data-menu='community'>
+					<PeopleIcon /> Community <KeyboardArrowDownIcon />
+				</Button>
+				<Popover
+					id='community'
+					className={classes.popover}
+					open={dropdownId === 'community'}
+					anchorEl={anchorEl}
+					anchorOrigin={{
+						vertical: 'bottom',
+						horizontal: 'center',
+					}}
+					transformOrigin={{
+						vertical: 'top',
+						horizontal: 'center',
+					}}>
+					<List>
+						{data.links.chat_url.length > 0 &&
+							data.links.chat_url.map(
+								(item) =>
+									item !== '' && (
+										<MenuItem key={item} className={classes.menuItem}>
+											<Link href={item} target='_blank'>
+												{convertLink(item)} <LaunchIcon />
+											</Link>
+										</MenuItem>
+									)
+							)}
+
+						{data.links.subreddit_url && (
+							<MenuItem className={classes.menuItem}>
+								{convertLink(data.links.subreddit_url)} <LaunchIcon />
+							</MenuItem>
+						)}
+					</List>
+				</Popover>
+			</ListItem>
+			{data.links.repos_url && (
+				<ListItem>
+					<Link href={data.links.repos_url.github[0]} target='_blank' className={classes.link}>
+						<CodeIcon /> Source code <LaunchIcon />
+					</Link>
+				</ListItem>
+			)}
 		</List>
 	);
 };

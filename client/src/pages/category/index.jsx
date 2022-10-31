@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, FormControl, FormLabel, Grid, MenuItem } from '@mui/material';
+import { Box, FormControl, FormLabel, Grid, Link, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
@@ -17,15 +17,20 @@ const StyledOption = styled(MenuItem)({
 });
 
 const getCategory = async ({ categoryId }) => {
-	const data = await coinApi.getCoinsByCategory(categoryId);
-	return data.data;
+	if (categoryId) {
+		const data = await coinApi.getCoinsByCategory(categoryId);
+		return data.data;
+	}
+
+	return;
 };
 
 const CategoryPage = () => {
 	const { slug } = useParams();
 	const [page, setPage] = useState(1);
 	const [limit, setLimit] = useState(100);
-	const categoryId = categories.find((item) => item.slug === slug).id;
+	const categoryItem = categories.find((item) => item.slug === slug);
+	const categoryId = categoryItem ? categoryItem.id : null;
 
 	const { data, isLoading, isFetching } = useQuery(
 		[`list-coin-by-category-${categoryId}`, categoryId],
@@ -51,6 +56,17 @@ const CategoryPage = () => {
 	const handleChangePage = (e, newPage) => {
 		setPage((prev) => newPage);
 	};
+
+	if (!categoryId) {
+		return (
+			<p>
+				Category not found. Please visit &nbsp;
+				<Link target='_blank' href={`https://coinmarketcap.com/view/${slug}/`} style={{color: 'blue'}}>
+					https://coinmarketcap.com/view/{slug}/
+				</Link> for more detail.
+			</p>
+		);
+	}
 
 	if (isLoading) {
 		return <p>Loading...</p>;
@@ -125,7 +141,7 @@ const CategoryPage = () => {
 			{coins.length > limit && <CustomPagination count={count} page={page} onPageChange={handleChangePage} />}
 		</>
 	);
-};
+};;
 
 export default memo(CategoryPage);
 

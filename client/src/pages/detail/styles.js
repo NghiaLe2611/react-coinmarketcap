@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: 700,
 		height: 30,
 		padding: '6px 2px',
-		borderRadius: 6,
+		borderRadius: 12,
 		color: 'var(--color-common-txt)',
 		backgroundColor: 'var(--bg-neutral)',
 		transition: '0.1s ease',
@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	menuItem: {
-		padding: '6px 10px',
+		padding: '6px 20px',
 		fontSize: 12,
 		fontWeight: 500,
 		backgroundColor: 'transparent !important',
@@ -119,12 +119,106 @@ const useStyles = makeStyles((theme) => ({
 	},
 	tag: {
 		fontSize: 11,
-		lineHeight: 1,
+		fontWeight: 700,
+		color: 'var(--color-sub-txt)',
 		marginBottom: 4,
+		height: 20,
+		lineHeight: '20px',
 		cursor: 'pointer',
+		margin: '0 5px 5px 0 !important',
+		'& .MuiChip-label': {
+			padding: '4px 10px',
+			'& a': {
+				color: 'var(--color-sub-txt)'
+			}
+		},
 		'&.view-all': {
-			
+			backgroundColor: 'var(--bg-lightblue)',
+			color: 'var(--color-primary)'
 		}
+	},
+	priceStats: {
+		display: 'flex',
+		alignItems: 'center',
+		'& *': {
+			fontSize: 13,
+		},
+		'& .lbl': {
+			color: 'var(--color-sub-txt)',
+			marginRight: 5
+		},
+		'& .val': {
+			fontWeight: 700,
+		}
+	},
+	priceBar: {
+		margin: '0 15px',
+		backgroundColor: 'var(--bg-control)',
+		height: 6,
+		width: 160,
+		borderRadius: 4
+	},
+	percent: {
+		display: 'flex', 
+		height: '100%', 
+		backgroundColor: 'var(--color-sub-txt)',
+		borderTopLeftRadius: 4,
+		borderBottomLeftRadius: 4
+	},
+	// Dialog
+	dialogTitle: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		color: 'var(--color-common-txt)',
+		fontSize: 16,
+		'& .close': {
+			backgroundColor: 'transparent !important',
+			'& .MuiSvgIcon-root': {
+				fontSize: '1.2rem',
+				fontWeight: 700,
+				color: 'var(--bg-neutral-2)'
+			},
+		},
+	},
+	tags: {
+		flexWrap: 'wrap',
+		// '& .MuiChip-root': {
+		// 	margin: '0 6px 6px 0'
+		// }
+	},
+	dialogLbl: {
+		fontSize: 13,
+		color: 'var(--color-sub-txt)',
+		fontWeight: 500,
+		marginBottom: 10
+	},
+
+
+	// Overall stats
+	overallStats: {
+		marginTop: 20,
+		paddingTop: 20,
+		borderTop: '1px solid var(--bg-neutral)',
+		flexWrap: 'wrap',
+		'& .item': {
+			flex: 1,
+			'&:not(:last-child)': {
+				borderRight: '1px solid var(--bg-neutral)',
+				marginRight: 20,
+				paddingRight: 20
+			},
+			'& .stats-lbl': {
+				fontSize: 12,
+				fontWeight: 500,
+				color: 'var(--color-sub-txt)'
+			},
+			'& .val': {
+				fontSize: 13,
+				fontWeight: 700,
+				color: 'var(--color-common-txt)'
+			}
+		},
 	}
 }));
 

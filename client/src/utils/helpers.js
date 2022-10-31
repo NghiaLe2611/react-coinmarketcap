@@ -78,6 +78,10 @@ export function convertLink(link) {
 	return link.toString().replace('https://', '');
 };
 
+export function formatCategoryName(category) {
+    return category.replace(/\s+/g, '-').toLowerCase();
+};
+
 export function getColorPrice(val) {
 	if (val > 0) return 'var(--color-price-up)';
 	if (val < 0) return 'var(--color-price-down)';

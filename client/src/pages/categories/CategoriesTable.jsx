@@ -4,13 +4,9 @@ import { styled } from '@mui/material/styles';
 import SortTableHead from 'components/table/SortTableHead';
 import { useSortableData } from 'hooks/useSortableData';
 import CoinChange from 'components/common/CoinChange';
-import { formatNumber, formatPercent } from 'utils/helpers';
+import { formatCategoryName, formatNumber, formatPercent } from 'utils/helpers';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-
-function formatCategoryName(category) {
-    return category.replace(/\s+/g, '-').toLowerCase();
-};
 
 const headCells = [
 	{
