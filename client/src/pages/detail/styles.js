@@ -149,10 +149,14 @@ const useStyles = makeStyles((theme) => ({
 		},
 		'& .val': {
 			fontWeight: 700,
+		},
+		'@media (min-width: 1024px)': {
+			'& .box': {
+				display: 'flex'
+			}
 		}
 	},
 	priceBar: {
-		margin: '0 15px',
 		backgroundColor: 'var(--bg-control)',
 		height: 6,
 		width: 160,
@@ -161,9 +165,16 @@ const useStyles = makeStyles((theme) => ({
 	percent: {
 		display: 'flex', 
 		height: '100%', 
-		backgroundColor: 'var(--color-sub-txt)',
+		backgroundColor: 'var(--bg-neutral-3)',
 		borderTopLeftRadius: 4,
-		borderBottomLeftRadius: 4
+		borderBottomLeftRadius: 4,
+		position: 'relative',
+		'& .icon': {
+			position: 'absolute',
+			right: -12,
+			fontSize: '1.5rem',
+			color: 'var(--bg-neutral-3)'
+		}
 	},
 	// Dialog
 	dialogTitle: {
@@ -194,12 +205,12 @@ const useStyles = makeStyles((theme) => ({
 		marginBottom: 10
 	},
 
-
 	// Overall stats
 	overallStats: {
 		marginTop: 20,
 		paddingTop: 20,
 		borderTop: '1px solid var(--bg-neutral)',
+		display: 'flex',
 		flexWrap: 'wrap',
 		'& .item': {
 			flex: 1,
@@ -211,12 +222,18 @@ const useStyles = makeStyles((theme) => ({
 			'& .stats-lbl': {
 				fontSize: 12,
 				fontWeight: 500,
-				color: 'var(--color-sub-txt)'
+				color: 'var(--color-sub-txt)',
+				minWidth: 90
 			},
 			'& .val': {
-				fontSize: 13,
+				fontSize: 12,
 				fontWeight: 700,
 				color: 'var(--color-common-txt)'
+			},
+			'& .supply': {
+				fontSize: 12,
+				fontWeight: 500,
+				color: 'var(--color-sub-txt)',
 			}
 		},
 	}

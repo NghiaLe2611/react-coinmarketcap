@@ -45,8 +45,14 @@ export function formatPrice(number) {
 	return new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 4 }).format(number);
 };
 
-export function formatNumber(number) {
-	return Intl.NumberFormat('en-US').format(number);
+export function formatNumber(number, toFixed) {
+	if (!toFixed) return Intl.NumberFormat('en-US').format(number);
+	const options = {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	};
+	const res = Number(number).toLocaleString('en', options);
+	return res;
 };
 
 export function formatPercent(percent) {
@@ -68,10 +74,17 @@ export function formatNumberByChar(number) {
         return (parseNumber/1000).toFixed(2) + 'K';
     }
 
-	// 1035640054497
-	// 1000000000
-
     return parseNumber;
+};
+
+export function formatSupply(number) {
+	let parseNumber = Number(number);
+
+	if (parseNumber >= 1000000000) {
+        return (parseNumber/1000000000).toFixed(2) + 'B';
+    }
+
+    return formatNumber(number);
 };
 
 export function convertLink(link) {

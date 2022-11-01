@@ -24,7 +24,7 @@ const classes = {
 		color: '#000',
 		marginLeft: '10px',
 		'@media (max-width: 1280px)': {
-			backgroundColor: '#eef0f2',
+			backgroundColor: 'var(--bg-sub-btn)',
 		},
 	},
 	listTop: {

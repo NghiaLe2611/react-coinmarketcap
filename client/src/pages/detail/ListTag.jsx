@@ -1,5 +1,5 @@
 import { Box, Chip, Dialog, DialogContent, DialogTitle, IconButton, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import useStyles from './styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
@@ -66,4 +66,4 @@ const ListTag = ({ coin, algorithm, data }) => {
 	);
 };
 
-export default ListTag;
+export default memo(ListTag);

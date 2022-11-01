@@ -1,4 +1,4 @@
-import { Box, Button, InputBase, ListItemText, Select, styled, Typography } from '@mui/material';
+import { Box, Button, InputBase, ListItemText, Select, styled, TextField, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export const ListItemTextComponent = styled(ListItemText)(({theme}) => ({
@@ -111,6 +111,18 @@ export const LogoImage = styled(Link)(({theme}) => ({
 	mask: 'url(../images/cmc.svg) no-repeat center',
 }));
 
+export const SelectLanguage = styled(TextField)(({theme}) => ({
+	'& .MuiOutlinedInput-root': {
+		fontSize: 13,
+		fontWeight: 500,
+		height: 40,
+		backgroundColor: 'var(--bg-sub-btn)',
+		'& fieldset': { 
+			borderColor: 'transparent !important',
+		},
+	},
+}));
+
 const classes = {
 	listItem: {
 		width: 'inherit',
@@ -136,7 +148,7 @@ const classes = {
 		alignItems: 'center',
 		height: '48px',
 		transition: 'all 0.2s ease 0s',
-		borderBottom: '1px solid #eff2f5',
+		borderBottom: '1px solid var(--border-table)',
 		'& span': {
 			display: 'flex',
 			alignItems: 'center',
@@ -181,7 +193,7 @@ const classes = {
 			display: 'none',
 			// backgroundColor: '#fff',
 			backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#17171a' : '#fff'),
-			zIndex: 9,
+			zIndex: 1303,
 			padding: '16px',
 			borderRadius: '8px',
 			filter: 'drop-shadow(rgba(128, 138, 157, 0.12) 0px 1px 2px) drop-shadow(rgba(128, 138, 157, 0.24) 0px 8px 32px)',
@@ -227,22 +239,13 @@ const classes = {
 		transition: 'all 0.36s ease 0s',
         marginLeft: 'auto'
 	},
-	selectLang: {
-		fontSize: 13,
-		backgroundColor: '#eef0f2',
-		borderRadius: '4px',
-		'& .MuiSelect-select': {
-			padding: '0 40px 0 15px',
-			height: 40,
-			lineHeight: '40px',
-		},
-	},
 	btnMode: {
 		minWidth: 40,
 		height: 40,
 		marginLeft: '10px',
+		color: 'var(--color-common-txt)',
 		'@media (max-width: 1280px)': {
-			backgroundColor: '#eef0f2',
+			backgroundColor: 'var(--bg-sub-btn)'
 		},
 	},
 	menuHeading: {

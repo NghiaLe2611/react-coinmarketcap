@@ -3,6 +3,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import { Box, Button, Container, FormControl, List, ListItem, ListItemText, MenuItem } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { toggleTheme } from '../../../features/theme/themeSlice';
+import { SelectLanguage } from '../MainNav/styles';
 import { ItemGeneral, StyledSelect } from '../styles';
 import classes from './styles';
 

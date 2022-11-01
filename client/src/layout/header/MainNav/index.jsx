@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { ListItemText } from '@mui/material';
+import { ListItemText, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -19,7 +19,7 @@ import FormControl from '@mui/material/FormControl';
 import { useDispatch } from 'react-redux';
 
 import { toggleTheme } from '../../../features/theme/themeSlice';
-import classes, { CustomBtn, LogoImage, StyledSelect } from './styles';
+import classes, { CustomBtn, LogoImage, SelectLanguage, StyledSelect } from './styles';
 import Search from '../Search';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -54,8 +54,14 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 			<Container>
 				<Toolbar disableGutters sx={{ alignItems: { lg: 'stretch' } }}>
 					<Drawer
+						sx={{ zIndex: 1400 }}
 						PaperProps={{
-							sx: { width: '100%', display: { xs: 'flex', lg: 'none' } },
+							//171924
+							sx: {
+								width: '100%',
+								background: 'var(--bg-drawer) !important',
+								display: { xs: 'flex', lg: 'none' },
+							},
 						}}
 						anchor={'left'}
 						open={pos['left']}
@@ -198,7 +204,7 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								))}
 							</List>
 							<Box mt={4}>
-								<CustomBtn variant='contained' sx={{ backgroundColor: '#eef0f2' }}>
+								<CustomBtn variant='contained' sx={{ backgroundColor: 'var(--bg-control)' }}>
 									Log in
 								</CustomBtn>
 								<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{ color: '#fff' }}>
@@ -206,23 +212,20 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								</CustomBtn>
 							</Box>
 							<Box mt={4}>
-								<FormControl size='small' variant='filled'>
-									<StyledSelect
-										displayEmpty
-										disableUnderline
-										labelId='select-language-label'
-										sx={classes.selectLang}
-										id='select-language'
+								<FormControl size='small' variant='standard'>
+									<SelectLanguage
+										select
+										size='small'
 										value={language}
-										// label='Language'
-										onChange={onHandleChangeLanguage}>
-										<MenuItem value='English' sx={{ fontSize: 13 }}>
+										onChange={onHandleChangeLanguage}
+										defaultValue='All'>
+										<MenuItem value='en' sx={{ fontSize: 13, minHeight: 30 }}>
 											English
 										</MenuItem>
-										<MenuItem value='Tiếng Việt' sx={{ fontSize: 13 }}>
+										<MenuItem value='vi' sx={{ fontSize: 13, minHeight: 30 }}>
 											Tiếng Việt
 										</MenuItem>
-									</StyledSelect>
+									</SelectLanguage>
 								</FormControl>
 								<Button sx={classes.btnMode} onClick={() => dispatch(toggleTheme())}>
 									{isDarkMode ? (

@@ -38,11 +38,14 @@ const ListLink = ({ data, dataFromCmc }) => {
 		setDropdownId(id);
 	};
 
+	console.log(data);
+
 	return dataFromCmc ? (
 		<List className={classes.list}>
 			<ListItem>
 				<Link href='' className={classes.link}>
-					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.urls.website)}
+					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} />
+					{convertLink(data.website[0])}
 					<LaunchIcon />
 				</Link>
 			</ListItem>
@@ -69,8 +72,8 @@ const ListLink = ({ data, dataFromCmc }) => {
 						horizontal: 'center',
 					}}>
 					<List>
-						{data.urls.explorer.length > 0 &&
-							data.urls.explorer.map((item) => (
+						{data.explorer.length > 0 &&
+							data.explorer.map((item) => (
 								<MenuItem key={item} className={classes.menuItem}>
 									<Link href={item} target='_blank'>
 										{convertLink(item)} <LaunchIcon />
@@ -102,26 +105,26 @@ const ListLink = ({ data, dataFromCmc }) => {
 						horizontal: 'center',
 					}}>
 					<List>
-						{data.urls.message_board && (
+						{data.message_board && (
 							<MenuItem className={classes.menuItem}>
-								{convertLink(data.urls.message_board)} <LaunchIcon />
+								{convertLink(data.message_board)} <LaunchIcon />
 							</MenuItem>
 						)}
-						{data.urls.reddit && (
+						{data.reddit && (
 							<MenuItem className={classes.menuItem}>
-								{convertLink(data.urls.reddit)} <LaunchIcon />
+								{convertLink(data.reddit)} <LaunchIcon />
 							</MenuItem>
 						)}
 					</List>
 				</Popover>
 			</ListItem>
 			<ListItem>
-				<Link href={data.urls.source_code} target='_blank' className={classes.link}>
+				<Link href={data.source_code} target='_blank' className={classes.link}>
 					<CodeIcon /> Source code <LaunchIcon />
 				</Link>
 			</ListItem>
 			<ListItem>
-				<Link href={data.urls.technical_doc} target='_blank' className={classes.link}>
+				<Link href={data.technical_doc} target='_blank' className={classes.link}>
 					<ArticleIcon /> Whitepaper <LaunchIcon />
 				</Link>
 			</ListItem>
@@ -130,7 +133,7 @@ const ListLink = ({ data, dataFromCmc }) => {
 		<List className={classes.list}>
 			<ListItem>
 				<Link href='' className={classes.link}>
-					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.links.homepage[0])}
+					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} /> {convertLink(data.homepage[0])}
 					<LaunchIcon />
 				</Link>
 			</ListItem>
@@ -157,8 +160,8 @@ const ListLink = ({ data, dataFromCmc }) => {
 						horizontal: 'center',
 					}}>
 					<List>
-						{data.links.blockchain_site.length > 0 &&
-							data.links.blockchain_site.map(
+						{data.blockchain_site.length > 0 &&
+							data.blockchain_site.map(
 								(item) =>
 									item !== '' && (
 										<MenuItem key={item} className={classes.menuItem}>
@@ -194,8 +197,8 @@ const ListLink = ({ data, dataFromCmc }) => {
 						horizontal: 'center',
 					}}>
 					<List>
-						{data.links.chat_url.length > 0 &&
-							data.links.chat_url.map(
+						{data.chat_url.length > 0 &&
+							data.chat_url.map(
 								(item) =>
 									item !== '' && (
 										<MenuItem key={item} className={classes.menuItem}>
@@ -206,17 +209,17 @@ const ListLink = ({ data, dataFromCmc }) => {
 									)
 							)}
 
-						{data.links.subreddit_url && (
+						{data.subreddit_url && (
 							<MenuItem className={classes.menuItem}>
-								{convertLink(data.links.subreddit_url)} <LaunchIcon />
+								{convertLink(data.subreddit_url)} <LaunchIcon />
 							</MenuItem>
 						)}
 					</List>
 				</Popover>
 			</ListItem>
-			{data.links.repos_url && (
+			{data.repos_url && (
 				<ListItem>
-					<Link href={data.links.repos_url.github[0]} target='_blank' className={classes.link}>
+					<Link href={data.repos_url.github[0]} target='_blank' className={classes.link}>
 						<CodeIcon /> Source code <LaunchIcon />
 					</Link>
 				</ListItem>

@@ -51,6 +51,15 @@ export default function componentStyleOverrides(theme) {
                     zIndex: 1303
                 }
             }
+        },
+        MuiPopover: {
+            styleOverrides: {
+                root: {
+                    '&.MuiMenu-root': {
+                        zIndex: 1401
+                    }
+                }
+            }
         }
     };
 }

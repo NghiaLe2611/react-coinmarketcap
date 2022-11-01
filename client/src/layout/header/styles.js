@@ -118,7 +118,7 @@ const classes = {
 		},
 	},
 	navbar: {
-		borderBottom: '1px solid #eff2f5',
+		borderBottom: '1px solid var(--border-table)',
 	},
 	navbarDark: {
 		borderBottom: '1px solid #222531',
@@ -157,7 +157,7 @@ const classes = {
 		alignItems: 'center',
 		height: '48px',
 		transition: 'all 0.2s ease 0s',
-		borderBottom: '1px solid #eff2f5',
+		borderBottom: '1px solid var(--border-table)',
 		'& span': {
 			display: 'flex',
 			alignItems: 'center',
@@ -263,9 +263,10 @@ const classes = {
 		height: 40,
 		color: '#000',
 		marginLeft: '10px',
-		'@media (max-width: 1280px)': {
-			backgroundColor: '#eef0f2',
-		},
+		backgroundColor: 'var(--bg-sub-btn) !important',
+		// '@media (max-width: 1280px)': {
+		// 	backgroundColor: 'var(--bg-sub-btn)',
+		// },
 	},
 	menuHeading: {
 		display: 'flex',
