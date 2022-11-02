@@ -39,8 +39,11 @@ const useStyles = makeStyles((theme) => ({
 	price: {
 		display: 'flex',
 		alignItems: 'center',
-		fontSize: 34,
-		fontWeight: 700,
+		'& .MuiTypography-root': {
+			fontSize: 34,
+			fontWeight: 700,
+			minWidth: 200
+		}
 	},
 	list: {
 		display: 'flex',
@@ -212,13 +215,12 @@ const useStyles = makeStyles((theme) => ({
 		borderTop: '1px solid var(--bg-neutral)',
 		display: 'flex',
 		flexWrap: 'wrap',
-		'& .item': {
-			flex: 1,
-			'&:not(:last-child)': {
+		'@media (min-width: 1200px)': {
+			'& .MuiGrid-item:not(:last-child)': {
 				borderRight: '1px solid var(--bg-neutral)',
-				marginRight: 20,
-				paddingRight: 20
 			},
+		},
+		'& .item': {
 			'& .stats-lbl': {
 				fontSize: 12,
 				fontWeight: 500,
@@ -236,6 +238,38 @@ const useStyles = makeStyles((theme) => ({
 				color: 'var(--color-sub-txt)',
 			}
 		},
+	},
+	
+	h4: {
+		fontSize: 18,
+		fontWeight: 700,
+		marginBottom: 30
+	},
+
+	// Tabs
+	tabs: {
+		display: 'inline-flex',
+		backgroundColor: 'var(--bg-neutral-4)',
+		minHeight: 'inherit',
+		padding: 6,
+		borderRadius: 6,
+		border: '1px solid var(--border-table)',
+		marginBottom: 20,
+		'& .MuiTab-root': {
+			lineHeight: 1,
+			fontSize: 12,
+			textTransform: 'capitalize',
+			padding: 5,
+			minHeight: 'inherit',
+			color: 'var(--color-common-txt)',
+			'&:not(:last-child)': {
+				marginRight: 4
+			},
+			'&.Mui-selected': {
+				backgroundColor: 'var(--bg-box)',
+				borderRadius: 6
+			}
+		}
 	}
 }));
 

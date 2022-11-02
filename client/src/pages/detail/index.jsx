@@ -11,6 +11,9 @@ import ListLink from './ListLink';
 import ListTag from './ListTag';
 import useStyles from './styles';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import BoxLeft from './BoxLeft';
+import BoxRight from './BoxRight';
+import CoinChart from './CoinChart';
 
 const getDetail = async ({ id }) => {
 	const data = await coinApi.getDetail(id);
@@ -98,7 +101,7 @@ const DetailPage = () => {
 		};
 	}, [data]);
 
-	// Price bar
+	// Calc price width percent
 	const widthPercent = useMemo(() => {
 		if (data) {
 			const low = data.market_data.low_24h['usd'];
@@ -113,126 +116,33 @@ const DetailPage = () => {
 		return null;
 	}, [data]);
 
-	// Circulating supply percent
+	// Calc circulating supply percent
 	if (data) {
 		const maxSupply = data.market_data.max_supply;
 		const supply = data.market_data.circulating_supply;
 		const supplyPercent = (supply * 100) / maxSupply;
 
 		circulatingSupply.current = Math.round(supplyPercent);
-	}
+	};
 
 	if (isError) {
 		return <div>There is an error. Please try again !</div>;
-	}
+	};
 
 	return isFetching ? (
 		<div>loading...</div>
 	) : data ? (
 		<Grid container spacing={4}>
-			<Grid item xs={12} sm={6} lg={4}>
-				<BoxFlex pt={2}>
-					<img src={data.image['small']} alt={data.name} className={classes.logo} width={30} />
-					<Typography className={classes.name}>{data.name}</Typography>
-					<Typography className={classes.symbol}>{data.symbol}</Typography>
-					<Typography className={classes.rank}>Rank #{data.market_cap_rank}</Typography>
-				</BoxFlex>
-				{dataFromCmcArr.includes(id) ? (
-					<Box>
-						<ListLink data={data.urls} dataFromCmc={dataFromCmcArr.includes(id)} />
-						{data.tags.length > 0 && (
-							<ListTag data={data.tags} coin={data.name} algorithm={data.hashing_algorithm} />
-						)}
-					</Box>
-				) : (
-					<Box>
-						<ListLink data={data.links} dataFromCmc={dataFromCmcArr.includes(id)} />
-						{data.categories.length > 0 && (
-							<ListTag data={data.categories} coin={data.name} algorithm={data.hashing_algorithm} />
-						)}
-					</Box>
-				)}
-			</Grid>
-			<Grid item xs={12} sm={6} lg={8}>
-				<Box>
-					<Typography className={classes.lbl}>
-						{data.name} Price ({data.symbol.toUpperCase()})
-					</Typography>
-					<Typography className={classes.price}>
-						${formatNumber(data.market_data.current_price['usd'])}
-						<CoinChange
-							hasBg={true}
-							value={data.market_data['price_change_percentage_24h']}
-							format={formatPercent}
-							style={{ marginLeft: 10 }}
-						/>
-					</Typography>
-				</Box>
-				<Box className={classes.priceStats}>
-					<Box className='box'>
-						<Typography className='lbl'>Low 24h: </Typography>
-						<Typography className='val'>${formatNumber(data.market_data.low_24h['usd'])}</Typography>
-					</Box>
-					<Box className={classes.priceBar} margin='0 15px'>
-						<span className={classes.percent} style={{ width: `${widthPercent}%` }}>
-							<ArrowDropUpIcon className='icon' />
-						</span>
-					</Box>
-					<Box className='box'>
-						<Typography className='lbl'>High 24h: </Typography>
-						<Typography className='val'>${formatNumber(data.market_data.high_24h['usd'])}</Typography>
-					</Box>
-				</Box>
-				<Box className={classes.overallStats}>
-					<Box className='item'>
-						<Typography className='stats-lbl'>Market Cap</Typography>
-						<Typography className='val'>${formatNumber(data.market_data.market_cap['usd'])}</Typography>
-						<CoinChange
-							value={data.market_data.market_cap_change_percentage_24h_in_currency['usd']}
-							format={formatPercent}
-							style={{ fontSize: 13, fontWeight: 700 }}
-						/>
-					</Box>
-					<Box className='item'>
-						<Typography className='stats-lbl'>Fully Diluted Market Cap</Typography>
-						<Typography className='val'>
-							${formatNumber(data.market_data.fully_diluted_valuation['usd'])}
-						</Typography>
-					</Box>
-					<Box className='item'>
-						<Typography className='stats-lbl'>Volume (24h)</Typography>
-						<Typography className='val'>${formatNumber(data.market_data.total_volume['usd'])}</Typography>
-					</Box>
-					<Box className='item'>
-						<Typography className='stats-lbl'>Circulating Supply</Typography>
-						<Box display='flex' justifyContent='space-between'>
-							<Typography className='val'>{formatSupply(data.market_data.circulating_supply)} {data.symbol.toUpperCase()}</Typography>
-							{data.market_data.circulating_supply && data.market_data.max_supply ? (
-								<Typography className='supply'>
-									{circulatingSupply.current}%
-								</Typography>
-							) : null}
-						</Box>
-						<Box className={classes.priceBar} my={2} sx={{ width: '100% !important' }}>
-							<span className={classes.percent} style={{ width: `${circulatingSupply.current}%` }}></span>
-						</Box>
-						<Box display='flex' justifyContent='space-between'>
-							<Typography className='stats-lbl'>Total supply</Typography>
-							{data.market_data.circulating_supply ? (
-								<Typography className='val'>
-									{formatNumber(data.market_data.circulating_supply)}
-								</Typography>
-							) : null}
-						</Box>
-
-						<Box display='flex' justifyContent='space-between'>
-							<Typography className='stats-lbl'>Max supply</Typography>
-							{data.market_data.max_supply ? (
-								<Typography className='val'>{formatNumber(data.market_data.max_supply)}</Typography>
-							) : null}
-						</Box>
-					</Box>
-				</Box>
+			<BoxLeft data={data} id={id} />
+			<BoxRight data={data} />
+			<Grid container mt={3} pt={3} columnSpacing={5} borderTop='1px solid var(--bg-neutral)'>
+				<Grid item xs={12} lg={8}>
+					<Typography variant='h4' className={classes.h4}>{data.name} to USD Chart</Typography>
+					<CoinChart />
+				</Grid>
+				<Grid item xs={12} lg={4}>
+				<Typography variant='h4' className={classes.h4}>{data.name} Price Statistics</Typography>
+				</Grid>
 			</Grid>
 		</Grid>
 	) : (
@@ -244,12 +154,3 @@ export default DetailPage;
 
 
 // https://codesandbox.io/s/github/renaissancetroll/reactjs-crypto-api-dashboard/tree/master/
-// const ws = new WebSocket( 'wss://stream.binance.com:9443/ws/btcusdt@miniTicker' ); 
-
-// ws.addEventListener('message', e => {
-	
-//   let data = JSON.parse( e.data ) || {};
-//   let { s, c } = data;
-
-//   el.textContent = s +' $'+ Number( c ).toFixed( 2 );
-// });

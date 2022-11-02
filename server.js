@@ -27,6 +27,15 @@ app.get('/api/status', function (req, res) {
 	});
 });
 
+app.get('/api/tweets', async function (req, res) {
+	try {
+		const response = await axios.get('https://api.twitter.com/1.1/search/tweets.json?q=%40twitterdev');
+		return res.status(200).json(response.data);
+	} catch (err) {
+		return res.status(500).json(err);
+	}
+});
+
 // Coin list
 // https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true
 app.get('/api/coin_list', async function (req, res) {
