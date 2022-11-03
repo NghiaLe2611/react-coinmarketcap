@@ -1,19 +1,17 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useState, useRef, useEffect, memo } from 'react';
 import useStyles from './styles';
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+// import Highcharts from 'highcharts';
+import Highcharts from 'highcharts/highstock';
+import HighchartsReact from 'highcharts-react-official';
 import { series } from './data';
+import 'assets/styles/chart.scss';
+// import 'highcharts/css/highcharts.css';
 // import DarkUnica from 'highcharts/themes/dark-unica';
 
-import HC_more from "highcharts/highcharts-more"; //module
-HC_more(Highcharts); //init module
-
-// Highcharts.setOptions({
-//   lang: {
-//     numericSymbols: ["k", "M", "B", "T", "P", "E"]
-//   }
-// });
+// init the module export
+import HC_exporting from 'highcharts/modules/exporting';
+HC_exporting(Highcharts);
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -33,42 +31,58 @@ function TabPanel(props) {
 const options = {
 	chart: {
 		type: 'line',
-        renderTo: 'chart'
+		renderTo: 'chart',
+		// styledMode: true
 	},
 	title: {
 		text: '',
 	},
 	rangeSelector: {
-		buttons: [
-			{
-				type: 'day',
-				count: 1,
-				text: '1d',
-			},
-			{
-				type: 'day',
-				count: 7,
-				text: '7d',
-			},
-			{
-				type: 'month',
-				count: 1,
-				text: '1m',
-			},
-			{
-				type: 'all',
-				text: 'All',
-			},
-		],
-		selected: 4,
+		enabled: false,
+		// allButtonsEnabled: true,
+		// buttons: [
+		// 	{
+		// 		type: 'day',
+		// 		count: 1,
+		// 		text: '1D',
+		// 		events: {
+		// 			click: function() {
+		// 				alert('Clicked button');
+		// 			}
+		// 		}
+		// 	},
+		// 	{
+		// 		type: 'day',
+		// 		count: 7,
+		// 		text: '7D',
+		// 	},
+		// 	{
+		// 		type: 'month',
+		// 		count: 1,
+		// 		text: '1M',
+		// 	},
+		// 	{
+		// 		type: 'year',
+		// 		count: 1,
+		// 		text: '1Y'
+		// 	}
+		// ],
+		// selected: 4,
 	},
 	yAxis: {
 		title: {
 			text: '',
 		},
+		labels: {
+			style: {
+				color: 'var(--color-sub-txt)',
+				fontWeight: 500,
+			},
+		},
+		gridLineColor: 'var(--border-table)',
 		plotLines: [
 			{
-				color: 'orange',
+				color: 'var(--bg-neutral-2)',
 				width: 2,
 				value: 20500,
 				dashStyle: 'Dot',
@@ -78,6 +92,12 @@ const options = {
 	},
 	xAxis: {
 		type: 'datetime',
+		labels: {
+			style: {
+				color: 'var(--color-sub-txt)',
+				fontWeight: 500,
+			},
+		},
 	},
 	plotOptions: {
 		area: {
@@ -93,7 +113,7 @@ const options = {
 				},
 				stops: [
 					[0, '#ea394312'],
-					[1, '#fff'],
+					[1, '#ffffff4d'],
 				],
 			},
 			fillColor: {
@@ -105,7 +125,7 @@ const options = {
 				},
 				stops: [
 					[0, '#16c5820d'],
-					[1, '#fff'],
+					[1, '#ffffff4d'],
 				],
 			},
 			// fillColor: {
@@ -150,13 +170,24 @@ const options = {
 	accessibility: {
 		enabled: false,
 	},
+	scrollbar: { enabled: false },
+	// navigator: {
+	// 	enabled: false
+	// },
+	// exporting: {
+	// 	buttons: {
+	// 		contextButton: {
+	// 			symbol: 'url(../images/ellpsis-solid.svg)',
+	// 			menuItems: ['viewFullscreen', 'downloadPNG', 'downloadJPEG'],
+	// 		},
+	// 	},
+	// },
 };
 
 const darkTheme = {
 	chart: {
 		type: 'line',
-        // renderTo: 'chart',
-        backgroundColor: '#333',
+		renderTo: 'chart',
 	},
 	title: {
 		text: '',
@@ -189,13 +220,13 @@ const darkTheme = {
 		title: {
 			text: '',
 		},
+		gridLineColor: 'var(--border-table)',
 		plotLines: [
 			{
-				color: 'orange',
+				color: 'var(--bg-neutral-2)',
 				width: 2,
 				value: 20500,
 				dashStyle: 'Dot',
-				// https://api.highcharts.com/class-reference/Highcharts#.DashStyleValue
 			},
 		],
 	},
@@ -205,8 +236,6 @@ const darkTheme = {
 	plotOptions: {
 		area: {
 			threshold: 20500,
-			// negativeFillColor: 'rgba(234,57,67,0.2)',
-			// fillColor: 'rgba(22,199,132,0.2)',
 			negativeFillColor: {
 				linearGradient: {
 					x1: 0,
@@ -216,7 +245,7 @@ const darkTheme = {
 				},
 				stops: [
 					[0, '#ea394312'],
-					[1, '#fff'],
+					[1, '#ffffff4d'],
 				],
 			},
 			fillColor: {
@@ -228,7 +257,7 @@ const darkTheme = {
 				},
 				stops: [
 					[0, '#16c5820d'],
-					[1, '#fff'],
+					[1, '#ffffff4d'],
 				],
 			},
 			states: {
@@ -263,35 +292,41 @@ const darkTheme = {
 	},
 };
 
-const dark = {
-	chart: {
-        backgroundColor: '#333',
-	},
-};
-
+// https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=1635912187&to=1667448187
 // https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1
 const CoinChart = () => {
-    const classes = useStyles();
+	const classes = useStyles();
 	const [chartType, setChartType] = useState(0);
 
-    const chartRef = useRef(null);
+	const chartRef = useRef(null);
 
-    useEffect(() => {
-        Highcharts.chart('chart', options);
-    }, []);
+	// useEffect(() => {
+	//     Highcharts.chart('chart', options);
+	// }, []);
 
 	const handleChangeType = (e, newValue) => {
 		setChartType(newValue);
 	};
 
-    const test = () => {
-        // Highcharts.chart.setOptions(dark)
-        Highcharts.chart('chart', darkTheme);
-    };
+	const showFullScreen = () => {
+		if (chartRef.current) {
+			chartRef.current.chart.fullscreen.toggle();
+		}
+	};
+
+	const downloadImage = (type) => {
+		if (type === 'PNG') {
+			chartRef.current.chart.exportChart();
+			// chartRef.current.chart.toggleDataTable()
+		}
+
+		if (type === 'JPEG') {
+			chartRef.current.chart.exportChart({type: 'image/jpeg'});
+		}
+	};
 
 	return (
 		<div>
-			<button onClick={test}>Change</button>
 			<Tabs
 				value={chartType}
 				onChange={handleChangeType}
@@ -302,17 +337,17 @@ const CoinChart = () => {
 				<Tab label='Price' />
 				<Tab label='Tradingview' />
 			</Tabs>
-
+			<button onClick={showFullScreen}>Fullscreen</button>
+			<button onClick={() => downloadImage('PNG')}>Download PNG Image</button>
+			<button onClick={() => downloadImage('JPEG')}>Download JPEG Image</button>
 			<TabPanel value={chartType} index={0}>
-				<div id="chart">
-
-                </div>
-				{/* <HighchartsReact
-					key={chartKey}
+				{/* <div id='chart'></div> */}
+				<HighchartsReact
 					highcharts={Highcharts}
+					constructorType={'stockChart'}
 					options={options}
 					ref={chartRef}
-				/> */}
+				/>
 			</TabPanel>
 			<TabPanel value={chartType} index={1}>
 				tab 2
