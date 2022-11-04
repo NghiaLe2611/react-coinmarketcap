@@ -280,18 +280,13 @@ app.get('/api/coins/:id', async function (req, res) {
 	const URL_CMC = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?slug=${id}`;
 	const URL_COINGECKO = `https://api.coingecko.com/api/v3/coins/${id}?tickers=false&community_data=false&developer_data=false&sparkline=true`;
 	let cachedDetail = myCache.get(`detail-${id}`);
+	let cachedDetailCoingecko = myCache.get(`detailCoingecko-${id}`);
 
 	const promise1 = axios.get(URL_COINGECKO);
 	
 	// Get data from CMC
 	if (!cachedDetail) {
 		if (dataFromArr.includes(id)) {
-			// const promise2 = axios.get(URL_CMC, {
-			// 	headers: {
-			// 		'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
-			// 	},
-			// });
-
 			Promise.all([
 				promise1,
 				axios.get(URL_CMC, {
@@ -305,36 +300,15 @@ app.get('/api/coins/:id', async function (req, res) {
 					const data2 = resp[0].data;
 					const finalData = { ...data2, urls: data1.urls, tags: data1['tag-names'] };
 					cachedDetail = finalData;
+					cachedDetailCoingecko = data2;
 					myCache.set(`detail-${id}`, cachedDetail, CACHE_TIME_8H);
+					myCache.set(`detailCoingecko-${id}`, cachedDetailCoingecko, CACHE_TIME_1H);
+					
 					return res.status(200).json(finalData);
 				})
 				.catch((err) => {
 					return res.status(500).json(err);
 				});
-
-			// Promise.all([promise1, promise2]).then(resp => {
-			// 	const data1 = Object.values(resp[1].data.data)[0];
-			// 	const data2 = resp[0].data;
-			// 	const finalData = { ...data2, urls: data1.urls, tags: data1['tag-names']};
-			// 	cachedDetail = finalData;
-			// 	myCache.set(`detail-${id}`, cachedDetail, CACHE_TIME_8H);
-			// 	return res.status(200).json(finalData);
-			// }).catch(err => {
-			// 	return res.status(500).json(err);
-			// });
-
-			// try {
-			// 	const response = await axios.get(URL_CMC, {
-			// 		headers: {
-			// 			'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
-			// 		},
-			// 	});
-			// 	cachedDetail = response.data;
-			// 	myCache.set(`detail${id}`, cachedDetail, CACHE_TIME_8H);
-			// 	return res.status(200).json(response.data);
-			// } catch (err) {
-			// 	return res.status(500).json(err);
-			// }
 		} else {
 			try {
 				const response = await promise1;
@@ -347,6 +321,17 @@ app.get('/api/coins/:id', async function (req, res) {
 		}
 	} else {
 		console.log('Co detail ' + id);
+
+		// Have cached data from coingecko
+		if (!cachedDetailCoingecko) {
+			console.log('Get new detail coingecko ', id);
+			const response = await promise1;
+			cachedDetailCoingecko = response.data;
+			myCache.set(`detailCoingecko-${id}`, cachedDetailCoingecko, CACHE_TIME_1H);
+			const newData = Object.assign({}, cachedDetail, cachedDetailCoingecko);
+			return res.status(200).json(newData);
+		}
+		
 		return res.status(200).json(cachedDetail);
 	}
 });

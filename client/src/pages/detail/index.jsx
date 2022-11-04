@@ -138,7 +138,7 @@ const DetailPage = () => {
 			<Grid container mt={3} pt={3} columnSpacing={5} borderTop='1px solid var(--bg-neutral)'>
 				<Grid item xs={12} lg={8}>
 					<Typography variant='h4' className={classes.h4}>{data.name} to USD Chart</Typography>
-					<CoinChart />
+					<CoinChart currentPrice={data?.market_data.current_price['usd']}/>
 				</Grid>
 				<Grid item xs={12} lg={4}>
 				<Typography variant='h4' className={classes.h4}>{data.name} Price Statistics</Typography>
