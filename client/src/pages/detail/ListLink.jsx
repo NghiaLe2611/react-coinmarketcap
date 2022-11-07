@@ -38,8 +38,6 @@ const ListLink = ({ data, dataFromCmc }) => {
 		setDropdownId(id);
 	};
 
-	console.log(data);
-
 	return dataFromCmc ? (
 		<List className={classes.list}>
 			<ListItem>

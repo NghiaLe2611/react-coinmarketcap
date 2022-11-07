@@ -139,8 +139,6 @@
 // ::-webkit-scrollbar-thumb:window-inactive {
 // 	background: rgba(255,0,0,0.4); 
 // }
-
-
 .back-to-top {
     position: fixed;
     bottom: 20px;
@@ -152,8 +150,81 @@
     border-radius: 100px;
     border: none;
     box-shadow: 0 5px 10px #ccc;
-  }
-  
-  .back-to-top:hover {
+}
+
+.back-to-top:hover {
     background: red;
-  }
+}
+
+// Full screen
+:-webkit-full-screen-ancestor:not(iframe) {
+    z-index: auto !important;
+    position: static !important;
+    opacity: 1 !important;
+    -webkit-transform: none !important;
+    -webkit-mask: none !important;
+    clip: none !important;
+    -webkit-filter: none !important;
+    -webkit-transition: none !important;
+    -webkit-box-reflect: none !important;
+    -webkit-perspective: none !important;
+    -webkit-transform-style: flat !important;
+}
+
+:root:-webkit-full-screen-document:not(:-webkit-full-screen),
+:root:-webkit-full-screen-ancestor {
+    overflow: hidden !important;
+}
+
+:root:-webkit-full-screen-ancestor .chart-container {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100% !important;
+    z-index: 9999;
+}
+
+// :-webkit-full-screen {
+//     background-color: white;
+//     z-index: 2147483647 !important;
+// }
+
+// :root:-webkit-full-screen-document:not(:-webkit-full-screen), :root:-webkit-full-screen-ancestor {
+//     overflow: hidden !important;
+// }
+
+// video:-webkit-full-screen, audio:-webkit-full-screen {
+//     background-color: transparent !important;
+//     position: static !important;
+//     margin: 0 !important;
+//     height: 100% !important;
+//     width: 100% !important;
+//     -webkit-flex: 1 !important;
+//     display: block !important;
+//     -webkit-transition: none !important;
+// }
+
+// :-webkit-full-screen video,
+// video:-webkit-full-screen {
+//     -webkit-cursor-visibility: auto-hide;
+// }
+
+// img:-webkit-full-screen {
+//     width: auto;
+//     height: 100%;
+//     max-width: 100%;
+// }
+
+// iframe:-webkit-full-screen {
+//     margin: 0 !important;
+//     padding: 0 !important;
+//     border: 0 !important;
+//     position: fixed !important;
+//     height: 100% !important;
+//     width: 100% !important;
+//     left: 0 !important;
+//     top: 0 !important;
+//     max-width: none !important;
+//     max-height: none !important;
+// }

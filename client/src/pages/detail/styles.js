@@ -240,10 +240,16 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	
+	wrapTitle: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 30
+	},
+
 	h4: {
 		fontSize: 18,
 		fontWeight: 700,
-		marginBottom: 30
 	},
 
 	// Tabs
@@ -270,7 +276,12 @@ const useStyles = makeStyles((theme) => ({
 				borderRadius: 6
 			}
 		}
+	},
+
+	btn: {
+		borderRadius: '12px !important'
 	}
+
 }));
 
 export default useStyles;

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, IconButton, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
 import { BoxFlex } from 'components/common';
@@ -14,6 +14,9 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import BoxLeft from './BoxLeft';
 import BoxRight from './BoxRight';
 import CoinChart from './CoinChart';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ActionButtons from './ActionButtons';
 
 const getDetail = async ({ id }) => {
 	const data = await coinApi.getDetail(id);
@@ -26,6 +29,8 @@ const DetailPage = () => {
 	const { id } = params;
 
 	const [data, setData] = useState(null);
+
+	const childRef = useRef();
 	const ws = useRef(null);
 	const lastPrice = useRef(0);
 	const hasValue = useRef(false);
@@ -116,6 +121,14 @@ const DetailPage = () => {
 		return null;
 	}, [data]);
 
+	const handleShowFullScreen = () => {
+		childRef.current.showFullScreen();
+	};
+
+	const handleDownloadImage = (type) => {
+		childRef.current.downloadImage(type);
+	}
+
 	// Calc circulating supply percent
 	if (data) {
 		const maxSupply = data.market_data.max_supply;
@@ -137,11 +150,20 @@ const DetailPage = () => {
 			<BoxRight data={data} />
 			<Grid container mt={3} pt={3} columnSpacing={5} borderTop='1px solid var(--bg-neutral)'>
 				<Grid item xs={12} lg={8}>
-					<Typography variant='h4' className={classes.h4}>{data.name} to USD Chart</Typography>
-					<CoinChart currentPrice={data?.market_data.current_price['usd']}/>
+					<Box className={classes.wrapTitle}>
+						<Typography variant='h4' className={classes.h4}>
+							{data.name} to USD Chart
+						</Typography>
+						<ActionButtons onShowFullScreen={handleShowFullScreen} onDownloadImage={handleDownloadImage} />
+					</Box>
+
+					<CoinChart ref={childRef} />
+					{/* currentPrice={data?.market_data.current_price['usd']} */}
 				</Grid>
 				<Grid item xs={12} lg={4}>
-				<Typography variant='h4' className={classes.h4}>{data.name} Price Statistics</Typography>
+					<Typography variant='h4' className={classes.h4}>
+						{data.name} Price Statistics
+					</Typography>
 				</Grid>
 			</Grid>
 		</Grid>

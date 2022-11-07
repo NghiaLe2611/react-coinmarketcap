@@ -1,19 +1,17 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, styled, Tab, Tabs, Typography } from '@mui/material';
 import { useState, useRef, useEffect, memo } from 'react';
 import useStyles from './styles';
-// import Highcharts from 'highcharts';
-import Highcharts from 'highcharts/highstock';
-import HighchartsReact from 'highcharts-react-official';
-import { series } from './data';
 import 'assets/styles/chart.scss';
-// import 'highcharts/css/highcharts.css';
-// import DarkUnica from 'highcharts/themes/dark-unica';
-
-// init the module export
-import HC_exporting from 'highcharts/modules/exporting';
-import { ColorType, createChart } from 'lightweight-charts';
+import * as ReactDOMServer from 'react-dom/server';
+import { ColorType, createChart, CrosshairMode, isBusinessDay } from 'lightweight-charts';
 import axios from 'axios';
-HC_exporting(Highcharts);
+import moment from 'moment';
+import { formatNumber } from 'utils/helpers';
+import { forwardRef } from 'react';
+import { useImperativeHandle } from 'react';
+import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-export-image';
+import { _isDarkMode } from 'features/theme/themeSlice';
+import { useSelector } from 'react-redux';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -30,270 +28,24 @@ function TabPanel(props) {
 	);
 }
 
-const options = {
-	chart: {
-		type: 'line',
-		renderTo: 'chart',
-		// styledMode: true
-	},
-	title: {
-		text: '',
-	},
-	rangeSelector: {
-		enabled: false,
-		// allButtonsEnabled: true,
-		// buttons: [
-		// 	{
-		// 		type: 'day',
-		// 		count: 1,
-		// 		text: '1D',
-		// 		events: {
-		// 			click: function() {
-		// 				alert('Clicked button');
-		// 			}
-		// 		}
-		// 	},
-		// 	{
-		// 		type: 'day',
-		// 		count: 7,
-		// 		text: '7D',
-		// 	},
-		// 	{
-		// 		type: 'month',
-		// 		count: 1,
-		// 		text: '1M',
-		// 	},
-		// 	{
-		// 		type: 'year',
-		// 		count: 1,
-		// 		text: '1Y'
-		// 	}
-		// ],
-		// selected: 4,
-	},
-	yAxis: {
-		title: {
-			text: '',
-		},
-		labels: {
-			style: {
-				color: 'var(--color-sub-txt)',
-				fontWeight: 500,
-			},
-		},
-		gridLineColor: 'var(--border-table)',
-		plotLines: [
-			{
-				color: 'var(--bg-neutral-2)',
-				width: 2,
-				value: 20500,
-				dashStyle: 'Dot',
-				// https://api.highcharts.com/class-reference/Highcharts#.DashStyleValue
-			},
-		],
-	},
-	xAxis: {
-		type: 'datetime',
-		labels: {
-			style: {
-				color: 'var(--color-sub-txt)',
-				fontWeight: 500,
-			},
-		},
-	},
-	plotOptions: {
-		area: {
-			threshold: 20500,
-			// negativeFillColor: 'rgba(234,57,67,0.2)',
-			// fillColor: 'rgba(22,199,132,0.2)',
-			negativeFillColor: {
-				linearGradient: {
-					x1: 0,
-					x2: 0,
-					y1: 0,
-					y2: 1,
-				},
-				stops: [
-					[0, 'rgba(234,57,67,0.08)'],
-					[1, 'rgba(255,255,255,0.3)'],
-				],
-			},
-			fillColor: {
-				linearGradient: {
-					x1: 0,
-					x2: 0,
-					y1: 0,
-					y2: 1,
-				},
-				stops: [
-					[0, 'rgba(22,197,130,0.05)'],
-					[1, 'rgba(255,255,255,0.3)'],
-				],
-			},
-			// fillColor: {
-			//     linearGradient: {
-			//         x1: 0,
-			//         y1: 0,
-			//         x2: 0,
-			//         y2: 1
-			//     },
-			//     stops: [
-			//         [0, Highcharts.getOptions().colors[0]],
-			//         [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-			//     ]
-			// },
-			states: {
-				hover: {
-					lineWidth: 2,
-				},
-			},
-		},
-		series: {
-			negativeColor: '#ea3943',
-			color: '#16c784',
-			threshold: 20500,
-			states: {
-				hover: {
-					lineWidth: 2,
-				},
-			},
-		},
-	},
-	series: [
-		{
-			type: 'area',
-			showInLegend: false,
-			data: series,
-		},
-	],
-	credits: {
-		enabled: false,
-	},
-	accessibility: {
-		enabled: false,
-	},
-	scrollbar: { enabled: false },
-	// navigator: {
-	// 	enabled: false
-	// },
-	exporting: {
-		enabled: false,
-		// buttons: {
-		// 	contextButton: {
-		// 		symbol: 'url(../images/ellpsis-solid.svg)',
-		// 		menuItems: ['viewFullscreen', 'downloadPNG', 'downloadJPEG'],
-		// 	},
-		// },
-	},
-};
+const Tooltip = styled(Box)(({ theme }) => ({
+	position: 'absolute',
+	display: 'none',
+	padding: '15px',
+    minWidth: 200,
+	boxShadow: '2px 2px 8px 2px rgba(189,189,189,0.85)',
+	fontSize: '13px',
+	color: '#131722',
+	backgroundColor: 'rgba(255, 255, 255, 1)',
+	textAlign: 'left',
+	zIndex: 999,
+	top: '12px',
+	left: '12px',
+	pointerEvents: 'none',
+	borderRadius: '6px',
+}));
 
-const darkTheme = {
-	chart: {
-		type: 'line',
-		renderTo: 'chart',
-	},
-	title: {
-		text: '',
-	},
-	rangeSelector: {
-		buttons: [
-			{
-				type: 'day',
-				count: 1,
-				text: '1d',
-			},
-			{
-				type: 'day',
-				count: 7,
-				text: '7d',
-			},
-			{
-				type: 'month',
-				count: 1,
-				text: '1m',
-			},
-			{
-				type: 'all',
-				text: 'All',
-			},
-		],
-		selected: 4,
-	},
-	yAxis: {
-		title: {
-			text: '',
-		},
-		gridLineColor: 'var(--border-table)',
-		plotLines: [
-			{
-				color: 'var(--bg-neutral-2)',
-				width: 2,
-				value: 20500,
-				dashStyle: 'Dot',
-			},
-		],
-	},
-	xAxis: {
-		type: 'datetime',
-	},
-	plotOptions: {
-		area: {
-			threshold: 20500,
-			negativeFillColor: {
-				linearGradient: {
-					x1: 0,
-					x2: 0,
-					y1: 0,
-					y2: 1,
-				},
-				stops: [
-					[0, '#ea394312'],
-					[1, '#ffffff4d'],
-				],
-			},
-			fillColor: {
-				linearGradient: {
-					x1: 0,
-					x2: 0,
-					y1: 0,
-					y2: 1,
-				},
-				stops: [
-					[0, '#16c5820d'],
-					[1, '#ffffff4d'],
-				],
-			},
-			states: {
-				hover: {
-					lineWidth: 2,
-				},
-			},
-		},
-		series: {
-			negativeColor: '#ea3943',
-			color: '#16c784',
-			threshold: 20500,
-			states: {
-				hover: {
-					lineWidth: 2,
-				},
-			},
-		},
-	},
-	series: [
-		{
-			type: 'area',
-			showInLegend: false,
-			data: series,
-		},
-	],
-	credits: {
-		enabled: false,
-	},
-	accessibility: {
-		enabled: false,
-	},
-};
+const toolTipMargin = 15;
 
 // 1D (5m-288) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288
 // 7D (15m-672) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=672
@@ -302,21 +54,56 @@ const darkTheme = {
 
 // https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=1635912187&to=1667448187
 // https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1
-const CoinChart = ({
-	currentPrice,
-    backgroundColor = 'white',
-    textColor = '#979da8',
-	lineColor = '#2962FF',
-    areaTopColor = '#2962FF',
-    areaBottomColor = 'rgba(41, 98, 255, 0.28)'
-}) => {
+
+const lightTheme = {
+	layout: {
+		background: { type: ColorType.Solid, color: '#fff' },
+		textColor: '#979da8',
+	},
+	leftPriceScale: {
+		visible: true,
+		borderColor: '#efefef',
+	},
+	grid: {
+		horzLines: {
+			color: '#efefef',
+		},
+		vertLines: {
+			color: '#efefef',
+		},
+	},
+};
+
+const darkTheme = {
+	layout: {
+		background: { type: ColorType.Solid, color: '#17171A' },
+		textColor: '#7B8195',
+	},
+	leftPriceScale: {
+		visible: true,
+		borderColor: '#222531',
+	},
+	grid: {
+		horzLines: {
+			color: '#222531',
+		},
+		vertLines: {
+			color: '#222531',
+		},
+	},
+};
+
+const CoinChart = forwardRef((props, ref) => {
 	const classes = useStyles();
+	const isDarkMode = useSelector(_isDarkMode);
 	const [chartType, setChartType] = useState(0);
+	const [chartInterval, setChartInterval] = useState(0);
 
 	const chartContainerRef = useRef();
 	const chartRef = useRef();
 	const baselineRef = useRef();
 	const dataRef = useRef();
+	const tooltipRef = useRef(null);
 	const resizeObserver = useRef();
 
 	// Init chart
@@ -343,9 +130,9 @@ const CoinChart = ({
 				const data = res.data;
 				if (data) {
 					dataRef.current = data;
-					const lastPrice = data[data.length - 1];
+					const openPrice = data[0];
 					baselineRef.current = chartRef.current.addBaselineSeries({
-						baseValue: { type: 'price', price: lastPrice[4] },
+						baseValue: { type: 'price', price: openPrice[4] },
 						lineWidth: 2,
 						topLineColor: 'rgba( 38, 166, 154, 1)',
 						topFillColor1: 'rgba( 38, 166, 154, 0.28)',
@@ -353,144 +140,327 @@ const CoinChart = ({
 						bottomLineColor: 'rgba( 239, 83, 80, 1)',
 						bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
 						bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
+						priceLineVisible: false,
+						// crosshairMarkerRadius: 5,
 					});
 
 					const seriesData = data.map((item) => {
-						console.log(item);
+						// console.log(item);
 						return {
 							time: item[0] / 1000,
 							value: Number(item[4]),
 						};
 					});
-			
-					baselineRef.current.setData(seriesData);
-				}
 
-				
+					baselineRef.current.setData(seriesData);
+					baselineRef.current.createPriceLine({
+						price: openPrice[4],
+						color: '#979DA8',
+						lineWidth: 2,
+						lineStyle: 1,
+						axisLabelVisible: true,
+					});
+
+					chartRef.current.timeScale().fitContent();
+
+					// if (chartRef.current) {
+					// 	chartRef.current.timeScale().setVisibleRange({
+					// 		from: data[0][0] / 1000,
+					// 		to: data[data.length - 1][0] / 1000,
+					// 	});
+					// }
+				}
 			} catch (err) {
 				console.log(err);
 			}
-		};
+		}
 
 		if (chartRef.current) {
 			chartRef.current.remove();
 		}
 
-		chartRef.current = createChart(chartContainerRef.current, {
-			layout: {
-				background: { type: ColorType.Solid, color: backgroundColor },
-				textColor,
-			},
-			width: chartContainerRef.current.clientWidth,
-			height: 400,
-			rightPriceScale: {
-				visible: false, // Hide price bar at the right
-			},
-			leftPriceScale: {
-				visible: true,
-				borderColor: '#e6e6e6',
-			},
-			grid: {
-				horzLines: {
-					color: '#e6e6e6',
+		if (chartContainerRef.current) {
+			chartRef.current = createChart(chartContainerRef.current, {
+				...lightTheme,
+				width: chartContainerRef.current.clientWidth,
+				height: chartContainerRef.current.clientHeight,
+				rightPriceScale: {
+					visible: false, // Hide price bar at the right
 				},
-				vertLines: {
-					color: '#e6e6e6',
+				timeScale: {
+					borderColor: '#485c7b',
+					timeVisible: true,
+					minBarSpacing: 0.001,
 				},
-			},
-			timeScale: {
-				borderColor: '#485c7b',
-			},
-		});
+				handleScale: {
+					// Scaling with the mouse wheel
+					mouseWheel: false,
+					// Scaling with pinch/zoom gestures.
+					pinch: false,
+					// Scaling the price and/or time scales by holding down the left mouse button and moving the mouse.
+					// axisPressedMouseMove: false,
+				},
+				handleScroll: {
+					mouseWheel: false,
+					pressedMouseMove: false,
+				},
+				localization: {
+					timeFormatter: (businessDayOrTimestamp) => {
+						if (isBusinessDay(businessDayOrTimestamp)) {
+							return (
+								businessDayOrTimestamp.day +
+								'-' +
+								businessDayOrTimestamp.month +
+								'-' +
+								businessDayOrTimestamp.year
+							);
+						}
 
-		getChartData();
+						return moment(businessDayOrTimestamp * 1000).format('DD MMM YY');
+						// return formatTime(intervals, businessDayOrTimestamp);
+					},
+				},
+			});
 
-		// console.log(111, currentPrice);
-		
-		// const lineSeries = chartRef.current.addBaselineSeries({
-		// 	baseValue: { type: 'price', price: lastPrice[1] },
-		// 	lineWidth: 2,
-		// 	topLineColor: 'rgba( 38, 166, 154, 1)',
-		// 	topFillColor1: 'rgba( 38, 166, 154, 0.28)',
-		// 	topFillColor2: 'rgba( 38, 166, 154, 0.05)',
-		// 	bottomLineColor: 'rgba( 239, 83, 80, 1)',
-		// 	bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
-		// 	bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
-		// });
-
-	}, [backgroundColor, textColor]);
-
-	useEffect(() => {
-		if (dataRef.current) {
-			const lastPrice = dataRef.current[dataRef.current.length - 1];
-			if (currentPrice && baselineRef.current) {
-				baselineRef.current.update({
-					time: lastPrice[0] / 1000,
-					value: Number(currentPrice)
-				});
-			}
+			getChartData();
 		}
-	}, [currentPrice]);
+	}, [chartType]);
+
+	// https://tradingview.github.io/lightweight-charts/tutorials/how_to/tooltips
+	useEffect(() => {
+		if (chartRef.current) {
+			// subscribeCrosshairMove subscribeClick
+			chartRef.current.subscribeCrosshairMove((param) => {
+				const width = chartContainerRef.current.clientWidth;
+				const height = chartContainerRef.current.clientHeight;
+
+				const toolTipWidth = tooltipRef.current.clientWidth;
+				const toolTipHeight = tooltipRef.current.clientHeight;
+
+				const price = param.seriesPrices.get(baselineRef.current);
+				// const volume = param.seriesPrices.get(volumesRef.current)?.toFixed(2);
+				const d = new Date(param.time * 1000);
+
+				const date = moment(d).format('DD/MM/YYYY');
+				const time = moment(d).format('h:mm A'); // 12h format, 24h: HH:mm
+
+				if (
+					!param.time ||
+					param.point.x < 0 ||
+					param.point.x > width ||
+					param.point.y < 0 ||
+					param.point.y > height
+				) {
+					tooltipRef.current.style.display = 'none';
+					return;
+				}
+
+				tooltipRef.current.style.display = 'block';
+				tooltipRef.current.innerHTML = ReactDOMServer.renderToString(
+					<div>
+						<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+							<span style={{ fontWeight: 700 }}>{date}</span>
+							<span style={{ color: 'var(--color-sub-txt)', fontWeight: 500, fontSize: 12 }}>{time}</span>
+						</div>
+						<div>
+							Price: <b>${formatNumber(price)}</b>
+						</div>
+					</div>
+				);
+
+				const y = param.point.y;
+
+				let left = param.point.x + toolTipWidth / 2 - toolTipMargin;
+
+				// Tooltip at the right of chart
+				if (width - left < toolTipWidth) {
+					left = param.point.x - toolTipWidth + toolTipMargin;
+				}
+
+				let top = y + toolTipMargin;
+				if (top > height - toolTipHeight) {
+					top = y - toolTipHeight - toolTipMargin;
+				}
+
+				tooltipRef.current.style.left = left + 'px';
+				tooltipRef.current.style.top = top + 'px';
+			});
+		}
+	}, [chartRef]);
+
+	// useEffect(() => {
+	// 	if (dataRef.current) {
+	// 		const lastPrice = dataRef.current[dataRef.current.length - 1];
+	// 		if (currentPrice && baselineRef.current) {
+	// 			baselineRef.current.update({
+	// 				time: lastPrice[0] / 1000,
+	// 				value: Number(currentPrice)
+	// 			});
+	// 		}
+	// 	}
+	// }, [currentPrice]);
 
 	// Resize chart on container resizes.
-	// useEffect(() => {
-	// 	resizeObserver.current = new ResizeObserver((entries) => {
-	// 		const { width, height } = entries[0].contentRect;
-	// 		chartRef.current.applyOptions({ width, height });
-	// 		setTimeout(() => {
-	// 			chartRef.current.timeScale().fitContent();
-	// 		}, 0);
-	// 	});
+	useEffect(() => {
+		const container = chartContainerRef.current;
 
-	// 	resizeObserver.current.observe(chartContainerRef.current);
+		if (container) {
+			resizeObserver.current = new ResizeObserver((entries) => {
+				const { width, height } = entries[0].contentRect;
+				chartRef.current.applyOptions({ width, height });
+				setTimeout(() => {
+					chartRef.current.timeScale().fitContent();
+				}, 0);
+			});
 
-	// 	return () => resizeObserver.current.disconnect();
-	// }, []);
+			resizeObserver.current.observe(container);
+		}
+
+		return () => {
+			resizeObserver.current.disconnect();
+		};
+	}, [chartType]);
+
+	// Change chart bg
+	useEffect(() => {
+		if (chartRef.current) {
+			if (isDarkMode) {
+				chartRef.current.applyOptions(darkTheme);
+			} else {
+				chartRef.current.applyOptions(lightTheme);
+			}
+		}
+	}, [isDarkMode]);
 
 	const handleChangeType = (e, newValue) => {
 		setChartType(newValue);
 	};
 
-	const showFullScreen = () => {
-		if (chartRef.current) {
-			chartRef.current.chart.fullscreen.toggle();
-		}
+	const handleChangeInterval = (e, newValue) => {
+		setChartInterval(newValue);
 	};
 
-	const downloadImage = (type) => {
-		if (type === 'PNG') {
-			chartRef.current.chart.exportChart();
-			// chartRef.current.chart.toggleDataTable()
+	function cancelFullScreen() {
+		var el = document;
+		var requestMethod =
+			el.cancelFullScreen ||
+			el.webkitCancelFullScreen ||
+			el.mozCancelFullScreen ||
+			el.exitFullscreen ||
+			el.webkitExitFullscreen;
+		if (requestMethod) {
+			// cancel full screen.
+			requestMethod.call(el);
+		} else if (typeof window.ActiveXObject !== 'undefined') {
+			// Older IE.
+			var wscript = new window.ActiveXObject('WScript.Shell');
+			if (wscript !== null) {
+				wscript.SendKeys('{F11}');
+			}
 		}
+	}
 
-		if (type === 'JPEG') {
-			chartRef.current.chart.exportChart({ type: 'image/jpeg' });
+	function requestFullScreen(el) {
+		// Supports most browsers and their versions.
+		var requestMethod =
+			el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+
+		if (requestMethod) {
+			// Native full screen.
+			requestMethod.call(el);
+		} else if (typeof window.ActiveXObject !== 'undefined') {
+			// Older IE.
+			var wscript = new window.ActiveXObject('WScript.Shell');
+			if (wscript !== null) {
+				wscript.SendKeys('{F11}');
+			}
 		}
-	};
+		return false;
+	}
+
+	function toggleFullScreen(el) {
+		if (!el) {
+			el = document.body; // Make the body go full screen.
+		}
+		var isInFullScreen =
+			(document.fullScreenElement && document.fullScreenElement !== null) ||
+			document.mozFullScreen ||
+			document.webkitIsFullScreen;
+
+		if (isInFullScreen) {
+			cancelFullScreen();
+		} else {
+			requestFullScreen(el);
+		}
+		return false;
+	}
+
+	useImperativeHandle(ref, () => ({
+		showFullScreen() {
+			toggleFullScreen();
+		},
+
+		downloadImage(type) {
+			if (type === 'png') {
+				exportComponentAsPNG(chartContainerRef, {
+					fileName: 'BTC_Chart.png',
+				});
+			}
+
+			if (type === 'jpeg') {
+				exportComponentAsJPEG(chartContainerRef, {
+					fileName: 'BTC_Chart.jpg',
+				});
+			}
+		},
+	}));
 
 	return (
 		<div>
-			<Tabs
-				value={chartType}
-				onChange={handleChangeType}
-				className={classes.tabs}
-				TabIndicatorProps={{
-					style: { display: 'none' },
-				}}>
-				<Tab label='Price' />
-				<Tab label='Tradingview' />
-			</Tabs>
-			<button onClick={showFullScreen}>Fullscreen</button>
-			<button onClick={() => downloadImage('PNG')}>Download PNG Image</button>
-			<button onClick={() => downloadImage('JPEG')}>Download JPEG Image</button>
+			<Box display='flex' justifyContent='space-between'>
+				<Tabs
+					value={chartType}
+					onChange={handleChangeType}
+					className={classes.tabs}
+					TabIndicatorProps={{
+						style: { display: 'none' },
+					}}>
+					<Tab label='Price' />
+					<Tab label='Candle Chart' />
+				</Tabs>
+				<Tabs
+					value={chartInterval}
+					onChange={handleChangeInterval}
+					className={classes.tabs}
+					TabIndicatorProps={{
+						style: { display: 'none' },
+					}}
+					sx={{
+						'& .MuiTab-root': {
+							width: 40,
+							minWidth: 'initial',
+							'&:hover': {
+								opacity: '0.6'
+							}
+						},
+					}}>
+					<Tab label='1D' index={0} />
+					<Tab label='7D' index={1} />
+					<Tab label='1M' index={2} />
+					<Tab label='3M' index={3} />
+					<Tab label='1Y' index={4} />
+				</Tabs>
+			</Box>
 			<TabPanel value={chartType} index={0}>
-				<div className='chart-container' style={{ position: 'relative' }} ref={chartContainerRef}></div>
+				<div className='chart-container' style={{ position: 'relative', height: 400 }} ref={chartContainerRef}>
+					<Tooltip ref={tooltipRef}></Tooltip>
+				</div>
 			</TabPanel>
 			<TabPanel value={chartType} index={1}>
 				tab 2
 			</TabPanel>
 		</div>
 	);
-};
+});
 
 export default memo(CoinChart);
