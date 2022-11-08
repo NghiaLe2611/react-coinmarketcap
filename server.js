@@ -263,6 +263,7 @@ app.get('/api/cate_by_id', async function (req, res) {
 				},
 			}
 		);
+
 		return res.status(200).json(response.data);
 	} catch (err) {
 		return res.status(500).json(err);
@@ -333,6 +334,69 @@ app.get('/api/coins/:id', async function (req, res) {
 		}
 		
 		return res.status(200).json(cachedDetail);
+	}
+});
+
+// Chart data
+// 1D (5m-288) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288
+// 7D (15m-672) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=672
+// 1M (1h-720) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=720
+// 3M (4h-540) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&limit=540
+// 1Y (1D-365) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=365
+// https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1
+
+app.get('/api/chart_data/:id', async function (req, res) {
+	let url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1';
+	const interval = req.query.interval;
+	const id = req.params.id;
+
+	if (!id) {
+		return res.status(400).json({
+			status: 'error',
+			message: 'ID is not valid',
+		});
+	}
+
+	switch (interval) {
+		case '1d': {
+			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1`;
+			break;
+		}
+		case '7d': {
+			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`;
+			break;
+		}
+		case '1M': {
+			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=30`;
+			break;
+		}
+		case '3M': {
+			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=90`;
+			break;
+		}
+		case '1Y': {
+			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=365`;
+			break;
+		}
+		default:
+			if (!interval) {
+				url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1`;
+				break;
+			} else {
+				return res.status(400).json({
+					status: 'error',
+					message: 'Interval is not valid',
+				});
+			}
+	}
+
+	try {
+		const response = await axios(url);
+		// console.log(response.data);
+		return res.status(200).json(response.data.prices);
+	} catch (err) {
+		console.log(111, err.response.data);
+		return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 	}
 });
 

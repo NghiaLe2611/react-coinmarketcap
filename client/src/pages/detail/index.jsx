@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Box, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Grid, IconButton, List, ListItem, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
 import { BoxFlex } from 'components/common';
 import CoinChange from 'components/common/CoinChange';
 import { useParams } from 'react-router-dom';
 import { dataFromCmcArr } from 'utils/constants';
-import { formatNumber, formatPercent, formatSupply } from 'utils/helpers';
+import { formatNumber, formatPercent, formatPriceChange, formatSupply } from 'utils/helpers';
 import ListLink from './ListLink';
 import ListTag from './ListTag';
 import useStyles from './styles';
@@ -66,45 +66,45 @@ const DetailPage = () => {
 	}, [data]);
 
 	// Update real time price
-	useEffect(() => {
-		if (data) {
-			const { symbol } = data;
-			ws.current = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol}usdt@miniTicker`);
-			// ws.current.onopen = () => console.log('ws opened');
-			// ws.current.onclose = () => console.log('ws closed');
-		}
+	// useEffect(() => {
+	// 	if (data) {
+	// 		const { symbol } = data;
+	// 		ws.current = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol}usdt@miniTicker`);
+	// 		// ws.current.onopen = () => console.log('ws opened');
+	// 		// ws.current.onclose = () => console.log('ws closed');
+	// 	}
 
-		if (!ws.current) return;
+	// 	if (!ws.current) return;
 
-		ws.current.onmessage = (e) => {
-			const message = JSON.parse(e.data);
-			// console.log('e', message);
-			const last24hPrice = lastPrice.current;
-			if (message) {
-				const newPrice = message.c;
-				const new24hPercent = (newPrice * 100) / last24hPrice - 100;
+	// 	ws.current.onmessage = (e) => {
+	// 		const message = JSON.parse(e.data);
+	// 		// console.log('e', message);
+	// 		const last24hPrice = lastPrice.current;
+	// 		if (message) {
+	// 			const newPrice = message.c;
+	// 			const new24hPercent = (newPrice * 100) / last24hPrice - 100;
 
-				setData(
-					(prevData) =>
-						(prevData = {
-							...data,
-							market_data: {
-								...data.market_data,
-								current_price: {
-									...data.market_data.current_price,
-									usd: newPrice,
-								},
-								price_change_percentage_24h: new24hPercent.toFixed(2),
-							},
-						})
-				);
-			}
-		};
+	// 			setData(
+	// 				(prevData) =>
+	// 					(prevData = {
+	// 						...data,
+	// 						market_data: {
+	// 							...data.market_data,
+	// 							current_price: {
+	// 								...data.market_data.current_price,
+	// 								usd: newPrice,
+	// 							},
+	// 							price_change_percentage_24h: new24hPercent.toFixed(2),
+	// 						},
+	// 					})
+	// 			);
+	// 		}
+	// 	};
 
-		return () => {
-			ws.current.close();
-		};
-	}, [data]);
+	// 	return () => {
+	// 		ws.current.close();
+	// 	};
+	// }, [data]);
 
 	// Calc price width percent
 	const widthPercent = useMemo(() => {
@@ -157,13 +157,52 @@ const DetailPage = () => {
 						<ActionButtons onShowFullScreen={handleShowFullScreen} onDownloadImage={handleDownloadImage} />
 					</Box>
 
-					<CoinChart ref={childRef} />
+					<CoinChart id={id} ref={childRef} />
 					{/* currentPrice={data?.market_data.current_price['usd']} */}
 				</Grid>
 				<Grid item xs={12} lg={4}>
-					<Typography variant='h4' className={classes.h4}>
+					<Typography variant='h4' className={classes.h4} marginBottom={4}>
 						{data.name} Price Statistics
 					</Typography>
+					<Box backgroundColor='var(--bg-neutral-5)' borderRadius='8px'>
+						<List className={classes.listStats}>
+							<ListItem>
+								<Typography>{data.name} Price</Typography>
+								<Typography className="right">${formatNumber(data.market_data.current_price['usd'])}</Typography>
+							</ListItem>
+							<ListItem>
+								<Typography>Price Change 24h</Typography>
+								<Box className="right">
+									<Typography>{formatPriceChange(data.market_data.price_change_24h)}</Typography>
+									<Typography>{formatNumber(data.market_data.price_change_percentage_24h)}%</Typography>
+								</Box>
+							</ListItem>
+							<ListItem>
+								<Typography>24h Low / 24h High</Typography>
+								<Typography className="right">
+									${formatNumber(data.market_data.low_24h['usd'])} <br/>${formatNumber(data.market_data.high_24h['usd'])}
+								</Typography>
+							</ListItem>
+							<ListItem>
+								<Typography>Trading Volume</Typography>
+								<Typography className="right">
+									${formatNumber(data.market_data.total_volume['usd'])} 
+								</Typography>
+							</ListItem>
+							<ListItem>
+								<Typography>Market Rank</Typography>
+								<Typography className="right">
+									{formatNumber(data.market_cap_rank)} 
+								</Typography>
+							</ListItem>
+							<ListItem>
+								<Typography>Market Cap</Typography>
+								<Typography className="right">
+									${formatNumber(data.market_data.market_cap['usd'])} 
+								</Typography>
+							</ListItem>
+						</List>
+					</Box>
 				</Grid>
 			</Grid>
 		</Grid>

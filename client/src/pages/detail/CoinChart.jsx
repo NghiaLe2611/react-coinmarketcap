@@ -12,6 +12,7 @@ import { useImperativeHandle } from 'react';
 import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-export-image';
 import { _isDarkMode } from 'features/theme/themeSlice';
 import { useSelector } from 'react-redux';
+import chartApi from 'api/chartApi';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -33,10 +34,12 @@ const Tooltip = styled(Box)(({ theme }) => ({
 	display: 'none',
 	padding: '15px',
     minWidth: 200,
-	boxShadow: '2px 2px 8px 2px rgba(189,189,189,0.85)',
+	boxShadow: 'var(--shadow-normal)',
+	// boxShadow: '2px 2px 8px 2px rgba(189,189,189,0.85)',
+	// rgb(88 102 126 / 8%) 0px 1px 1px, rgb(88 102 126 / 10%) 0px 8px 16px
 	fontSize: '13px',
 	color: '#131722',
-	backgroundColor: 'rgba(255, 255, 255, 1)',
+	backgroundColor: 'var(--bg-box)',
 	textAlign: 'left',
 	zIndex: 999,
 	top: '12px',
@@ -50,6 +53,7 @@ const toolTipMargin = 15;
 // 1D (5m-288) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288
 // 7D (15m-672) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=672
 // 1M (1h-720) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=720
+// 3M (4h-540) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&limit=540
 // 1Y (1D-365) https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=365
 
 // https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=1635912187&to=1667448187
@@ -93,11 +97,11 @@ const darkTheme = {
 	},
 };
 
-const CoinChart = forwardRef((props, ref) => {
+const CoinChart = forwardRef(({ id }, ref) => {
 	const classes = useStyles();
 	const isDarkMode = useSelector(_isDarkMode);
 	const [chartType, setChartType] = useState(0);
-	const [chartInterval, setChartInterval] = useState(0);
+	const [chartInterval, setChartInterval] = useState('1d');
 
 	const chartContainerRef = useRef();
 	const chartRef = useRef();
@@ -105,126 +109,6 @@ const CoinChart = forwardRef((props, ref) => {
 	const dataRef = useRef();
 	const tooltipRef = useRef(null);
 	const resizeObserver = useRef();
-
-	// Init chart
-	useEffect(() => {
-		/*
-			[
-				1499040000000, // Kline open time
-				'0.01634790', // Open price
-				'0.80000000', // High price
-				'0.01575800', // Low price
-				'0.01577100', // Close price
-				'148976.11427815', // Volume
-				1499644799999, // Kline Close time
-				'2434.19055334', // Quote asset volume
-				308, // Number of trades
-				'1756.87402397', // Taker buy base asset volume
-				'28.46694368', // Taker buy quote asset volume
-				'0', // Unused field, ignore.
-			];
-		*/
-		async function getChartData() {
-			try {
-				const res = await axios('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288');
-				const data = res.data;
-				if (data) {
-					dataRef.current = data;
-					const openPrice = data[0];
-					baselineRef.current = chartRef.current.addBaselineSeries({
-						baseValue: { type: 'price', price: openPrice[4] },
-						lineWidth: 2,
-						topLineColor: 'rgba( 38, 166, 154, 1)',
-						topFillColor1: 'rgba( 38, 166, 154, 0.28)',
-						topFillColor2: 'rgba( 38, 166, 154, 0.05)',
-						bottomLineColor: 'rgba( 239, 83, 80, 1)',
-						bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
-						bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
-						priceLineVisible: false,
-						// crosshairMarkerRadius: 5,
-					});
-
-					const seriesData = data.map((item) => {
-						// console.log(item);
-						return {
-							time: item[0] / 1000,
-							value: Number(item[4]),
-						};
-					});
-
-					baselineRef.current.setData(seriesData);
-					baselineRef.current.createPriceLine({
-						price: openPrice[4],
-						color: '#979DA8',
-						lineWidth: 2,
-						lineStyle: 1,
-						axisLabelVisible: true,
-					});
-
-					chartRef.current.timeScale().fitContent();
-
-					// if (chartRef.current) {
-					// 	chartRef.current.timeScale().setVisibleRange({
-					// 		from: data[0][0] / 1000,
-					// 		to: data[data.length - 1][0] / 1000,
-					// 	});
-					// }
-				}
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
-		if (chartRef.current) {
-			chartRef.current.remove();
-		}
-
-		if (chartContainerRef.current) {
-			chartRef.current = createChart(chartContainerRef.current, {
-				...lightTheme,
-				width: chartContainerRef.current.clientWidth,
-				height: chartContainerRef.current.clientHeight,
-				rightPriceScale: {
-					visible: false, // Hide price bar at the right
-				},
-				timeScale: {
-					borderColor: '#485c7b',
-					timeVisible: true,
-					minBarSpacing: 0.001,
-				},
-				handleScale: {
-					// Scaling with the mouse wheel
-					mouseWheel: false,
-					// Scaling with pinch/zoom gestures.
-					pinch: false,
-					// Scaling the price and/or time scales by holding down the left mouse button and moving the mouse.
-					// axisPressedMouseMove: false,
-				},
-				handleScroll: {
-					mouseWheel: false,
-					pressedMouseMove: false,
-				},
-				localization: {
-					timeFormatter: (businessDayOrTimestamp) => {
-						if (isBusinessDay(businessDayOrTimestamp)) {
-							return (
-								businessDayOrTimestamp.day +
-								'-' +
-								businessDayOrTimestamp.month +
-								'-' +
-								businessDayOrTimestamp.year
-							);
-						}
-
-						return moment(businessDayOrTimestamp * 1000).format('DD MMM YY');
-						// return formatTime(intervals, businessDayOrTimestamp);
-					},
-				},
-			});
-
-			getChartData();
-		}
-	}, [chartType]);
 
 	// https://tradingview.github.io/lightweight-charts/tutorials/how_to/tooltips
 	useEffect(() => {
@@ -257,7 +141,7 @@ const CoinChart = forwardRef((props, ref) => {
 
 				tooltipRef.current.style.display = 'block';
 				tooltipRef.current.innerHTML = ReactDOMServer.renderToString(
-					<div>
+					<div style={{ color: 'var(--color-common-txt)' }}>
 						<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 							<span style={{ fontWeight: 700 }}>{date}</span>
 							<span style={{ color: 'var(--color-sub-txt)', fontWeight: 500, fontSize: 12 }}>{time}</span>
@@ -321,16 +205,118 @@ const CoinChart = forwardRef((props, ref) => {
 		};
 	}, [chartType]);
 
-	// Change chart bg
+	// Init chart
 	useEffect(() => {
+		async function loadChartData() {
+			try {
+				const res = await chartApi.getChartData(id, chartInterval);
+				const data = res.data;	
+
+				if (data) {
+					dataRef.current = data;
+					const openPrice = data[0];
+
+					// if (chartRef.current) {
+					// 	chartRef.current.remove();
+					// }
+
+					baselineRef.current = chartRef.current.addBaselineSeries({
+						baseValue: { type: 'price', price: openPrice[1] },
+						lineWidth: 2,
+						topLineColor: 'rgba( 38, 166, 154, 1)',
+						topFillColor1: 'rgba( 38, 166, 154, 0.28)',
+						topFillColor2: 'rgba( 38, 166, 154, 0.05)',
+						bottomLineColor: 'rgba( 239, 83, 80, 1)',
+						bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
+						bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
+						priceLineVisible: false,
+					});
+
+					const seriesData = data.map((item) => {
+						return {
+							time: item[0] / 1000,
+							value: item[1],
+						};
+					});
+
+					baselineRef.current.setData(seriesData);
+					baselineRef.current.createPriceLine({
+						price: openPrice[1],
+						color: '#979DA8',
+						lineWidth: 2,
+						lineStyle: 1,
+						axisLabelVisible: true,
+					});
+
+					chartRef.current.timeScale().fitContent();
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		}
+
 		if (chartRef.current) {
+			chartRef.current.remove();
+		}
+
+		if (chartContainerRef.current) {
+			chartRef.current = createChart(chartContainerRef.current, {
+				// ...lightTheme,
+				width: chartContainerRef.current.clientWidth,
+				height: chartContainerRef.current.clientHeight,
+				rightPriceScale: {
+					visible: false, // Hide price bar at the right
+				},
+				timeScale: {
+					borderColor: '#485c7b',
+					timeVisible: true,
+					minBarSpacing: 0.001,
+				},
+				localization: {
+					timeFormatter: (businessDayOrTimestamp) => {
+						if (isBusinessDay(businessDayOrTimestamp)) {
+							return (
+								businessDayOrTimestamp.day +
+								'-' +
+								businessDayOrTimestamp.month +
+								'-' +
+								businessDayOrTimestamp.year
+							);
+						}
+
+						return moment(businessDayOrTimestamp * 1000).format('DD MMM YY');
+						// return formatTime(intervals, businessDayOrTimestamp);
+					},
+				},
+			});
+
 			if (isDarkMode) {
 				chartRef.current.applyOptions(darkTheme);
 			} else {
 				chartRef.current.applyOptions(lightTheme);
 			}
+
+			if (chartInterval === '1d') {
+				chartRef.current.applyOptions({
+					handleScale: {
+						// Scaling with the mouse wheel
+						mouseWheel: false,
+						// Scaling with pinch/zoom gestures.
+						pinch: false,
+						// Scaling the price and/or time scales by holding down the left mouse button and moving the mouse.
+						// axisPressedMouseMove: false,
+					},
+					handleScroll: {
+						mouseWheel: false,
+						pressedMouseMove: false,
+					},
+				});
+			}
+
+			loadChartData();
 		}
-	}, [isDarkMode]);
+		
+	}, [chartType, id, chartInterval, isDarkMode]);
 
 	const handleChangeType = (e, newValue) => {
 		setChartType(newValue);
@@ -440,15 +426,15 @@ const CoinChart = forwardRef((props, ref) => {
 							width: 40,
 							minWidth: 'initial',
 							'&:hover': {
-								opacity: '0.6'
-							}
+								opacity: '0.6',
+							},
 						},
 					}}>
-					<Tab label='1D' index={0} />
-					<Tab label='7D' index={1} />
-					<Tab label='1M' index={2} />
-					<Tab label='3M' index={3} />
-					<Tab label='1Y' index={4} />
+					<Tab label='1D' value='1d' />
+					<Tab label='7D' value='7d' />
+					<Tab label='1M' value='1M' />
+					<Tab label='3M' value='3M' />
+					<Tab label='1Y' value='1Y' />
 				</Tabs>
 			</Box>
 			<TabPanel value={chartType} index={0}>
@@ -464,3 +450,66 @@ const CoinChart = forwardRef((props, ref) => {
 });
 
 export default memo(CoinChart);
+
+
+// Binance api
+/*
+[
+	1499040000000, // Kline open time
+	'0.01634790', // Open price
+	'0.80000000', // High price
+	'0.01575800', // Low price
+	'0.01577100', // Close price
+	'148976.11427815', // Volume
+	1499644799999, // Kline Close time
+	'2434.19055334', // Quote asset volume
+	308, // Number of trades
+	'1756.87402397', // Taker buy base asset volume
+	'28.46694368', // Taker buy quote asset volume
+	'0', // Unused field, ignore.
+];
+*/
+// try {
+// 	const res = await axios('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=5m&limit=288');
+// 	const data = res.data;
+// 	if (data) {
+// 		dataRef.current = data;
+// 		const openPrice = data[0];
+// 		baselineRef.current = chartRef.current.addBaselineSeries({
+// 			baseValue: { type: 'price', price: openPrice[4] },
+// 			lineWidth: 2,
+// 			topLineColor: 'rgba( 38, 166, 154, 1)',
+// 			topFillColor1: 'rgba( 38, 166, 154, 0.28)',
+// 			topFillColor2: 'rgba( 38, 166, 154, 0.05)',
+// 			bottomLineColor: 'rgba( 239, 83, 80, 1)',
+// 			bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
+// 			bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
+// 			priceLineVisible: false,
+// 			// crosshairMarkerRadius: 5,
+// 		});
+// 		const seriesData = data.map((item) => {
+// 			// console.log(item);
+// 			return {
+// 				time: item[0] / 1000,
+// 				value: Number(item[4]),
+// 			};
+// 		});
+// 		baselineRef.current.setData(seriesData);
+// 		baselineRef.current.createPriceLine({
+// 			price: openPrice[4],
+// 			color: '#979DA8',
+// 			lineWidth: 2,
+// 			lineStyle: 1,
+// 			axisLabelVisible: true,
+// 		});
+// 		chartRef.current.timeScale().fitContent();
+// 		// if (chartRef.current) {
+// 		// 	chartRef.current.timeScale().setVisibleRange({
+// 		// 		from: data[0][0] / 1000,
+// 		// 		to: data[data.length - 1][0] / 1000,
+// 		// 	});
+// 		// }
+// 	}
+// } catch (err) {
+// 	console.log(err);
+// }

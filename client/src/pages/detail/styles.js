@@ -280,7 +280,34 @@ const useStyles = makeStyles((theme) => ({
 
 	btn: {
 		borderRadius: '12px !important'
-	}
+	},
+
+	// Statistics
+	listStats: {
+		padding: 20,
+		'& .MuiListItem-root': {
+			padding: 0,
+			marginBottom: 15,
+			paddingBottom: 15,
+			borderBottom: '1px solid var(--border-table)',
+			'& .MuiTypography-root': {
+				fontSize: 14,
+				fontWeight: 500,
+				'&.right': {
+					marginLeft: 'auto',
+					fontWeight: 700,
+					textAlign: 'right'
+				}
+			},
+			'& .right': {
+				marginLeft: 'auto',
+				textAlign: 'right',
+				'& p': {
+					fontWeight: 700,
+				}
+			}
+		}
+	},
 
 }));
 
