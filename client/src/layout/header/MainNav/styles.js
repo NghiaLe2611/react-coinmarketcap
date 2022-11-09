@@ -21,9 +21,6 @@ export const CustomBtn = styled(Button, {
 	},
 	// eef0f2
 	backgroundColor: bgColor,
-	'&:hover': {
-		backgroundColor: bgColor && '#2f56ea',
-	},
 }));
 
 export const StyledSelect = styled(Select)(({theme}) => ({

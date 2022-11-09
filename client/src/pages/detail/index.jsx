@@ -1,22 +1,17 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Box, Grid, IconButton, List, ListItem, Typography } from '@mui/material';
+import { Box, Grid, List, ListItem, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
-import { BoxFlex } from 'components/common';
 import CoinChange from 'components/common/CoinChange';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { dataFromCmcArr } from 'utils/constants';
-import { formatNumber, formatPercent, formatPriceChange, formatSupply } from 'utils/helpers';
-import ListLink from './ListLink';
-import ListTag from './ListTag';
-import useStyles from './styles';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import { formatNumber, formatPercent, formatPriceChange } from 'utils/helpers';
+import ActionButtons from './ActionButtons';
 import BoxLeft from './BoxLeft';
 import BoxRight from './BoxRight';
 import CoinChart from './CoinChart';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ActionButtons from './ActionButtons';
+import CoinConverter from './CoinConverter';
+import PriceStats from './PriceStats';
+import useStyles from './styles';
 
 const getDetail = async ({ id }) => {
 	const data = await coinApi.getDetail(id);
@@ -36,24 +31,15 @@ const DetailPage = () => {
 	const hasValue = useRef(false);
 	const circulatingSupply = useRef(0);
 
-	const { isFetching, isError } = useQuery([`coin-detail-${id}`, id], () => getDetail({ id }), {
-		refetchOnWindowFocus: false,
+	const { isFetching, isError, data: coins } = useQuery([`coin-detail-${id}`, id], () => getDetail({ id }), {
 		staleTime: 5 * 60 * 1000,
 		cacheTime: Infinity,
-		refetchIntervalInBackground: false,
-		onSuccess: (res) => {
-			console.log(res);
-			setData(res);
-		},
-		// select: (res) => {
-		// 	// From cmc
-		//     if (dataFromArr.includes(id)) {
-		//         return Object.values(res.data)[0];
-		//     }
-
-		//     return res;
-		// },
+		refetchOnWindowFocus: false,
 	});
+
+	useEffect(() => {
+		setData(coins);
+	}, [coins]);
 
 	// Store last 24h price
 	useEffect(() => {
@@ -159,50 +145,24 @@ const DetailPage = () => {
 
 					<CoinChart id={id} ref={childRef} />
 					{/* currentPrice={data?.market_data.current_price['usd']} */}
+					<CoinConverter
+						name={data.name}
+						symbol={data.symbol.toUpperCase()}
+						imgSrc={data.image.small}
+						price={data.market_data.current_price['usd']}
+					/>
+					<Box>
+						<Typography variant='h3' className={classes.h3}>
+							What is {data.name} ({data.symbol.toUpperCase()}) ?
+						</Typography>
+						<Typography
+							dangerouslySetInnerHTML={{ __html: data.description.en }}
+							className={classes.desc}
+						/>
+					</Box>
 				</Grid>
 				<Grid item xs={12} lg={4}>
-					<Typography variant='h4' className={classes.h4} marginBottom={4}>
-						{data.name} Price Statistics
-					</Typography>
-					<Box backgroundColor='var(--bg-neutral-5)' borderRadius='8px'>
-						<List className={classes.listStats}>
-							<ListItem>
-								<Typography>{data.name} Price</Typography>
-								<Typography className="right">${formatNumber(data.market_data.current_price['usd'])}</Typography>
-							</ListItem>
-							<ListItem>
-								<Typography>Price Change 24h</Typography>
-								<Box className="right">
-									<Typography>{formatPriceChange(data.market_data.price_change_24h)}</Typography>
-									<Typography>{formatNumber(data.market_data.price_change_percentage_24h)}%</Typography>
-								</Box>
-							</ListItem>
-							<ListItem>
-								<Typography>24h Low / 24h High</Typography>
-								<Typography className="right">
-									${formatNumber(data.market_data.low_24h['usd'])} <br/>${formatNumber(data.market_data.high_24h['usd'])}
-								</Typography>
-							</ListItem>
-							<ListItem>
-								<Typography>Trading Volume</Typography>
-								<Typography className="right">
-									${formatNumber(data.market_data.total_volume['usd'])} 
-								</Typography>
-							</ListItem>
-							<ListItem>
-								<Typography>Market Rank</Typography>
-								<Typography className="right">
-									{formatNumber(data.market_cap_rank)} 
-								</Typography>
-							</ListItem>
-							<ListItem>
-								<Typography>Market Cap</Typography>
-								<Typography className="right">
-									${formatNumber(data.market_data.market_cap['usd'])} 
-								</Typography>
-							</ListItem>
-						</List>
-					</Box>
+					<PriceStats data={data} />
 				</Grid>
 			</Grid>
 		</Grid>

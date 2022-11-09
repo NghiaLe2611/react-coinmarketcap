@@ -1,4 +1,4 @@
-import { Box, styled, Tab, Tabs, Typography } from '@mui/material';
+import { Box, CircularProgress, styled, Tab, Tabs, Typography } from '@mui/material';
 import { useState, useRef, useEffect, memo } from 'react';
 import useStyles from './styles';
 import 'assets/styles/chart.scss';
@@ -13,6 +13,7 @@ import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-exp
 import { _isDarkMode } from 'features/theme/themeSlice';
 import { useSelector } from 'react-redux';
 import chartApi from 'api/chartApi';
+import { useLayoutEffect } from 'react';
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props;
@@ -33,7 +34,7 @@ const Tooltip = styled(Box)(({ theme }) => ({
 	position: 'absolute',
 	display: 'none',
 	padding: '15px',
-    minWidth: 200,
+	minWidth: 200,
 	boxShadow: 'var(--shadow-normal)',
 	// boxShadow: '2px 2px 8px 2px rgba(189,189,189,0.85)',
 	// rgb(88 102 126 / 8%) 0px 1px 1px, rgb(88 102 126 / 10%) 0px 8px 16px
@@ -100,21 +101,176 @@ const darkTheme = {
 const CoinChart = forwardRef(({ id }, ref) => {
 	const classes = useStyles();
 	const isDarkMode = useSelector(_isDarkMode);
+	const [isLoading, setIsLoading] = useState(false);
 	const [chartType, setChartType] = useState(0);
 	const [chartInterval, setChartInterval] = useState('1d');
 
 	const chartContainerRef = useRef();
-	const chartRef = useRef();
+	const chartRef = useRef([]);
 	const baselineRef = useRef();
 	const dataRef = useRef();
 	const tooltipRef = useRef(null);
 	const resizeObserver = useRef();
 
+	// useEffect(() => {
+	// 	if (dataRef.current) {
+	// 		const lastPrice = dataRef.current[dataRef.current.length - 1];
+	// 		if (currentPrice && baselineRef.current) {
+	// 			baselineRef.current.update({
+	// 				time: lastPrice[0] / 1000,
+	// 				value: Number(currentPrice)
+	// 			});
+	// 		}
+	// 	}
+	// }, [currentPrice]);
+
+	// Init chart
+	useEffect(() => {
+		const charts = chartRef.current;
+
+		async function loadChartData() {
+			if (!chartContainerRef.current) return;
+
+			setIsLoading(true);
+
+			chartRef.current[chartInterval] = createChart(chartContainerRef.current, {
+				// ...lightTheme,
+				width: chartContainerRef.current.clientWidth,
+				height: chartContainerRef.current.clientHeight,
+				rightPriceScale: {
+					visible: false, // Hide price bar at the right
+				},
+				timeScale: {
+					borderColor: '#485c7b',
+					timeVisible: true,
+					minBarSpacing: 0.001,
+				},
+				localization: {
+					timeFormatter: (businessDayOrTimestamp) => {
+						if (isBusinessDay(businessDayOrTimestamp)) {
+							return (
+								businessDayOrTimestamp.day +
+								'-' +
+								businessDayOrTimestamp.month +
+								'-' +
+								businessDayOrTimestamp.year
+							);
+						}
+
+						return moment(businessDayOrTimestamp * 1000).format('DD MMM YY');
+						// return formatTime(intervals, businessDayOrTimestamp);
+					},
+				},
+			});
+
+			try {
+				const res = await chartApi.getChartData(id, chartInterval);
+				const data = res.data;
+				if (data) {
+					dataRef.current = data;
+					const openPrice = data[0];
+
+					baselineRef.current = chartRef.current[chartInterval].addBaselineSeries({
+						baseValue: { type: 'price', price: openPrice[1] },
+						lineWidth: 2,
+						topLineColor: 'rgba( 38, 166, 154, 1)',
+						topFillColor1: 'rgba( 38, 166, 154, 0.28)',
+						topFillColor2: 'rgba( 38, 166, 154, 0.05)',
+						bottomLineColor: 'rgba( 239, 83, 80, 1)',
+						bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
+						bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
+						priceLineVisible: false,
+					});
+
+					const seriesData = data.map((item) => {
+						return {
+							time: item[0] / 1000,
+							value: item[1],
+						};
+					});
+
+					baselineRef.current.setData(seriesData);
+					baselineRef.current.createPriceLine({
+						price: openPrice[1],
+						color: '#979DA8',
+						lineWidth: 2,
+						lineStyle: 1,
+						axisLabelVisible: true,
+					});
+
+					if (isDarkMode) {
+						chartRef.current[chartInterval].applyOptions(darkTheme);
+					} else {
+						chartRef.current[chartInterval].applyOptions(lightTheme);
+					}
+		
+					if (chartInterval === '1d') {
+						chartRef.current[chartInterval].applyOptions({
+							handleScale: {
+								// Scaling with the mouse wheel
+								mouseWheel: false,
+								// Scaling with pinch/zoom gestures.
+								pinch: false,
+								// Scaling the price and/or time scales by holding down the left mouse button and moving the mouse.
+								// axisPressedMouseMove: false,
+							},
+							handleScroll: {
+								mouseWheel: false,
+								pressedMouseMove: false,
+							},
+						});
+					}
+
+					chartRef.current[chartInterval].timeScale().fitContent();
+					for (let i in charts) {
+						if (charts[i] && i !== chartInterval) {
+							charts[i].remove();
+						}	
+					}
+					setIsLoading(false);
+				}
+			} catch (err) {
+				console.log(err);
+				setIsLoading(false);
+			}
+		}
+
+		loadChartData();
+
+		// return () => {
+		// 	for (let i in charts) {
+		// 		charts[i].remove();
+		// 	}
+		// 	// chartRef.current.remove();
+		// }
+	}, [chartType, id, chartInterval]);
+
+	// Resize chart on container resizes.
+	useLayoutEffect(() => {
+		const container = chartContainerRef.current;
+
+		if (container) {
+			resizeObserver.current = new ResizeObserver((entries) => {
+				const { width, height } = entries[0].contentRect;
+				chartRef.current[chartInterval]?.applyOptions({ width, height });
+				setTimeout(() => {
+					chartRef.current[chartInterval]?.timeScale().fitContent();
+				}, 0);
+			});
+
+			resizeObserver.current.observe(container);
+		}
+
+		return () => {
+			resizeObserver.current.disconnect();
+		};
+	}, [chartType, chartInterval]);
+
 	// https://tradingview.github.io/lightweight-charts/tutorials/how_to/tooltips
 	useEffect(() => {
-		if (chartRef.current) {
+		if (chartRef.current[chartInterval]) {
 			// subscribeCrosshairMove subscribeClick
-			chartRef.current.subscribeCrosshairMove((param) => {
+			chartRef.current[chartInterval].subscribeCrosshairMove((param) => {
 				const width = chartContainerRef.current.clientWidth;
 				const height = chartContainerRef.current.clientHeight;
 
@@ -124,6 +280,8 @@ const CoinChart = forwardRef(({ id }, ref) => {
 				const price = param.seriesPrices.get(baselineRef.current);
 				// const volume = param.seriesPrices.get(volumesRef.current)?.toFixed(2);
 				const d = new Date(param.time * 1000);
+
+				// console.log(d, price);
 
 				const date = moment(d).format('DD/MM/YYYY');
 				const time = moment(d).format('h:mm A'); // 12h format, 24h: HH:mm
@@ -170,153 +328,16 @@ const CoinChart = forwardRef(({ id }, ref) => {
 				tooltipRef.current.style.top = top + 'px';
 			});
 		}
-	}, [chartRef]);
+	}, [chartInterval, chartRef]);
 
-	// useEffect(() => {
-	// 	if (dataRef.current) {
-	// 		const lastPrice = dataRef.current[dataRef.current.length - 1];
-	// 		if (currentPrice && baselineRef.current) {
-	// 			baselineRef.current.update({
-	// 				time: lastPrice[0] / 1000,
-	// 				value: Number(currentPrice)
-	// 			});
-	// 		}
-	// 	}
-	// }, [currentPrice]);
-
-	// Resize chart on container resizes.
 	useEffect(() => {
-		const container = chartContainerRef.current;
-
-		if (container) {
-			resizeObserver.current = new ResizeObserver((entries) => {
-				const { width, height } = entries[0].contentRect;
-				chartRef.current.applyOptions({ width, height });
-				setTimeout(() => {
-					chartRef.current.timeScale().fitContent();
-				}, 0);
-			});
-
-			resizeObserver.current.observe(container);
+		if (!chartContainerRef.current) return;
+		if (isDarkMode) {
+			chartRef.current[chartInterval].applyOptions(darkTheme);
+		} else {
+			chartRef.current[chartInterval].applyOptions(lightTheme);
 		}
-
-		return () => {
-			resizeObserver.current.disconnect();
-		};
-	}, [chartType]);
-
-	// Init chart
-	useEffect(() => {
-		async function loadChartData() {
-			try {
-				const res = await chartApi.getChartData(id, chartInterval);
-				const data = res.data;	
-
-				if (data) {
-					dataRef.current = data;
-					const openPrice = data[0];
-
-					// if (chartRef.current) {
-					// 	chartRef.current.remove();
-					// }
-
-					baselineRef.current = chartRef.current.addBaselineSeries({
-						baseValue: { type: 'price', price: openPrice[1] },
-						lineWidth: 2,
-						topLineColor: 'rgba( 38, 166, 154, 1)',
-						topFillColor1: 'rgba( 38, 166, 154, 0.28)',
-						topFillColor2: 'rgba( 38, 166, 154, 0.05)',
-						bottomLineColor: 'rgba( 239, 83, 80, 1)',
-						bottomFillColor1: 'rgba( 239, 83, 80, 0.05)',
-						bottomFillColor2: 'rgba( 239, 83, 80, 0.28)',
-						priceLineVisible: false,
-					});
-
-					const seriesData = data.map((item) => {
-						return {
-							time: item[0] / 1000,
-							value: item[1],
-						};
-					});
-
-					baselineRef.current.setData(seriesData);
-					baselineRef.current.createPriceLine({
-						price: openPrice[1],
-						color: '#979DA8',
-						lineWidth: 2,
-						lineStyle: 1,
-						axisLabelVisible: true,
-					});
-
-					chartRef.current.timeScale().fitContent();
-				}
-			} catch (err) {
-				console.log(err);
-			}
-		}
-
-		if (chartRef.current) {
-			chartRef.current.remove();
-		}
-
-		if (chartContainerRef.current) {
-			chartRef.current = createChart(chartContainerRef.current, {
-				// ...lightTheme,
-				width: chartContainerRef.current.clientWidth,
-				height: chartContainerRef.current.clientHeight,
-				rightPriceScale: {
-					visible: false, // Hide price bar at the right
-				},
-				timeScale: {
-					borderColor: '#485c7b',
-					timeVisible: true,
-					minBarSpacing: 0.001,
-				},
-				localization: {
-					timeFormatter: (businessDayOrTimestamp) => {
-						if (isBusinessDay(businessDayOrTimestamp)) {
-							return (
-								businessDayOrTimestamp.day +
-								'-' +
-								businessDayOrTimestamp.month +
-								'-' +
-								businessDayOrTimestamp.year
-							);
-						}
-
-						return moment(businessDayOrTimestamp * 1000).format('DD MMM YY');
-						// return formatTime(intervals, businessDayOrTimestamp);
-					},
-				},
-			});
-
-			if (isDarkMode) {
-				chartRef.current.applyOptions(darkTheme);
-			} else {
-				chartRef.current.applyOptions(lightTheme);
-			}
-
-			if (chartInterval === '1d') {
-				chartRef.current.applyOptions({
-					handleScale: {
-						// Scaling with the mouse wheel
-						mouseWheel: false,
-						// Scaling with pinch/zoom gestures.
-						pinch: false,
-						// Scaling the price and/or time scales by holding down the left mouse button and moving the mouse.
-						// axisPressedMouseMove: false,
-					},
-					handleScroll: {
-						mouseWheel: false,
-						pressedMouseMove: false,
-					},
-				});
-			}
-
-			loadChartData();
-		}
-		
-	}, [chartType, id, chartInterval, isDarkMode]);
+	}, [isDarkMode, chartType, chartInterval]);
 
 	const handleChangeType = (e, newValue) => {
 		setChartType(newValue);
@@ -389,20 +410,20 @@ const CoinChart = forwardRef(({ id }, ref) => {
 		downloadImage(type) {
 			if (type === 'png') {
 				exportComponentAsPNG(chartContainerRef, {
-					fileName: 'BTC_Chart.png',
+					fileName: `BTC_${chartInterval}_graph.png`,
 				});
 			}
 
 			if (type === 'jpeg') {
 				exportComponentAsJPEG(chartContainerRef, {
-					fileName: 'BTC_Chart.jpg',
+					fileName: `BTC_${chartInterval}_graph.jpg`,
 				});
 			}
 		},
 	}));
 
 	return (
-		<div>
+		<Box marginBottom={5}>
 			<Box display='flex' justifyContent='space-between'>
 				<Tabs
 					value={chartType}
@@ -440,17 +461,25 @@ const CoinChart = forwardRef(({ id }, ref) => {
 			<TabPanel value={chartType} index={0}>
 				<div className='chart-container' style={{ position: 'relative', height: 400 }} ref={chartContainerRef}>
 					<Tooltip ref={tooltipRef}></Tooltip>
+					{isLoading && (
+						<>
+							<div className={classes.overlayWrapper}></div>
+							<div className={classes.overlayContent}>
+								<CircularProgress />
+								<p>Loading data</p>
+							</div>
+						</>
+					)}
 				</div>
 			</TabPanel>
 			<TabPanel value={chartType} index={1}>
 				tab 2
 			</TabPanel>
-		</div>
+		</Box>
 	);
 });
 
 export default memo(CoinChart);
-
 
 // Binance api
 /*

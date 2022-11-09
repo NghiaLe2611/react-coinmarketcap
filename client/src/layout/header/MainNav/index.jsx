@@ -204,10 +204,25 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 								))}
 							</List>
 							<Box mt={4}>
-								<CustomBtn variant='contained' sx={{ backgroundColor: 'var(--bg-control)' }}>
+								<CustomBtn
+									variant='contained'
+									sx={{
+										backgroundColor: 'var(--bg-control)',
+										'&:hover': {
+											backgroundColor: 'var(--bg-neutral-5)',
+										},
+									}}>
 									Log in
 								</CustomBtn>
-								<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{ color: '#fff' }}>
+								<CustomBtn
+									variant='contained'
+									bgColor='var(--color-primary)'
+									sx={{
+										color: '#fff',
+										'&:hover': {
+											backgroundColor: '#2f56ea',
+										},
+									}}>
 									Sign up
 								</CustomBtn>
 							</Box>

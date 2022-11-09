@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
 		'& .MuiTypography-root': {
 			fontSize: 34,
 			fontWeight: 700,
-			minWidth: 200
-		}
+			minWidth: 200,
+		},
 	},
 	list: {
 		display: 'flex',
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 				background: 'var(--bg-dropdown)',
 				// padding: '10px 0',
 				// borderTopLeftRadius: 4,
-				// borderTopRightRadius: 4,	
+				// borderTopRightRadius: 4,
 			},
 		},
 	},
@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 		'& .MuiSvgIcon-root': {
 			fontSize: 14,
-			marginLeft: 5
+			marginLeft: 5,
 		},
 	},
 	tag: {
@@ -132,13 +132,13 @@ const useStyles = makeStyles((theme) => ({
 		'& .MuiChip-label': {
 			padding: '4px 10px',
 			'& a': {
-				color: 'var(--color-sub-txt)'
-			}
+				color: 'var(--color-sub-txt)',
+			},
 		},
 		'&.view-all': {
 			backgroundColor: 'var(--bg-lightblue)',
-			color: 'var(--color-primary)'
-		}
+			color: 'var(--color-primary)',
+		},
 	},
 	priceStats: {
 		display: 'flex',
@@ -148,26 +148,26 @@ const useStyles = makeStyles((theme) => ({
 		},
 		'& .lbl': {
 			color: 'var(--color-sub-txt)',
-			marginRight: 5
+			marginRight: 5,
 		},
 		'& .val': {
 			fontWeight: 700,
 		},
 		'@media (min-width: 1024px)': {
 			'& .box': {
-				display: 'flex'
-			}
-		}
+				display: 'flex',
+			},
+		},
 	},
 	priceBar: {
 		backgroundColor: 'var(--bg-control)',
 		height: 6,
 		width: 160,
-		borderRadius: 4
+		borderRadius: 4,
 	},
 	percent: {
-		display: 'flex', 
-		height: '100%', 
+		display: 'flex',
+		height: '100%',
 		backgroundColor: 'var(--bg-neutral-3)',
 		borderTopLeftRadius: 4,
 		borderBottomLeftRadius: 4,
@@ -176,8 +176,8 @@ const useStyles = makeStyles((theme) => ({
 			position: 'absolute',
 			right: -12,
 			fontSize: '1.5rem',
-			color: 'var(--bg-neutral-3)'
-		}
+			color: 'var(--bg-neutral-3)',
+		},
 	},
 	// Dialog
 	dialogTitle: {
@@ -191,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
 			'& .MuiSvgIcon-root': {
 				fontSize: '1.2rem',
 				fontWeight: 700,
-				color: 'var(--bg-neutral-2)'
+				color: 'var(--bg-neutral-2)',
 			},
 		},
 	},
@@ -205,7 +205,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 13,
 		color: 'var(--color-sub-txt)',
 		fontWeight: 500,
-		marginBottom: 10
+		marginBottom: 10,
 	},
 
 	// Overall stats
@@ -225,31 +225,44 @@ const useStyles = makeStyles((theme) => ({
 				fontSize: 12,
 				fontWeight: 500,
 				color: 'var(--color-sub-txt)',
-				minWidth: 90
+				minWidth: 90,
 			},
 			'& .val': {
 				fontSize: 12,
 				fontWeight: 700,
-				color: 'var(--color-common-txt)'
+				color: 'var(--color-common-txt)',
 			},
 			'& .supply': {
 				fontSize: 12,
 				fontWeight: 500,
 				color: 'var(--color-sub-txt)',
-			}
+			},
 		},
 	},
-	
+
 	wrapTitle: {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 30
+		marginBottom: 30,
+	},
+
+	h3: {
+		fontSize: 24,
+		fontWeight: 700,
+		marginBottom: 25
 	},
 
 	h4: {
 		fontSize: 18,
 		fontWeight: 700,
+	},
+
+	desc: {
+		fontSize: 15,
+		'& a': {
+			color: 'var(--color-primary) !important',
+		},
 	},
 
 	// Tabs
@@ -269,17 +282,17 @@ const useStyles = makeStyles((theme) => ({
 			minHeight: 'inherit',
 			color: 'var(--color-common-txt)',
 			'&:not(:last-child)': {
-				marginRight: 4
+				marginRight: 4,
 			},
 			'&.Mui-selected': {
 				backgroundColor: 'var(--bg-box)',
-				borderRadius: 6
-			}
-		}
+				borderRadius: 6,
+			},
+		},
 	},
 
 	btn: {
-		borderRadius: '12px !important'
+		borderRadius: '12px !important',
 	},
 
 	// Statistics
@@ -289,25 +302,116 @@ const useStyles = makeStyles((theme) => ({
 			padding: 0,
 			marginBottom: 15,
 			paddingBottom: 15,
-			borderBottom: '1px solid var(--border-table)',
+			'&:not(:last-child)': {
+				borderBottom: '1px solid var(--border-table)',
+			},
 			'& .MuiTypography-root': {
 				fontSize: 14,
 				fontWeight: 500,
 				'&.right': {
 					marginLeft: 'auto',
 					fontWeight: 700,
-					textAlign: 'right'
-				}
+					textAlign: 'right',
+				},
 			},
 			'& .right': {
 				marginLeft: 'auto',
 				textAlign: 'right',
 				'& p': {
 					fontWeight: 700,
+				},
+			},
+		},
+	},
+
+	// Loading
+	overlayWrapper: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		backdropFilter: 'blur(6px)',
+		backgroundColor: 'rgba(255,255,255,0	)',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%,-50%)',
+		zIndex: 3,
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+
+	overlayContent: {
+		position: 'absolute',
+		padding: 20,
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%,-50%)',
+		zIndex: 3,
+		textAlign: 'center'
+	},
+
+	// Converter
+	converter: {
+		display: 'flex',
+		border: '1px solid var(--border-table)',
+		backgroundColor: 'var(--bg-neutral-5)',
+		borderRadius: 16,
+		position: 'relative',
+		'& .content': {
+			width: '50%',
+			display: 'flex',
+			flexWrap: 'wrap',
+			alignItems: 'center',
+			padding: '20px 30px',
+			'& .input': {
+				flex: 1,
+				'& fieldset': {
+					border: 'none !important'
+				},
+				'& input': {
+					textAlign: 'right',
+					fontWeight: 700
 				}
+			},
+				'&:first-child': {
+					backgroundColor: "var(--bg-drawer)",
+					borderTopLeftRadius: 16,
+					borderBottomLeftRadius: 16,
+				},
+				'&:last-child': {
+					borderTopRightRadius: 16,
+					borderBottomRightRadius: 16,
+				},
+		},
+		'& .item': {
+			display: 'flex',
+			alignItems: 'center',
+			marginRight: 20,
+			
+			'& img': {
+				marginRight: 10
+			},
+			'& .symbol': {
+				fontSize: 12
+			},
+			'& .name': {
+				fontSize: 15,
+				fontWeight: 700,
+				whiteSpace: 'nowrap'
+			},
+		},
+		'& .btn-swap': {
+			position: 'absolute',
+			top: '50%',
+			left: '50%',
+			transform: 'translate(-50%,-50%)',
+			backgroundColor: '#eff2f5',
+			padding: 4,
+			'& .MuiSvgIcon-root': {
+				color: '#858ca2'
 			}
 		}
-	},
+	}
 
 }));
 
