@@ -6,7 +6,6 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 
 const parseNumber = (v) => (v > 0.01 ? v.toFixed(2) : v.toFixed(1 - Math.floor(Math.log10(Math.abs(v)))));
 
-//https://api.coingecko.com/api/v3/coins/bitcoin/tickers?include_exchange_logo=true&depth=true
 const CoinConverter = ({ name, price, symbol, imgSrc }) => {
 	const classes = useStyles();
 	const [swap, setSwap] = useState(false);
@@ -80,7 +79,7 @@ const CoinConverter = ({ name, price, symbol, imgSrc }) => {
 								</Box>
 							</Box>
 							<TextField
-								autoComplete='false'
+								autoComplete='off'
 								inputRef={targetInputRef}
 								size='small'
 								placeholder='0'
@@ -102,7 +101,7 @@ const CoinConverter = ({ name, price, symbol, imgSrc }) => {
 								</Box>
 							</Box>
 							<TextField
-								autoComplete='false'
+								autoComplete='off'
 								inputRef={baseInputRef}
 								size='small'
 								placeholder='0'
@@ -124,7 +123,7 @@ const CoinConverter = ({ name, price, symbol, imgSrc }) => {
 								</Box>
 							</Box>
 							<TextField
-								autoComplete='false'
+								autoComplete='off'
 								inputRef={baseInputRef}
 								size='small'
 								placeholder='0'
@@ -150,7 +149,7 @@ const CoinConverter = ({ name, price, symbol, imgSrc }) => {
 								</Box>
 							</Box>
 							<TextField
-								autoComplete='false'
+								autoComplete='off'
 								inputRef={targetInputRef}
 								size='small'
 								placeholder='0'

@@ -43,6 +43,11 @@ const ActionButtons = ({ onShowFullScreen, onDownloadImage }) => {
 					vertical: 'top',
 					horizontal: 'center',
 				}}
+				PaperProps={{
+					sx: {
+						background: 'var(--bg-dropdown)'
+					}
+				}}
 				sx={{
 					'& li': {
 						fontSize: 13,

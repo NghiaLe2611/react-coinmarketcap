@@ -342,7 +342,15 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 							<CustomBtn variant='text' sx={{ px: 2 }}>
 								Log in
 							</CustomBtn>
-							<CustomBtn variant='contained' bgColor='var(--color-primary)' sx={{ color: '#fff' }}>
+							<CustomBtn
+								variant='contained'
+								bgColor='var(--color-primary)'
+								sx={{
+									color: '#fff',
+									'&:hover': {
+										backgroundColor: '#2f56ea',
+									},
+								}}>
 								Sign up
 							</CustomBtn>
 						</ButtonGroup>

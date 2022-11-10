@@ -10,6 +10,7 @@ import BoxLeft from './BoxLeft';
 import BoxRight from './BoxRight';
 import CoinChart from './CoinChart';
 import CoinConverter from './CoinConverter';
+import CoinMarket from './CoinMarket';
 import PriceStats from './PriceStats';
 import useStyles from './styles';
 
@@ -134,7 +135,7 @@ const DetailPage = () => {
 		<Grid container spacing={4}>
 			<BoxLeft data={data} id={id} />
 			<BoxRight data={data} />
-			<Grid container mt={3} pt={3} columnSpacing={5} borderTop='1px solid var(--bg-neutral)'>
+			<Grid container item columnSpacing={5} mt={3} pt={3} className={classes.mainContent}>
 				<Grid item xs={12} lg={8}>
 					<Box className={classes.wrapTitle}>
 						<Typography variant='h4' className={classes.h4}>
@@ -163,6 +164,9 @@ const DetailPage = () => {
 				</Grid>
 				<Grid item xs={12} lg={4}>
 					<PriceStats data={data} />
+				</Grid>
+				<Grid item xs={12}>
+					<CoinMarket name={data.name} />
 				</Grid>
 			</Grid>
 		</Grid>

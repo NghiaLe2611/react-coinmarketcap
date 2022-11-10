@@ -30,9 +30,13 @@ const coinApi = {
 	getDetail(id) {
 		return axiosClient.get(`/api/coins/${id}`);
 	},
+	getTickers(id) {
+		return axiosClient.get(`/api/coins/market/${id}`);
+	},
     getCategories() {
 		return axiosClient.get('/api/categories');
 	},
+	
 	getCoinsByCategory(categoryId) {
 		return axiosClient.get(`/api/category?id=${categoryId}`);
 	},

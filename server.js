@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/api/status', function (req, res) {
 	return res.status(200).json({
 		success: true,
+		key: process.env.CMC_KEY
 	});
 });
 
@@ -192,8 +193,16 @@ app.get('/api/categories', async function (req, res) {
 	if (!categories) {
 		console.log('Chua co categories');
 		try {
-			categories = await getCategories();
+			const response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/categories', {
+				headers: {
+					'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
+				},
+			});
+
+			// categories = await getCategories();
+			categories = response.data;
 			myCache.set('crypto_categories', categories, CACHE_TIME_1D);
+			
 			return res.status(200).json(categories);
 		} catch (err) {
 			return res.status(500).json(err);
@@ -253,23 +262,6 @@ app.get('/api/category', async function (req, res) {
 	// }
 });
 
-app.get('/api/cate_by_id', async function (req, res) {
-	try {
-		const response = await axios.get(
-			'https://pro-api.coinmarketcap.com/v1/cryptocurrency/category?id=5fb62883c9ddcc213ed13308&limit=1000',
-			{
-				headers: {
-					'X-CMC_PRO_API_KEY': process.env.CMC_KEY,
-				},
-			}
-		);
-
-		return res.status(200).json(response.data);
-	} catch (err) {
-		return res.status(500).json(err);
-	}
-});
-
 const dataFromArr = ['bitcoin', 'ethereum', 'tether'];
 
 // Coin detail
@@ -304,11 +296,11 @@ app.get('/api/coins/:id', async function (req, res) {
 					cachedDetailCoingecko = data2;
 					myCache.set(`detail-${id}`, cachedDetail, CACHE_TIME_8H);
 					myCache.set(`detailCoingecko-${id}`, cachedDetailCoingecko, CACHE_TIME_1H);
-					
+
 					return res.status(200).json(finalData);
 				})
 				.catch((err) => {
-					return res.status(500).json(err);
+					return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 				});
 		} else {
 			try {
@@ -317,7 +309,7 @@ app.get('/api/coins/:id', async function (req, res) {
 				myCache.set(`detail-${id}`, cachedDetail, CACHE_TIME_8H);
 				return res.status(200).json(response.data);
 			} catch (err) {
-				return res.status(500).json(err);
+				return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 			}
 		}
 	} else {
@@ -334,6 +326,19 @@ app.get('/api/coins/:id', async function (req, res) {
 		}
 		
 		return res.status(200).json(cachedDetail);
+	}
+});
+
+// Coin markets
+app.get('/api/coins/market/:id', async function (req, res) {
+	const id = req.params.id;
+
+	try {
+		const response = await axios(`https://api.coingecko.com/api/v3/coins/${id}/tickers?include_exchange_logo=true&depth=true`);
+		return res.status(200).json(response.data);
+	} catch(err) {
+		console.log(err);
+		return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 	}
 });
 
@@ -395,7 +400,6 @@ app.get('/api/chart_data/:id', async function (req, res) {
 		// console.log(response.data);
 		return res.status(200).json(response.data.prices);
 	} catch (err) {
-		console.log(111, err.response.data);
 		return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 	}
 });

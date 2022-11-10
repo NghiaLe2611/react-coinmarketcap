@@ -218,7 +218,7 @@ const classes = {
 		animation: 'fadeIn .3s',
 	},
 	subMenuItem: {
-		padding: '10px',
+		padding: 0,
 		'&:hover': {
 			backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#222531' : '#f7f8fa'),
 		},
@@ -227,6 +227,7 @@ const classes = {
 			alignItems: 'center',
 			width: '100%',
 			fontSize: 15,
+			padding: '10px',
 			'& img': {
 				marginRight: '10px',
 			},

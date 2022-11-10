@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import ArticleIcon from '@mui/icons-material/Article';
 import CodeIcon from '@mui/icons-material/Code';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
@@ -6,11 +6,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import LaunchIcon from '@mui/icons-material/Launch';
 import PeopleIcon from '@mui/icons-material/People';
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, Button, Link, List, ListItem, Menu, MenuItem, Popover } from '@mui/material';
-import useStyles from './styles';
-import { useEffect } from 'react';
+import { Button, Link, List, ListItem, MenuItem, Popover } from '@mui/material';
 import { convertLink } from 'utils/helpers';
-import { dataFromCmcArr } from 'utils/constants';
+import useStyles from './styles';
 
 const ListLink = ({ data, dataFromCmc }) => {
 	const classes = useStyles();
@@ -105,12 +103,16 @@ const ListLink = ({ data, dataFromCmc }) => {
 					<List>
 						{data.message_board && (
 							<MenuItem className={classes.menuItem}>
-								{convertLink(data.message_board)} <LaunchIcon />
+								<Link href={data.message_board} target='_blank'>
+									{convertLink(data.message_board)} <LaunchIcon />
+								</Link>
 							</MenuItem>
 						)}
 						{data.reddit && (
 							<MenuItem className={classes.menuItem}>
-								{convertLink(data.reddit)} <LaunchIcon />
+								<Link href={data.reddit} target='_blank'>
+									{convertLink(data.reddit)} <LaunchIcon />
+								</Link>
 							</MenuItem>
 						)}
 					</List>

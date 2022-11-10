@@ -1,5 +1,7 @@
 import { makeStyles } from '@mui/styles';
 
+const colorSubTxt = 'var(--color-sub-txt)';
+
 const useStyles = makeStyles((theme) => ({
 	logo: {
 		display: 'inline-block',
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: 12,
 		textTransform: 'uppercase',
 		fontWeight: 500,
-		color: 'var(--color-sub-txt)',
+		color: colorSubTxt,
 		padding: '4px 6px',
 		borderRadius: 4,
 		backgroundColor: 'var(--bg-neutral)',
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: 10,
 	},
 	lbl: {
-		color: 'var(--color-sub-txt)',
+		color: colorSubTxt,
 		fontSize: 13,
 		fontWeight: 500,
 	},
@@ -78,32 +80,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	popover: {
 		'& .MuiPaper-root': {
-			// padding: 15,
-			// zIndex: 999,
-			// paddingTop: 10,
-			// '&:after': {
-			// 	content: '""',
-			// 	display: 'inline-block',
-			// 	position: 'absolute',
-			// 	zIndex: 99999,
-			// 	top: '0',
-			// 	left: '50%',
-			// 	transform: 'translateX(-50%)',
-			// 	width: 0,
-			// 	height: 0,
-			// 	borderStyle: 'solid',
-			// 	borderWidth: '0 7px 10px 7px',
-			// 	borderColor: 'transparent',
-			// 	borderBottomColor: 'var(--bg-dropdown)	'
-			// },
 			background: 'var(--bg-dropdown)',
 			boxShadow: 'var(--shadow-normal) !important',
 			'& .MuiList-root': {
 				padding: '10px 0',
 				background: 'var(--bg-dropdown)',
-				// padding: '10px 0',
-				// borderTopLeftRadius: 4,
-				// borderTopRightRadius: 4,
 			},
 		},
 	},
@@ -119,11 +100,15 @@ const useStyles = makeStyles((theme) => ({
 			fontSize: 14,
 			marginLeft: 5,
 		},
+		'& a': {
+			display: 'flex',
+			alignItems: 'center',
+		},
 	},
 	tag: {
 		fontSize: 11,
 		fontWeight: 700,
-		color: 'var(--color-sub-txt)',
+		color: colorSubTxt,
 		marginBottom: 4,
 		height: 20,
 		lineHeight: '20px',
@@ -132,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
 		'& .MuiChip-label': {
 			padding: '4px 10px',
 			'& a': {
-				color: 'var(--color-sub-txt)',
+				color: colorSubTxt,
 			},
 		},
 		'&.view-all': {
@@ -147,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
 			fontSize: 13,
 		},
 		'& .lbl': {
-			color: 'var(--color-sub-txt)',
+			color: colorSubTxt,
 			marginRight: 5,
 		},
 		'& .val': {
@@ -179,6 +164,13 @@ const useStyles = makeStyles((theme) => ({
 			color: 'var(--bg-neutral-3)',
 		},
 	},
+
+	mainContent: {
+		borderTop: '1px solid var(--bg-neutral)',
+		marginLeft: '0 !important',
+		paddingLeft: '0 !important',
+	},
+
 	// Dialog
 	dialogTitle: {
 		display: 'flex',
@@ -203,7 +195,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	dialogLbl: {
 		fontSize: 13,
-		color: 'var(--color-sub-txt)',
+		color: colorSubTxt,
 		fontWeight: 500,
 		marginBottom: 10,
 	},
@@ -222,10 +214,16 @@ const useStyles = makeStyles((theme) => ({
 		},
 		'& .item': {
 			'& .stats-lbl': {
+				display: 'flex',
+				alignItems: 'center',
 				fontSize: 12,
 				fontWeight: 500,
-				color: 'var(--color-sub-txt)',
+				color: colorSubTxt,
 				minWidth: 90,
+				'& .MuiSvgIcon-root': {
+					fontSize: 14,
+					marginLeft: 5,
+				},
 			},
 			'& .val': {
 				fontSize: 12,
@@ -235,9 +233,22 @@ const useStyles = makeStyles((theme) => ({
 			'& .supply': {
 				fontSize: 12,
 				fontWeight: 500,
-				color: 'var(--color-sub-txt)',
+				color: colorSubTxt,
 			},
 		},
+	},
+
+	// Tooltip
+	tooltip: {
+		maxWidth: 300,
+		padding: 15,
+		fontSize: 12,
+		color: colorSubTxt,
+		backgroundColor: 'var(--bg-dropdown)',
+		boxShadow: 'var(--shadow-normal) !important',
+	},
+	arrow: {
+		color: 'var(--bg-dropdown)',
 	},
 
 	wrapTitle: {
@@ -250,7 +261,7 @@ const useStyles = makeStyles((theme) => ({
 	h3: {
 		fontSize: 24,
 		fontWeight: 700,
-		marginBottom: 25
+		marginBottom: 25,
 	},
 
 	h4: {
@@ -297,7 +308,7 @@ const useStyles = makeStyles((theme) => ({
 
 	// Statistics
 	listStats: {
-		padding: 20,
+		padding: 0,
 		'& .MuiListItem-root': {
 			padding: 0,
 			marginBottom: 15,
@@ -313,6 +324,9 @@ const useStyles = makeStyles((theme) => ({
 					fontWeight: 700,
 					textAlign: 'right',
 				},
+			},
+			'& .MuiTypography-small': {
+				fontSize: 12
 			},
 			'& .right': {
 				marginLeft: 'auto',
@@ -347,18 +361,22 @@ const useStyles = makeStyles((theme) => ({
 		left: '50%',
 		transform: 'translate(-50%,-50%)',
 		zIndex: 3,
-		textAlign: 'center'
+		textAlign: 'center',
 	},
 
 	// Converter
 	converter: {
-		display: 'flex',
 		border: '1px solid var(--border-table)',
 		backgroundColor: 'var(--bg-neutral-5)',
 		borderRadius: 16,
 		position: 'relative',
+		'@media (min-width: 1024px)': {
+			display: 'flex',
+			'& .content': {
+				width: '50%',
+			},
+		},
 		'& .content': {
-			width: '50%',
 			display: 'flex',
 			flexWrap: 'wrap',
 			alignItems: 'center',
@@ -366,38 +384,38 @@ const useStyles = makeStyles((theme) => ({
 			'& .input': {
 				flex: 1,
 				'& fieldset': {
-					border: 'none !important'
+					border: 'none !important',
 				},
 				'& input': {
 					textAlign: 'right',
-					fontWeight: 700
-				}
+					fontWeight: 700,
+				},
 			},
-				'&:first-child': {
-					backgroundColor: "var(--bg-drawer)",
-					borderTopLeftRadius: 16,
-					borderBottomLeftRadius: 16,
-				},
-				'&:last-child': {
-					borderTopRightRadius: 16,
-					borderBottomRightRadius: 16,
-				},
+			'&:first-child': {
+				backgroundColor: 'var(--bg-drawer)',
+				borderTopLeftRadius: 16,
+				borderBottomLeftRadius: 16,
+			},
+			'&:last-child': {
+				borderTopRightRadius: 16,
+				borderBottomRightRadius: 16,
+			},
 		},
 		'& .item': {
 			display: 'flex',
 			alignItems: 'center',
 			marginRight: 20,
-			
+
 			'& img': {
-				marginRight: 10
+				marginRight: 10,
 			},
 			'& .symbol': {
-				fontSize: 12
+				fontSize: 12,
 			},
 			'& .name': {
 				fontSize: 15,
 				fontWeight: 700,
-				whiteSpace: 'nowrap'
+				whiteSpace: 'nowrap',
 			},
 		},
 		'& .btn-swap': {
@@ -408,11 +426,18 @@ const useStyles = makeStyles((theme) => ({
 			backgroundColor: '#eff2f5',
 			padding: 4,
 			'& .MuiSvgIcon-root': {
-				color: '#858ca2'
-			}
+				color: '#858ca2',
+			},
+		},
+	},
+
+	btnMore: {
+		color: 'var(--color-common-txt)',
+		backgroundColor: 'var(--bg-neutral)',
+		'&:hover': {
+			backgroundColor: 'var(--bg-neutral-5)'
 		}
 	}
-
 }));
 
 export default useStyles;
