@@ -160,17 +160,17 @@ const ListLink = ({ data, dataFromCmc }) => {
 						horizontal: 'center',
 					}}>
 					<List>
-						{data.blockchain_site.length > 0 &&
+						{data.blockchain_site && data.blockchain_site.length > 0 ?
 							data.blockchain_site.map(
 								(item) =>
-									item !== '' && (
+									item && (
 										<MenuItem key={item} className={classes.menuItem}>
 											<Link href={item} target='_blank'>
 												{convertLink(item)} <LaunchIcon />
 											</Link>
 										</MenuItem>
 									)
-							)}
+							) : null}
 					</List>
 				</Popover>
 			</ListItem>

@@ -271,6 +271,8 @@ const CoinChart = forwardRef(({ id }, ref) => {
 		if (chartRef.current[chartInterval]) {
 			// subscribeCrosshairMove subscribeClick
 			chartRef.current[chartInterval].subscribeCrosshairMove((param) => {
+				const openPrice = dataRef.current[0][1];
+
 				const width = chartContainerRef.current.clientWidth;
 				const height = chartContainerRef.current.clientHeight;
 
@@ -300,9 +302,12 @@ const CoinChart = forwardRef(({ id }, ref) => {
 				tooltipRef.current.style.display = 'block';
 				tooltipRef.current.innerHTML = ReactDOMServer.renderToString(
 					<div style={{ color: 'var(--color-common-txt)' }}>
-						<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-							<span style={{ fontWeight: 700 }}>{date}</span>
-							<span style={{ color: 'var(--color-sub-txt)', fontWeight: 500, fontSize: 12 }}>{time}</span>
+						<div style={{ display: 'flex', alignItems: 'center' }}>
+							<span className={classes.dotPrice} style={{
+								backgroundColor: price >= openPrice ? 'var(--color-price-up)' : 'var(--color-price-down)'
+							}}></span>
+							<span style={{ marginLeft: 5, fontWeight: 700 }}>{date}</span>
+							<span style={{ marginLeft: 'auto', color: 'var(--color-sub-txt)', fontWeight: 500, fontSize: 12 }}>{time}</span>
 						</div>
 						<div>
 							Price: <b>${formatNumber(price)}</b>

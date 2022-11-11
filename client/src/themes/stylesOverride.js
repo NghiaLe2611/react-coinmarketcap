@@ -60,6 +60,15 @@ export default function componentStyleOverrides(theme) {
                     }
                 }
             }
+        },
+        MuiPaginationItem: {
+            styleOverrides: {
+                root: {
+                    '&.MuiPaginationItem-ellipsis': {
+                        backgroundColor: 'transparent !important'
+                    }
+                }
+            }
         }
     };
 }

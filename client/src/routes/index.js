@@ -56,6 +56,15 @@ const AppRoutes = () => {
 						</Root>
 					}
 				/>
+				<Route
+					exact
+					path='*'
+					element={
+						<Root>
+							<div>Page Not Found</div>
+						</Root>
+					}
+				/>
 			</Routes>
 		</Suspense>
 	);

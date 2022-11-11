@@ -15,6 +15,7 @@ import CategoryList from 'components/CategoryList';
 import Loader from 'components/Loader';
 import MuiPagination from 'components/pagination/MuiPagination';
 import { WrapFilterBox } from 'components/common';
+import { StyledTable } from 'components/table/common';
 
 const headCells = [
     {
@@ -80,17 +81,6 @@ const getCoinList = async ({ limit, page }) => {
 	return data.data;
 };
 
-const StyledTable = styled(Table)(({ theme }) => ({
-    backgroundColor: 'transparent',
-    '& .MuiTableCell-root': {
-        fontSize: 13,
-        fontWeight: 500,
-        '&.MuiTableCell-head': {
-            fontWeight: 700
-        }
-    }
-}));
-
 const StyledSelect = styled(TextField)(({
     backgroundColor: 'var(--bg-select)',
     borderRadius: 6,
@@ -111,7 +101,7 @@ const CoinList = () => {
 	const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(100);
 	const totalCoins = useSelector((state) => state.generalCoinStats.generalStats.cryptos);
-	const firstLoadingRef = useRef(true);
+	// const firstLoadingRef = useRef(true);
 
 	const { data, isLoading, isFetching, error } = useQuery(
 		['list-coin', limit, page],
@@ -169,9 +159,15 @@ const CoinList = () => {
 			<WrapFilterBox>
 				<CategoryList />
 				<Box display='flex' alignItems='center' marginLeft='auto'>
-					<FormControl sx={{marginLeft: 'auto', flexDirection: 'row', alignItems: 'center'}}>
-						<FormLabel sx={{fontSize: 13, color: 'var(--color-common-txt)', mr: 1}}>Show rows</FormLabel>
-						<StyledSelect select size='small' sx={{minWidth: 60, mr: 2}} name='limit' value={limit} onChange={handleChangeLimit}>
+					<FormControl sx={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center' }}>
+						<FormLabel sx={{ fontSize: 13, color: 'var(--color-common-txt)', mr: 1 }}>Show rows</FormLabel>
+						<StyledSelect
+							select
+							size='small'
+							sx={{ minWidth: 60, mr: 2 }}
+							name='limit'
+							value={limit}
+							onChange={handleChangeLimit}>
 							<StyledOption key='100' value={100}>
 								100
 							</StyledOption>
@@ -187,7 +183,7 @@ const CoinList = () => {
 					{/* <CustomPagination count={count} page={page} onPageChange={handleChangePage} /> */}
 				</Box>
 			</WrapFilterBox>
-			<TableContainer sx={{mb: 5}}>
+			<TableContainer sx={{ mb: 5 }}>
 				<StyledTable id='coin-table'>
 					<TableHead>
 						<TableRow>
@@ -195,14 +191,24 @@ const CoinList = () => {
 								// <TableCell key={item.id} align={item.align} onClick={() => requestSort(item.id)}>
 								// 	{item.label}
 								// </TableCell>
-								<SortTableHead key={item.id} name={item.id} label={item.label} align={item.align} requestSort={requestSort} sortConfig={sortConfig} style={{width: item.width}} />
+								<SortTableHead
+									key={item.id}
+									name={item.id}
+									label={item.label}
+									align={item.align}
+									requestSort={requestSort}
+									sortConfig={sortConfig}
+									style={{ width: item.width }}
+								/>
 							))}
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{items &&
 							items.map((item) => (
-								<TableRow key={`${item.id}-${item.symbol}`} sx={{'& .MuiTableCell-body': {padding: '10px'}}}>
+								<TableRow
+									key={`${item.id}-${item.symbol}`}
+									sx={{ '& .MuiTableCell-body': { padding: '10px' } }}>
 									<TableCell align='center'></TableCell>
 									<TableCell align='left'>{item.market_cap_rank}</TableCell>
 									<TableCell align='left'>
@@ -210,19 +216,35 @@ const CoinList = () => {
 									</TableCell>
 									<TableCell align='right'>{formatPrice(item.current_price)}</TableCell>
 									<TableCell align='center'>
-										<CoinChange value={item.price_change_percentage_1h_in_currency} format={formatPercent} />
+										<CoinChange
+											value={item.price_change_percentage_1h_in_currency}
+											format={formatPercent}
+										/>
 									</TableCell>
 									<TableCell align='center'>
-										<CoinChange value={item.price_change_percentage_24h_in_currency} format={formatPercent} />
+										<CoinChange
+											value={item.price_change_percentage_24h_in_currency}
+											format={formatPercent}
+										/>
 									</TableCell>
 									<TableCell align='center'>
-										<CoinChange value={item.price_change_percentage_7d_in_currency} format={formatPercent} />
+										<CoinChange
+											value={item.price_change_percentage_7d_in_currency}
+											format={formatPercent}
+										/>
 									</TableCell>
 									<TableCell align='right'>{formatNumber(item.market_cap)}</TableCell>
 									<TableCell align='right'>{formatNumber(item.total_volume)}</TableCell>
 									<TableCell align='right'>{formatNumber(item.circulating_supply)}</TableCell>
 									<TableCell align='right'>
-										<SparkLine data={item.sparkline_in_7d['price']} color={item['price_change_percentage_7d_in_currency'] >= 0 ? '#16c784' : '#ea3943'} />
+										<SparkLine
+											data={item.sparkline_in_7d['price']}
+											color={
+												item['price_change_percentage_7d_in_currency'] >= 0
+													? '#16c784'
+													: '#ea3943'
+											}
+										/>
 									</TableCell>
 								</TableRow>
 							))}

@@ -1,10 +1,8 @@
-import { Box, Grid, List, ListItem, Typography } from '@mui/material';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
-import CoinChange from 'components/common/CoinChange';
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { formatNumber, formatPercent, formatPriceChange } from 'utils/helpers';
 import ActionButtons from './ActionButtons';
 import BoxLeft from './BoxLeft';
 import BoxRight from './BoxRight';
@@ -13,6 +11,8 @@ import CoinConverter from './CoinConverter';
 import CoinMarket from './CoinMarket';
 import PriceStats from './PriceStats';
 import useStyles from './styles';
+import Loader from 'components/Loader';
+import { PrimaryBtn } from 'components/common';
 
 const getDetail = async ({ id }) => {
 	const data = await coinApi.getDetail(id);
@@ -32,7 +32,12 @@ const DetailPage = () => {
 	const hasValue = useRef(false);
 	const circulatingSupply = useRef(0);
 
-	const { isFetching, isError, data: coins } = useQuery([`coin-detail-${id}`, id], () => getDetail({ id }), {
+	const {
+		isFetching,
+		isError,
+		data: coins,
+		error,
+	} = useQuery([`coin-detail-${id}`, id], () => getDetail({ id }), {
 		staleTime: 5 * 60 * 1000,
 		cacheTime: Infinity,
 		refetchOnWindowFocus: false,
@@ -114,7 +119,7 @@ const DetailPage = () => {
 
 	const handleDownloadImage = (type) => {
 		childRef.current.downloadImage(type);
-	}
+	};
 
 	// Calc circulating supply percent
 	if (data) {
@@ -123,14 +128,41 @@ const DetailPage = () => {
 		const supplyPercent = (supply * 100) / maxSupply;
 
 		circulatingSupply.current = Math.round(supplyPercent);
-	};
+	}
 
 	if (isError) {
-		return <div>There is an error. Please try again !</div>;
-	};
+		if (error.response.data.message) {
+			return (
+				<div className='empty'>
+					<div style={{ textAlign: 'center' }}>
+						<p style={{ marginBottom: 20 }}>{error.response.data.message}</p>
+						<PrimaryBtn variant='contained'>Go To Homepage</PrimaryBtn>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<div className='empty'>
+				<div style={{ textAlign: 'center' }}>
+					<p style={{ marginBottom: 20 }}>There is an error. Please try again</p>
+					<PrimaryBtn variant='contained'>Go To Homepage</PrimaryBtn>
+				</div>
+			</div>
+		);
+	}
 
 	return isFetching ? (
-		<div>loading...</div>
+		<Loader
+			backdrop={false}
+			open={isFetching}
+			style={{
+				minHeight: 300,
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+			}}
+		/>
 	) : data ? (
 		<Grid container spacing={4}>
 			<BoxLeft data={data} id={id} />
@@ -173,7 +205,7 @@ const DetailPage = () => {
 	) : (
 		<div>Symbol not found. Please visit another page.</div>
 	);
-};
+};;
 
 export default DetailPage;
 

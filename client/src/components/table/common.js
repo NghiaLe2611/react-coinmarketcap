@@ -23,6 +23,17 @@ export const CommonTable = styled(withTheme(Table))(({ theme }) => ({
     }
 }));
 
+export const StyledTable = styled(Table)(({ theme }) => ({
+    backgroundColor: 'transparent',
+    '& .MuiTableCell-root': {
+        fontSize: 13,
+        fontWeight: 500,
+        '&.MuiTableCell-head': {
+            fontWeight: 700
+        }
+    }
+}));
+
 export const StyledTableHead = styled(withTheme(TableHead))(({ theme }) => ({
     position: 'sticky',
     top: 0,

@@ -22,6 +22,7 @@
     --bg-neutral-3: #cfd6e4;
     --bg-neutral-4: #eff2f5;
     --bg-neutral-5: #f8fafd;
+    --bg-neutral-6: #e7e7e7;
     --bg-dropdown: #fff;
     --bg-lightblue: #e6f0ff;
     --bg-control: #e1e4e6;
@@ -53,6 +54,7 @@
     --bg-neutral-3: #646b80;
     --bg-neutral-4: #222531;
     --bg-neutral-5: #222531;
+    --bg-neutral-6: #2f323f;
     --bg-dropdown: #222531;
     --bg-lightblue: rgba(56, 97, 251, 0.1);
     --bg-control: #323546;
@@ -62,6 +64,13 @@
     --border-table: #2b2f3c;
 
     --shadow-normal: 0px 4px 24px #171924,0px 1px 2px #171924;
+}
+
+.empty {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .sortable-cell{

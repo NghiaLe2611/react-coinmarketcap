@@ -19,7 +19,6 @@ export const CustomBtn = styled(Button, {
 		width: '100%',
 		marginBottom: 10,
 	},
-	// eef0f2
 	backgroundColor: bgColor,
 }));
 

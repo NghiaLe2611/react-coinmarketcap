@@ -80,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	popover: {
 		'& .MuiPaper-root': {
+			borderRadius: 8,
 			background: 'var(--bg-dropdown)',
 			boxShadow: 'var(--shadow-normal) !important',
 			'& .MuiList-root': {
@@ -291,7 +292,7 @@ const useStyles = makeStyles((theme) => ({
 			textTransform: 'capitalize',
 			padding: 5,
 			minHeight: 'inherit',
-			color: 'var(--color-common-txt)',
+			color: 'var(--color-sub-txt)',
 			'&:not(:last-child)': {
 				marginRight: 4,
 			},
@@ -304,6 +305,13 @@ const useStyles = makeStyles((theme) => ({
 
 	btn: {
 		borderRadius: '12px !important',
+	},
+
+	dotPrice: {
+		width: 10,
+		height: 10,
+		borderRadius: '50%',
+		border: '1px solid #fff'
 	},
 
 	// Statistics
@@ -434,8 +442,9 @@ const useStyles = makeStyles((theme) => ({
 	btnMore: {
 		color: 'var(--color-common-txt)',
 		backgroundColor: 'var(--bg-neutral)',
+		boxShadow: 'none !important',
 		'&:hover': {
-			backgroundColor: 'var(--bg-neutral-5)'
+			backgroundColor: 'var(--bg-neutral-6)'
 		}
 	}
 }));

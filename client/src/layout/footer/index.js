@@ -44,8 +44,8 @@ const Footer = () => {
 	const classes = useStyles();
     const isDarkMode = useSelector(_isDarkMode);
     const styles = {
-        borderTop: '1px solid #1a1c23',
-        backgroundColor: '#17171a'
+        borderTop: '1px solid var(--border-table)',
+        backgroundColor: '#1a1a1d'
     };
 	return (
         <Box pt={6} sx={{borderTop: isDarkMode && styles.borderTop, backgroundColor: isDarkMode && styles.backgroundColor}}>
