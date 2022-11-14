@@ -1,7 +1,7 @@
 import { memo, useState, useMemo, useRef } from 'react';
 import { Box, Grid, Tooltip, Typography } from '@mui/material';
 import CoinChange from 'components/common/CoinChange';
-import { formatNumber, formatPercent, formatSupply } from 'utils/helpers';
+import { formatNumber, formatPercent, formatPrice, formatSupply } from 'utils/helpers';
 import useStyles from './styles';
 import InfoIcon from '@mui/icons-material/Info';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -87,7 +87,7 @@ const BoxRight = ({ data }) => {
 						{data.name} Price ({data.symbol.toUpperCase()})
 					</Typography>
 					<Box className={classes.price}>
-						<Typography>${formatNumber(data.market_data.current_price['usd'])}</Typography>
+						<Typography>${formatPrice(data.market_data.current_price['usd'])}</Typography>
 						<CoinChange
 							hasBg={true}
 							value={data.market_data['price_change_percentage_24h']}

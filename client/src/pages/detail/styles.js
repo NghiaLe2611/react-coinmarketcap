@@ -27,11 +27,13 @@ const useStyles = makeStyles((theme) => ({
 	rank: {
 		lineHeight: 1,
 		fontSize: 12,
-		backgroundColor: '#858ca2',
+		textAlign: 'center',
 		color: '#fff',
 		padding: '4px 6px',
 		borderRadius: 4,
 		marginLeft: 10,
+		minWidth: 82,
+		backgroundColor: '#858ca2',
 	},
 	lbl: {
 		color: colorSubTxt,

@@ -11,7 +11,8 @@
     "install-client": "cd client && npm install",
     "client": "cd client && npm start",
     "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon server.js\" \"npm run client\"",
-    "heroku-postbuild": "npm run install-client && npm run build"
+    "heroku-postbuild": "npm run install-client && npm run build",
+    "render-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build"
   },
   "proxy": "http://localhost:5000",
   "author": "",

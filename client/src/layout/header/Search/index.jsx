@@ -1,18 +1,25 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, IconButton, List, ListItem, Popover, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { _generalStats } from '../../../features/general/generalSlice';
 import classes, { SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase } from './styles';
 import CloseIcon from '@mui/icons-material/Close';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 const Search = () => {
+	const location = useLocation();
 	const [showSearchBox, setShowSearchBox] = useState(null);
     const {trendingSearches, recentSearches} = useSelector(_generalStats);
 
 	const searchRef = useRef("");
+
+	useEffect(() => {
+		return () => {
+			setShowSearchBox(null);
+		}
+	}, [location]);
 
 	const handleShowSearchBox = (e) => {
 		setShowSearchBox(e.currentTarget);

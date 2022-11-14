@@ -24,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/api/status', function (req, res) {
 	return res.status(200).json({
 		success: true,
-		key: process.env.CMC_KEY
 	});
 });
 

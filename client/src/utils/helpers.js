@@ -88,7 +88,8 @@ export function formatSupply(number) {
 };
 
 export function formatPriceChange(str) {
-	let newStr = str.toFixed(2).toString();
+	// let newStr = str.toFixed(2).toString();
+	let newStr = formatPrice(str);
 	const first = newStr.charAt(0);
 	if (isNaN(Number(first))) {
 		newStr = `-$${newStr.substring(1)}`;
