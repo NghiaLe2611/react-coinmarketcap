@@ -6,7 +6,7 @@ import * as ReactDOMServer from 'react-dom/server';
 import { ColorType, createChart, CrosshairMode, isBusinessDay } from 'lightweight-charts';
 import axios from 'axios';
 import moment from 'moment';
-import { formatNumber } from 'utils/helpers';
+import { formatNumber, formatPrice } from 'utils/helpers';
 import { forwardRef } from 'react';
 import { useImperativeHandle } from 'react';
 import { exportComponentAsJPEG, exportComponentAsPNG } from 'react-component-export-image';
@@ -310,7 +310,7 @@ const CoinChart = forwardRef(({ id }, ref) => {
 							<span style={{ marginLeft: 'auto', color: 'var(--color-sub-txt)', fontWeight: 500, fontSize: 12 }}>{time}</span>
 						</div>
 						<div>
-							Price: <b>${formatNumber(price)}</b>
+							Price: <b>${formatPrice(price)}</b>
 						</div>
 					</div>
 				);

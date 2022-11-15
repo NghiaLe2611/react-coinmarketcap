@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormLabel, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // Common
@@ -13,10 +13,12 @@ export const PrimaryBtn = styled(Button)(({ theme }) => ({
 	textTransform: 'none',
 	borderRadius: '6px !important',
 	color: '#fff',
-    backgroundColor: 'var(--color-primary)',
-    '&:hover': {
-        backgroundColor: '#2f56ea',
-    },
+	fontWeight: 500,
+	background: 'var(--color-primary)',
+	'&:hover': {
+		// backgroundColor: '#2f56ea',
+		background: 'var(--color-primary-hover)',
+	},
 }));
 
 // Text
@@ -44,6 +46,26 @@ export const StyledSelect = styled(TextField)({
 	},
 	'& fieldset': {
 		border: 0,
+	},
+});
+
+export const StyledFormControl = styled(FormControl)({
+	width: '100%',
+	marginBottom: 20,
+});
+
+export const StyledFormLabel = styled(FormLabel)({
+	marginBottom: 10,
+	fontWeight: 500,
+});
+
+export const StyledInput = styled(TextField)({
+	'& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+		borderColor: 'var(--color-primary) !important',
+	},
+	'& input:-webkit-autofill': {
+		WebkitBoxShadow: 'none !important',
+		// WebkitTextFillColor: '#222',
 	},
 });
 

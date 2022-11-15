@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-import { ListItemText, TextField } from '@mui/material';
+import { ListItemText, Modal } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -19,7 +18,7 @@ import FormControl from '@mui/material/FormControl';
 import { useDispatch } from 'react-redux';
 
 import { toggleTheme } from '../../../features/theme/themeSlice';
-import classes, { CustomBtn, LogoImage, SelectLanguage, StyledSelect } from './styles';
+import classes, { CustomBtn, LogoImage, SelectLanguage } from './styles';
 import Search from '../Search';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -28,26 +27,112 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import { PrimaryBtn, StyledFormControl, StyledFormLabel, StyledInput } from 'components/common';
+import { makeStyles } from '@mui/styles';
 
-const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
-    const dispatch = useDispatch();
-    const [showSubMenu, setShowSubMenu] = useState(null);
-    const [pos, setPos] = useState({
-        left: false
-    });
+const style = {
+	position: 'absolute',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: 400,
+	bgcolor: 'var(--bg-drawer)',
+	boxShadow: 16,
+	borderRadius: 4,
+	p: 3,
+};
 
-    const toggleDrawer = (anchor, open) => {
-        setPos({ ...pos, [anchor]: open });
-    };
 
-    const handleShowSubMenu = (subMenuName) => {
-        setShowSubMenu(prev => {
-            if (prev !== subMenuName) return subMenuName;
-            return null;
-        });
-    };
+const useStyles = makeStyles(() => ({
+	wrapTitle: {
+		marginBottom: 30,
+		display: 'flex',
+		justifyContent: 'center'
+	},
+	title: {
+		fontSize: '1.5rem',
+		fontWeight: 'bold',
+		margin: '0 20px',
+		paddingBottom: 10,
+		cursor: 'pointer',
+		'&.active': {
+			borderBottom: '3px solid var(--color-primary)'
+		}
+	}
+}));
 
-    const navbarStyle = {borderBottom: isDarkMode ? '1px solid #222531' : '1px solid #eff2f5'};
+const FormModal = ({ open, handleClose, type, setType }) => {
+	const classes = useStyles();
+	return (
+		<Modal open={open} onClose={handleClose}>
+			<Box sx={style}>
+				<Box className={classes.wrapTitle}>
+					<Typography
+						variant='h3'
+						className={`${classes.title} ${type === 'LOGIN' ? 'active' : null}`}
+						onClick={() => setType('LOGIN')}>
+						Log In
+					</Typography>
+
+					<Typography
+						variant='h3'
+						className={`${classes.title} ${type === 'REGISTER' ? 'active' : null}`}
+						onClick={() => setType('REGISTER')}>
+						Sign Up
+					</Typography>
+				</Box>
+				<Box>
+					<StyledFormControl>
+						<StyledFormLabel>Email</StyledFormLabel>
+						<StyledInput
+							autoComplete='off'
+							size='small'
+							fullWidth
+							variant='outlined'
+							InputLabelProps={{ shrink: false, sx: { '&.MuiFormLabel-filled': { display: 'none' } } }}
+						/>
+					</StyledFormControl>
+					<StyledFormControl>
+						<StyledFormLabel>Password</StyledFormLabel>
+						<StyledInput
+							autoComplete='off'
+							size='small'
+							fullWidth
+							type='password'
+							variant='outlined'
+							InputLabelProps={{ shrink: false, sx: { '&.MuiFormLabel-filled': { display: 'none' } } }}
+						/>
+					</StyledFormControl>
+					<StyledFormControl sx={{ mt: 2.5 }}>
+						<PrimaryBtn sx={{ height: 48 }}>{type === 'LOGIN' ? 'Log In' : 'Sign Up'}</PrimaryBtn>
+					</StyledFormControl>
+				</Box>
+			</Box>
+		</Modal>
+	);
+};
+
+const MainNav = ({ menu, isDarkMode, language, onHandleChangeLanguage }) => {
+	const dispatch = useDispatch();
+	const [showSubMenu, setShowSubMenu] = useState(null);
+	const [showPopup, setShowPopup] = useState(null);
+	const [pos, setPos] = useState({
+		left: false,
+	});
+
+	const toggleDrawer = (anchor, open) => {
+		setPos({ ...pos, [anchor]: open });
+	};
+
+	const handleShowSubMenu = (subMenuName) => {
+		setShowSubMenu((prev) => {
+			if (prev !== subMenuName) return subMenuName;
+			return null;
+		});
+	};
+
+	const navbarStyle = { borderBottom: isDarkMode ? '1px solid #222531' : '1px solid #eff2f5' };
+	const open = Boolean(showPopup);
 
 	return (
 		<Box sx={navbarStyle}>
@@ -339,10 +424,11 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 							marginLeft: 'auto',
 						}}>
 						<ButtonGroup aria-label='outlined primary button group'>
-							<CustomBtn variant='text' sx={{ px: 2 }}>
+							<CustomBtn variant='text' sx={{ px: 2 }} onClick={() => setShowPopup('LOGIN')}>
 								Log in
 							</CustomBtn>
 							<CustomBtn
+								onClick={() => setShowPopup('REGISTER')}
 								variant='contained'
 								bgColor='var(--color-primary)'
 								sx={{
@@ -374,6 +460,7 @@ const MainNav = ({menu, isDarkMode, language, onHandleChangeLanguage}) => {
 					</Box>
 				</Toolbar>
 			</Container>
+			<FormModal open={open} handleClose={() => setShowPopup(null)} type={showPopup} setType={setShowPopup} />
 		</Box>
 	);
 };
