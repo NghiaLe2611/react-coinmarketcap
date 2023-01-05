@@ -57,17 +57,21 @@ const getCoinMarkets = async ({ id }) => {
 	return data.data;
 };
 
-const CoinMarket = ({ name }) => {
+const CoinMarket = ({ name, isFullData }) => {
 	const classes = useStyles();
 	const params = useParams();
 	const { id } = params;
 
-	const { data, isLoading, isFetching } = useQuery([`${id}-markets`, id], () => getCoinMarkets({ id }), {
+	const { data, isLoading, isFetching } = useQuery([`${id}-markets`, id, isFullData], () => getCoinMarkets({ id }), {
 		refetchOnWindowFocus: false,
 		staleTime: 5 * 60 * 1000,
 		cacheTime: Infinity,
 		refetchIntervalInBackground: false,
 		select: (res) => {
+			if (isFullData) {
+				return res.tickers;
+			}
+
 			return res.tickers.slice(0, 5);
 		},
 	});
@@ -81,13 +85,13 @@ const CoinMarket = ({ name }) => {
 	const renderTrustScore = (score) => {
 		switch (score) {
 			case 'green':
-				return <Chip sx={{ backgroundColor: '#16c784', fontSize: 12 }} label='High' />;
+				return <Chip sx={{ backgroundColor: '#16c784', color: '#eee', fontSize: 12 }} label='High' />;
 			case 'yellow':
-				return <Chip sx={{ backgroundColor: '#f5a341', fontSize: 12 }} label='Moderate' />;
+				return <Chip sx={{ backgroundColor: '#f5a341', color: '#eee', fontSize: 12 }} label='Moderate' />;
 			case 'red':
-				return <Chip sx={{ backgroundColor: '#ea3943', fontSize: 12 }} label='Low' />;
+				return <Chip sx={{ backgroundColor: '#ea3943', color: '#eee', fontSize: 12 }} label='Low' />;
 			default:
-				return <Chip sx={{ backgroundColor: '#929aaa', fontSize: 12 }} label='N/A' />;
+				return <Chip sx={{ backgroundColor: '#929aaa', color: '#eee', fontSize: 12 }} label='N/A' />;
 		}
 	};
 
@@ -150,19 +154,21 @@ const CoinMarket = ({ name }) => {
 					</TableBody>
 				</StyledTable>
 			</TableContainer>
-			<Box textAlign='center'>
-				<Button
-					component={Link}
-					to={`/currencies/${id}/markets`}
-					variant='contained'
-					sx={{
-						minWidth: 240,
-					}}
-					className={classes.btnMore}
-					endIcon={<KeyboardArrowRightIcon />}>
-					See All Markets
-				</Button>
-			</Box>
+			{!isFullData ? (
+				<Box textAlign='center'>
+					<Button
+						component={Link}
+						to={`/currencies/${id}/markets`}
+						variant='contained'
+						sx={{
+							minWidth: 240,
+						}}
+						className={classes.btnMore}
+						endIcon={<KeyboardArrowRightIcon />}>
+						See All Markets
+					</Button>
+				</Box>
+			) : null}
 		</Box>
 	);
 };

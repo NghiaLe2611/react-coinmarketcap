@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ActionButtons from './ActionButtons';
 import BoxLeft from './BoxLeft';
 import BoxRight from './BoxRight';
@@ -23,11 +23,15 @@ const DetailPage = () => {
 	const classes = useStyles();
 	const params = useParams();
 	const { id } = params;
+	const location = useLocation();
+	const slugs = location.pathname.split('/');
+	const slug = slugs[slugs.length - 1];
+	console.log(111, slug);
 
 	const [data, setData] = useState(null);
 
 	const childRef = useRef();
-	const ws = useRef(null);
+	// const ws = useRef(null);
 	const lastPrice = useRef(0);
 	const hasValue = useRef(false);
 	const circulatingSupply = useRef(0);
@@ -152,6 +156,33 @@ const DetailPage = () => {
 		);
 	}
 
+	if (slug === 'markets') {
+		return isFetching ? (
+			<Loader
+				backdrop={false}
+				open={isFetching}
+				style={{
+					minHeight: 300,
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+				}}
+			/>
+		) : data ? (
+			<Grid container spacing={4}>
+				<BoxLeft data={data} id={id} />
+				<BoxRight data={data} />
+				<Grid container item columnSpacing={5} mt={3} pt={3} className={classes.mainContent}>
+					<Grid item xs={12}>
+						<CoinMarket name={data.name} isFullData={true} />
+					</Grid>
+				</Grid>
+			</Grid>
+		) : (
+			<div>Symbol not found. Please visit another page.</div>
+		);
+	}
+
 	return isFetching ? (
 		<Loader
 			backdrop={false}
@@ -205,7 +236,7 @@ const DetailPage = () => {
 	) : (
 		<div>Symbol not found. Please visit another page.</div>
 	);
-};;
+};
 
 export default DetailPage;
 

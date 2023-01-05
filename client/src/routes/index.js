@@ -23,7 +23,7 @@ const AppRoutes = () => {
 				/>
 				<Route
 					exact
-					path='/watchlist'
+					path='watchlist'
 					element={
 						<Root>
 							<div>Watchlist</div>
@@ -32,7 +32,7 @@ const AppRoutes = () => {
 				/>
                 <Route
 					exact
-					path='/categories'
+					path='categories'
 					element={
 						<Root>
 							<CategoriesPage />
@@ -40,7 +40,7 @@ const AppRoutes = () => {
 					}
 				/>
                 <Route
-					path='/category/:slug'
+					path='category/:slug'
 					element={
 						<Root>
 							<CategoryPage />
@@ -49,13 +49,15 @@ const AppRoutes = () => {
 				/>
 				<Route
 					exact
-					path='/currencies/:id'
+					path='currencies/:id'
 					element={
 						<Root>
 							<DetailPage />
 						</Root>
 					}
 				/>
+				<Route path="currencies/:id/markets" element={<Root><DetailPage /></Root>} />
+
 				<Route
 					exact
 					path='*'

@@ -1,30 +1,29 @@
 import { memo, useEffect, useState } from 'react';
-import ArticleIcon from '@mui/icons-material/Article';
-import CodeIcon from '@mui/icons-material/Code';
-import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Box, Button, Link, List, ListItem, MenuItem } from '@mui/material';
+import { convertLink } from 'utils/helpers';
+import useStyles from './styles';
 import LaunchIcon from '@mui/icons-material/Launch';
 import PeopleIcon from '@mui/icons-material/People';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Link, List, ListItem, MenuItem, Popover } from '@mui/material';
-import { convertLink } from 'utils/helpers';
-import useStyles from './styles';
+import ArticleIcon from '@mui/icons-material/Article';
+import CodeIcon from '@mui/icons-material/Code';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
 
 const ListLink = ({ data, dataFromCmc }) => {
 	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = useState(null);
 	const [dropdownId, setDropdownId] = useState(null);
 
 	useEffect(() => {
 		const handleHover = (e) => {
-			const backdrop = e.target.classList.contains('MuiBackdrop-root');
-			if (dropdownId && backdrop) {
-				setAnchorEl(null);
+			if (!e.target.closest('.item-link')) {
 				setDropdownId(null);
 			}
 		};
 
-		document.addEventListener('mouseover', handleHover);
+		if (dropdownId) {
+			document.addEventListener('mouseover', handleHover);
+		}
 
 		return () => {
 			document.removeEventListener('mouseover', handleHover);
@@ -32,103 +31,78 @@ const ListLink = ({ data, dataFromCmc }) => {
 	}, [dropdownId]);
 
 	const handlePopoverOpen = (e, id) => {
-		setAnchorEl(e.currentTarget);
 		setDropdownId(id);
 	};
 
 	return dataFromCmc ? (
-		<List className={classes.list}>
-			<ListItem>
-				<Link href='' className={classes.link}>
-					<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} />
-					{convertLink(data.website[0])}
-					<LaunchIcon />
-				</Link>
-			</ListItem>
-			<ListItem>
-				<Button
-					sx={{ zIndex: 1302, position: 'relative' }}
-					className={classes.link}
-					onMouseOver={(e) => handlePopoverOpen(e, 'explorer')}
-					data-menu='explorer'>
-					<SearchIcon /> Explorers <KeyboardArrowDownIcon />
-				</Button>
-				<Popover
-					id='explorer'
-					// keepMounted
-					className={classes.popover}
-					open={dropdownId === 'explorer'}
-					anchorEl={anchorEl}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}>
-					<List>
-						{data.explorer.length > 0 &&
-							data.explorer.map((item) => (
-								<MenuItem key={item} className={classes.menuItem}>
-									<Link href={item} target='_blank'>
-										{convertLink(item)} <LaunchIcon />
+		<div>
+			<List className={classes.list}>
+				<ListItem>
+					<Link href={data.website[0]} className={classes.link} target='_blank'>
+						<InsertLinkIcon sx={{ transform: 'rotate(-45deg)' }} />
+						{convertLink(data.website[0])}
+						<LaunchIcon />
+					</Link>
+				</ListItem>
+				<ListItem className='item-link'>
+					<Button
+						className={classes.link}
+						onMouseEnter={(e) => handlePopoverOpen(e, 'explorer')}
+						data-menu='explorer'>
+						<SearchIcon /> Explorers <KeyboardArrowDownIcon />
+					</Button>
+					<Box className={classes.popover} style={{ display: dropdownId === 'explorer' ? 'block' : 'none' }}>
+						<List>
+							{data.explorer.length > 0 &&
+								data.explorer.map((item) => (
+									<MenuItem key={item} className={classes.menuItem}>
+										<Link href={item} target='_blank'>
+											{convertLink(item)} <LaunchIcon />
+										</Link>
+									</MenuItem>
+								))}
+						</List>
+					</Box>
+				</ListItem>
+
+				<ListItem className='item-link'>
+					<Button
+						className={classes.link}
+						onMouseOver={(e) => handlePopoverOpen(e, 'community')}
+						data-menu='community'>
+						<PeopleIcon /> Community <KeyboardArrowDownIcon />
+					</Button>
+					<Box className={classes.popover} style={{ display: dropdownId === 'community' ? 'block' : 'none' }}>
+						<List>
+							{data.message_board && (
+								<MenuItem className={classes.menuItem}>
+									<Link href={data.message_board} target='_blank'>
+										{convertLink(data.message_board)} <LaunchIcon />
 									</Link>
 								</MenuItem>
-							))}
-					</List>
-				</Popover>
-			</ListItem>
-			<ListItem>
-				<Button
-					sx={{ zIndex: 1302, position: 'relative' }}
-					className={classes.link}
-					onMouseOver={(e) => handlePopoverOpen(e, 'community')}
-					data-menu='community'>
-					<PeopleIcon /> Community <KeyboardArrowDownIcon />
-				</Button>
-				<Popover
-					id='community'
-					className={classes.popover}
-					open={dropdownId === 'community'}
-					anchorEl={anchorEl}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}>
-					<List>
-						{data.message_board && (
-							<MenuItem className={classes.menuItem}>
-								<Link href={data.message_board} target='_blank'>
-									{convertLink(data.message_board)} <LaunchIcon />
-								</Link>
-							</MenuItem>
-						)}
-						{data.reddit && (
-							<MenuItem className={classes.menuItem}>
-								<Link href={data.reddit} target='_blank'>
-									{convertLink(data.reddit)} <LaunchIcon />
-								</Link>
-							</MenuItem>
-						)}
-					</List>
-				</Popover>
-			</ListItem>
-			<ListItem>
-				<Link href={data.source_code} target='_blank' className={classes.link}>
-					<CodeIcon /> Source code <LaunchIcon />
-				</Link>
-			</ListItem>
-			<ListItem>
-				<Link href={data.technical_doc} target='_blank' className={classes.link}>
-					<ArticleIcon /> Whitepaper <LaunchIcon />
-				</Link>
-			</ListItem>
-		</List>
+							)}
+							{data.reddit && (
+								<MenuItem className={classes.menuItem}>
+									<Link href={data.reddit} target='_blank'>
+										{convertLink(data.reddit)} <LaunchIcon />
+									</Link>
+								</MenuItem>
+							)}
+						</List>
+					</Box>
+				</ListItem>
+				<ListItem>
+					<Link href={data.source_code} target='_blank' className={classes.link}>
+						<CodeIcon /> Source code <LaunchIcon />
+					</Link>
+				</ListItem>
+				<ListItem>
+					<Link href={data.technical_doc} target='_blank' className={classes.link}>
+						<ArticleIcon /> Whitepaper <LaunchIcon />
+					</Link>
+				</ListItem>
+			</List>
+		</div>
 	) : (
 		<List className={classes.list}>
 			<ListItem>
@@ -137,65 +111,39 @@ const ListLink = ({ data, dataFromCmc }) => {
 					<LaunchIcon />
 				</Link>
 			</ListItem>
-			<ListItem>
+			<ListItem className='item-link'>
 				<Button
-					sx={{ zIndex: 1302, position: 'relative' }}
 					className={classes.link}
 					onMouseOver={(e) => handlePopoverOpen(e, 'explorer')}
 					data-menu='explorer'>
 					<SearchIcon /> Explorers <KeyboardArrowDownIcon />
 				</Button>
-				<Popover
-					id='explorer'
-					// keepMounted
-					className={classes.popover}
-					open={dropdownId === 'explorer'}
-					anchorEl={anchorEl}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}>
+				<Box className={classes.popover} style={{ display: dropdownId === 'explorer' ? 'block' : 'none' }}>
 					<List>
-						{data.blockchain_site && data.blockchain_site.length > 0 ?
-							data.blockchain_site.map(
-								(item) =>
-									item && (
-										<MenuItem key={item} className={classes.menuItem}>
-											<Link href={item} target='_blank'>
-												{convertLink(item)} <LaunchIcon />
-											</Link>
-										</MenuItem>
-									)
-							) : null}
+						{data.blockchain_site && data.blockchain_site.length > 0
+							? data.blockchain_site.map(
+									(item) =>
+										item && (
+											<MenuItem key={item} className={classes.menuItem}>
+												<Link href={item} target='_blank'>
+													{convertLink(item)} <LaunchIcon />
+												</Link>
+											</MenuItem>
+										)
+							  )
+							: null}
 					</List>
-				</Popover>
+				</Box>
 			</ListItem>
 
-			<ListItem>
+			<ListItem className='item-link'>
 				<Button
-					sx={{ zIndex: 1302, position: 'relative' }}
 					className={classes.link}
 					onMouseOver={(e) => handlePopoverOpen(e, 'community')}
 					data-menu='community'>
 					<PeopleIcon /> Community <KeyboardArrowDownIcon />
 				</Button>
-				<Popover
-					id='community'
-					className={classes.popover}
-					open={dropdownId === 'community'}
-					anchorEl={anchorEl}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'center',
-					}}
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}>
+				<Box className={classes.popover} style={{ display: dropdownId === 'community' ? 'block' : 'none' }}>
 					<List>
 						{data.chat_url.length > 0 &&
 							data.chat_url.map(
@@ -215,7 +163,7 @@ const ListLink = ({ data, dataFromCmc }) => {
 							</MenuItem>
 						)}
 					</List>
-				</Popover>
+				</Box>
 			</ListItem>
 			{data.repos_url && (
 				<ListItem>
@@ -229,3 +177,6 @@ const ListLink = ({ data, dataFromCmc }) => {
 };
 
 export default memo(ListLink);
+
+// https://codesandbox.io/s/material-demo-79he1?file=/demo.js:802-814
+// https://codesandbox.io/s/dry-thunder-6h9lfx?file=/demo.js

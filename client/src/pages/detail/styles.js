@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: '4px 6px',
 		borderRadius: 4,
 		marginLeft: 10,
-		minWidth: 82,
+		minWidth: 60,
 		backgroundColor: '#858ca2',
 	},
 	lbl: {
@@ -81,11 +81,19 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	popover: {
+		background: 'var(--bg-dropdown)',
+		boxShadow: 'var(--shadow-normal) !important',
+		position: 'absolute',
+		left: 0,
+		top: '100%',
+		zIndex: 9,
 		'& .MuiPaper-root': {
 			borderRadius: 8,
 			background: 'var(--bg-dropdown)',
 			boxShadow: 'var(--shadow-normal) !important',
+			pointerEvents: 'none',
 			'& .MuiList-root': {
+				pointerEvents: 'none',
 				padding: '10px 0',
 				background: 'var(--bg-dropdown)',
 			},
