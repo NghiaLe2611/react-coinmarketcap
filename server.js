@@ -11,6 +11,8 @@ const CACHE_TIME_1H = 60 * 60;
 const CACHE_TIME_8H = 60 * 60 * 8;
 const CACHE_TIME_1D = 60 * 60 * 24;
 
+const COINGECKO_API_URL = process.env.COINGECKO_API_URL || 'https://api.coingecko.com/api/v3';
+
 // Cache data
 const nodeCache = require('node-cache');
 const myCache = new nodeCache({ stdTTL: CACHE_TIME_1H });
@@ -44,7 +46,7 @@ app.get('/api/coin_list', async function (req, res) {
 
 	try {
 		const response = await axios.get(
-			`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&sparkline=true&price_change_percentage=1h%2C24h%2C7d&page=${page}`
+			`${COINGECKO_API_URL}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=${limit}&sparkline=true&price_change_percentage=1h%2C24h%2C7d&page=${page}`
 		);
 		return res.status(200).json(response.data);
 	} catch (err) {
@@ -270,7 +272,7 @@ const dataFromArr = ['bitcoin', 'ethereum', 'tether'];
 app.get('/api/coins/:id', async function (req, res) {
 	const id = req.params.id;
 	const URL_CMC = `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?slug=${id}`;
-	const URL_COINGECKO = `https://api.coingecko.com/api/v3/coins/${id}?tickers=false&community_data=false&developer_data=false&sparkline=true`;
+	const URL_COINGECKO = `${COINGECKO_API_URL}/coins/${id}?tickers=false&community_data=false&developer_data=false&sparkline=true`;
 	let cachedDetail = myCache.get(`detail-${id}`);
 	let cachedDetailCoingecko = myCache.get(`detailCoingecko-${id}`);
 
@@ -333,7 +335,7 @@ app.get('/api/coins/market/:id', async function (req, res) {
 	const id = req.params.id;
 
 	try {
-		const response = await axios(`https://api.coingecko.com/api/v3/coins/${id}/tickers?include_exchange_logo=true&depth=true`);
+		const response = await axios(`${COINGECKO_API_URL}/coins/${id}/tickers?include_exchange_logo=true&depth=true`);
 		return res.status(200).json(response.data);
 	} catch(err) {
 		console.log(err);
@@ -363,28 +365,28 @@ app.get('/api/chart_data/:id', async function (req, res) {
 
 	switch (interval) {
 		case '1d': {
-			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1`;
+			url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=1`;
 			break;
 		}
 		case '7d': {
-			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`;
+			url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=7`;
 			break;
 		}
 		case '1M': {
-			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=30`;
+			url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=30`;
 			break;
 		}
 		case '3M': {
-			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=90`;
+			url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=90`;
 			break;
 		}
 		case '1Y': {
-			url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=365`;
+			url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=365`;
 			break;
 		}
 		default:
 			if (!interval) {
-				url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=1`;
+				url = `${COINGECKO_API_URL}/coins/${id}/market_chart?vs_currency=usd&days=1`;
 				break;
 			} else {
 				return res.status(400).json({
@@ -398,6 +400,24 @@ app.get('/api/chart_data/:id', async function (req, res) {
 		const response = await axios(url);
 		// console.log(response.data);
 		return res.status(200).json(response.data.prices);
+	} catch (err) {
+		return res.status(500).json({ status: err.response.status, message: err.response.data.error });
+	}
+});
+
+// Search query
+app.get('/api/search', async function (req, res) {
+	const query = req.query.query;
+
+	if (!query) {
+		return res.status(404).json({
+			message: 'Please enter query'
+		});
+	}
+
+	try {
+		const response = await axios(`${COINGECKO_API_URL}/search?query=${query}`);
+		return res.status(200).json(response.data.coins);
 	} catch (err) {
 		return res.status(500).json({ status: err.response.status, message: err.response.data.error });
 	}

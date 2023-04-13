@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Box, Button, Chip, IconButton, Link as MuiLink, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Chip, Link as MuiLink, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import coinApi from 'api/coinApi';
 import Loader from 'components/Loader';
@@ -78,11 +78,7 @@ const CoinMarket = ({ name, isFullData }) => {
 
 	const { items, requestSort, sortConfig } = useSortableData(data ? data : []);
 
-	if (isLoading) {
-		return <p>Loading...</p>;
-	}
-
-	const renderTrustScore = (score) => {
+	const renderTrustScore = useCallback((score) => {
 		switch (score) {
 			case 'green':
 				return <Chip sx={{ backgroundColor: '#16c784', color: '#eee', fontSize: 12 }} label='High' />;
@@ -93,7 +89,11 @@ const CoinMarket = ({ name, isFullData }) => {
 			default:
 				return <Chip sx={{ backgroundColor: '#929aaa', color: '#eee', fontSize: 12 }} label='N/A' />;
 		}
-	};
+	}, []);
+
+	if (isLoading) {
+		return <p>Loading...</p>;
+	}
 
 	return (
 		<Box my={5}>

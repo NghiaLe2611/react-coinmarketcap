@@ -49,7 +49,7 @@ export const SearchInput = styled(InputBase)(({theme}) => ({
 	'& .MuiInputBase-input': {
 		// padding: theme.spacing(2),
 		fontSize: 13,
-		cursor: 'pointer',
+		// cursor: 'pointer',
 		paddingLeft: `calc(1em + ${theme.spacing(2)})`,
 	},
 }));

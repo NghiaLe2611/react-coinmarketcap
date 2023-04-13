@@ -7,19 +7,41 @@ import { _generalStats } from '../../../features/general/generalSlice';
 import classes, { SearchBox, SearchIconWrapper, SearchInput, SearchInputWrapper, StyledInputBase } from './styles';
 import CloseIcon from '@mui/icons-material/Close';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import useDebounce from 'hooks/useDebounce';
+import coinApi from 'api/coinApi';
 
 const Search = () => {
 	const location = useLocation();
+	const [searchTerm, setSearchTerm] = useState('');
+	const [searchResult, setSearchResult] = useState([]);
 	const [showSearchBox, setShowSearchBox] = useState(null);
     const {trendingSearches, recentSearches} = useSelector(_generalStats);
 
+	const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
 	const searchRef = useRef("");
 
+	// Reset state when navigate
 	useEffect(() => {
 		return () => {
 			setShowSearchBox(null);
-		}
+			setSearchTerm('');
+		};
 	}, [location]);
+
+	// Search filter
+	useEffect(() => {
+		const searchHandler = async () => {
+			try {
+				const res = await coinApi.searchByQuery(debouncedSearchTerm);
+				setSearchResult(res.data.slice(0, 5));
+			} catch(err) {
+				console.log(err);
+			}
+		}
+
+		searchHandler();
+	}, [debouncedSearchTerm]);
 
 	const handleShowSearchBox = (e) => {
 		setShowSearchBox(e.currentTarget);
@@ -33,6 +55,11 @@ const Search = () => {
 		if (searchRef.current) {
 			searchRef.current.value = "";
 		}
+	};
+
+	const onChangeInput = (e) => {
+		console.log(e.target.value);
+		setSearchTerm(e.target.value);
 	};
 
 	return (
@@ -65,45 +92,85 @@ const Search = () => {
 					},
 				}}>
 				<SearchInputWrapper>
-					<SearchIconWrapper sx={{padding: '0 5px'}}>
+					<SearchIconWrapper sx={{ padding: '0 5px' }}>
 						<SearchIcon fontSize='small' />
 					</SearchIconWrapper>
-					<SearchInput placeholder='What are you looking for ?' inputProps={{'aria-label': 'search'}} inputRef={searchRef} />
+					<SearchInput
+						autoFocus
+						placeholder='What are you looking for ?'
+						inputProps={{ 'aria-label': 'search' }}
+						inputRef={searchRef}
+						onChange={onChangeInput}
+					/>
 					<IconButton sx={classes.clearSearch} size='small' onClick={clearInput}>
-						<CloseIcon sx={{fontSize: '12px'}}></CloseIcon>
+						<CloseIcon sx={{ fontSize: '12px' }}></CloseIcon>
 					</IconButton>
 				</SearchInputWrapper>
-				<Box sx={{padding: '10px 20px 20px 20px'}}>
-					<Box>
-						<Typography sx={classes.searchLbl}>
-							Trending <LocalFireDepartmentIcon />
-						</Typography>
-						<List sx={classes.listTrending}>
-                            {
-                                trendingSearches.length > 0 && (
-                                    trendingSearches.map(item => (
-                                        <ListItem key={item.id}>
-                                            <Typography component={Link} to={`/currencies/${item.slug}`} sx={classes.itemTrending}>
-                                                <Box sx={classes.wrapName}>
-                                                    <img width='20' src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`} alt={item.name} />
-                                                    <Typography className='name'>{item.name}</Typography>
-                                                    <Typography sx={classes.txt}>{item.symbol}</Typography>
-                                                </Box>
-                                                <Typography sx={{...classes.txt, marginLeft: 'auto'}}>#{item.rank}</Typography>
-                                            </Typography>      
-                                        </ListItem>
-                                    ))
-                                )
-                            }
-						</List>
-					</Box>
-                    {
-                        recentSearches.length > 0 && (
-                            <Box>
-                                <Typography sx={classes.searchLbl}>Recent searches</Typography>
-                            </Box>
-                        )
-                    }
+				<Box sx={{ padding: '10px 20px 20px 20px' }}>
+					{debouncedSearchTerm ? (
+						<Box>
+							<List sx={classes.listTrending}>
+								{searchResult.length ? searchResult.map((item) => (
+									<ListItem key={item.id}>
+										<Typography
+											component={Link}
+											to={`/currencies/${item.name.toLowerCase()}`}
+											sx={classes.itemTrending}>
+											<Box sx={classes.wrapName}>
+												<img
+													width='20'
+													src={item.thumb}
+													alt={item.name}
+												/>
+												<Typography className='name'>{item.name}</Typography>
+												<Typography sx={classes.txt}>{item.symbol}</Typography>
+											</Box>
+											<Typography sx={{ ...classes.txt, marginLeft: 'auto' }}>
+												#{item.market_cap_rank}
+											</Typography>
+										</Typography>
+									</ListItem>
+								)) : <ListItem>No results for '{debouncedSearchTerm}'</ListItem>}
+							</List>
+						</Box>
+					) : (
+						<Box>
+							<Box>
+								<Typography sx={classes.searchLbl}>
+									Trending <LocalFireDepartmentIcon />
+								</Typography>
+								<List sx={classes.listTrending}>
+									{trendingSearches.length > 0 &&
+										trendingSearches.map((item) => (
+											<ListItem key={item.id}>
+												<Typography
+													component={Link}
+													to={`/currencies/${item.slug}`}
+													sx={classes.itemTrending}>
+													<Box sx={classes.wrapName}>
+														<img
+															width='20'
+															src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${item.id}.png`}
+															alt={item.name}
+														/>
+														<Typography className='name'>{item.name}</Typography>
+														<Typography sx={classes.txt}>{item.symbol}</Typography>
+													</Box>
+													<Typography sx={{ ...classes.txt, marginLeft: 'auto' }}>
+														#{item.rank}
+													</Typography>
+												</Typography>
+											</ListItem>
+										))}
+								</List>
+							</Box>
+							{recentSearches.length > 0 && (
+								<Box>
+									<Typography sx={classes.searchLbl}>Recent searches</Typography>
+								</Box>
+							)}
+						</Box>
+					)}
 				</Box>
 			</Popover>
 		</>
